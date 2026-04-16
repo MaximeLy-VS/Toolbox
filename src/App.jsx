@@ -1,5 +1,6 @@
 import React, { useState, useCallback, useEffect, useRef } from 'react';
 import { HashRouter as Router, Routes, Route, Link, useLocation } from 'react-router-dom';
+import backgroundImage from './assets/Background.jpg';
 import { 
   Upload, 
   Image as ImageIcon, 
