@@ -65,7 +65,7 @@ const CopyButton = ({ text }) => {
 
 // --- COMPOSANT LAYOUT POUR LES OUTILS ---
 const ToolWrapper = ({ children, title }) => (
-  <div className="min-h-screen bg-[#f8fafc] p-4 md:p-8 animate-in fade-in duration-500">
+  <div className="min-h-screen p-4 md:p-8 animate-in fade-in duration-500">
     <div className="max-w-7xl mx-auto">
       <Link to="/" className="inline-flex items-center gap-2 text-slate-500 hover:text-blue-600 font-medium mb-6 group transition-all">
         <div className="p-2 bg-white rounded-xl shadow-sm group-hover:shadow-md transition-all">
