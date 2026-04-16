@@ -399,7 +399,7 @@ const Home = () => (
 export default function App() {
   return (
     <Router>
-      <div className="min-h-screen flex items-center justify-center p-4 font-sans text-slate-900 bg-slate-100 bg-gradient-to-br from-indigo-50 to-slate-200" style={{ backgroundImage: `url(${backgroundImage})` }}>
+      <div className="relative min-h-screen font-sans antialiased text-slate-900" style={{ backgroundImage: `url(${backgroundImage})` }}>
         <div className="fixed inset-0 z-0 overflow-hidden pointer-events-none opacity-50">
           <div className="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] bg-blue-200/40 blur-[120px] rounded-full" />
           <div className="absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] bg-purple-200/40 blur-[120px] rounded-full" />
