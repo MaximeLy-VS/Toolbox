@@ -91,7 +91,7 @@ const CopyButton = ({ text, onClick, label = "Copier", primary = false }) => {
   );
 };
 
-export default function App() {
+export default function ANtableauApp() {
   const [inputType, setInputType] = useState('image'); // 'image' ou 'text'
   const [file, setFile] = useState(null);
   const [previewUrl, setPreviewUrl] = useState(null);
