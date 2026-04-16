@@ -14,7 +14,8 @@ import {
   ArrowRight,
   Wrench,
   ChevronLeft,
-  Sparkles
+  Sparkles, 
+  Wand as IconWand
 } from 'lucide-react';
 
 const getApiKey = () => {
