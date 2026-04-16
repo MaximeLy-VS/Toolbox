@@ -145,7 +145,7 @@ export default function App() {
         <main className="relative z-10">
           <Routes>
             <Route path="/" element={<Home />} />
-            <Route path="/tools/AN_Image" element={<ANimageApp />} />
+            <Route path="/tools/AN_Image/" element={<ANimageApp />} />
             <Route path="/tools/AN_tableau" element={<ANtableauApp />} />
             <Route path="/tools/Mockup_app" element={<MockupApp />} />
           </Routes>
