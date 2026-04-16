@@ -23,6 +23,8 @@ const getApiKey = () => {
   } catch (e) {
     return "";
   }
+};
+  const apiKey = getApiKey();
 
 // --- UTILS COMMUNS ---
 const copyToClipboard = (text) => {
