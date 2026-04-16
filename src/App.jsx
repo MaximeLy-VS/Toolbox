@@ -58,7 +58,7 @@ const CopyButton = ({ text }) => {
       onClick={handleCopy}
       className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold text-slate-500 bg-slate-50 hover:bg-indigo-50 hover:text-indigo-600 rounded-lg transition-all"
     >
-      {copied ? <Check size={14} className="text-green-600" /> : <Copy size={14} />}
+      {copied ? <Check size={14} className="text-green-600" /> : <IconCopy size={14} />}
       {copied ? <span className="text-green-600">Copié</span> : 'Copier'}
     </button>
   );
