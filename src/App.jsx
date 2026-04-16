@@ -9,9 +9,9 @@ import {
   ChevronLeft
 } from 'lucide-react';
 import backgroundImage from './assets/Background.jpg';
-import ANimageApp from './tools/AN_Image/ANimageApp';
-import ANtableApp from './tools/AN_tableau/ANtableApp';
-import MockupApp from './tools/Mockup_app/MockupApp';
+// import ANimageApp from './tools/AN_Image/ANimageApp';
+// import ANtableApp from './tools/AN_tableau/ANtableApp';
+// import MockupApp from './tools/Mockup_app/MockupApp';
 
 const LayoutOutil = ({ titre, children }) => (
   <div className="min-h-screen bg-[#f8fafc] p-4 md:p-8">
