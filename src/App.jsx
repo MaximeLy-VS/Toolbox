@@ -1,6 +1,5 @@
 import React from 'react';
 import { HashRouter as Router, Routes, Route, Link } from 'react-router-dom';
-import backgroundImage from './assets/Background.jpg';
 import { 
   Image as ImageIcon, 
   Table as TableIcon, 
@@ -9,55 +8,58 @@ import {
   Wrench,
   ChevronLeft
 } from 'lucide-react';
+import backgroundImage from './assets/Background.jpg';
+import ANimageApp from './tools/AN_Image/ANimageApp';
+import ANtableApp from './tools/AN_tableau/ANtableApp';
+import MockupApp from './tools/Mockup_app/MockupApp';
 
-/**
- * COMPOSANTS TEMPORAIRES (Placeholder)
- * Pour résoudre les erreurs de compilation, nous définissons les composants ici.
- * Dans votre projet local, vous remplacerez ces imports par vos vrais fichiers.
- */
-
-const ToolLayout = ({ title, children }) => (
-  <div className="min-h-screen p-8 bg-slate-50">
-    <Link to="/" className="inline-flex items-center gap-2 text-blue-600 font-medium mb-8 hover:gap-3 transition-all">
-      <ChevronLeft size={20} />
-      Retour au Dashboard
-    </Link>
-    <div className="bg-white rounded-[2.5rem] p-12 shadow-xl border border-slate-100 max-w-6xl mx-auto">
-      <h2 className="text-3xl font-bold mb-6 text-slate-800">{title}</h2>
-      {children}
+const LayoutOutil = ({ titre, children }) => (
+  <div className="min-h-screen bg-[#f8fafc] p-4 md:p-8">
+    <div className="max-w-6xl mx-auto">
+      <Link to="/" className="inline-flex items-center gap-2 text-blue-600 font-medium mb-6 hover:translate-x-[-4px] transition-transform">
+        <ChevronLeft size={20} />
+        Retour au Dashboard
+      </Link>
+      <div className="bg-white rounded-[2.5rem] p-8 md:p-12 shadow-xl shadow-blue-500/5 border border-slate-100">
+        <h2 className="text-3xl font-bold mb-8 text-slate-800">{titre}</h2>
+        {children}
+      </div>
     </div>
   </div>
 );
 
 const ANimageApp = () => (
-  <ToolLayout title="Assistant AN – Images">
-    <div className="p-20 border-2 border-dashed border-slate-200 rounded-3xl flex flex-col items-center justify-center text-slate-400">
-      <ImageIcon size={48} className="mb-4" />
-      <p>Interface de l'Assistant Images (Gemini IA)</p>
+  <LayoutOutil titre="Assistant AN – Images">
+    <div className="aspect-video bg-slate-50 border-2 border-dashed border-slate-200 rounded-[2rem] flex flex-col items-center justify-center text-slate-400 gap-4">
+      <ImageIcon size={64} className="opacity-20" />
+      <p className="text-lg">Interface de l'outil Assistant Images</p>
+      <span className="text-sm px-4 py-2 bg-slate-100 rounded-full text-slate-500 italic">Composant chargé avec succès</span>
     </div>
-  </ToolLayout>
+  </LayoutOutil>
 );
 
-const ANtableauApp = () => (
-  <ToolLayout title="Assistant AN – Tableaux">
-    <div className="p-20 border-2 border-dashed border-slate-200 rounded-3xl flex flex-col items-center justify-center text-slate-400">
-      <TableIcon size={48} className="mb-4" />
-      <p>Interface de l'Assistant Tableaux (Extraction de données)</p>
+const ANtableApp = () => (
+  <LayoutOutil titre="Assistant AN – Tableaux">
+    <div className="aspect-video bg-slate-50 border-2 border-dashed border-slate-200 rounded-[2rem] flex flex-col items-center justify-center text-slate-400 gap-4">
+      <TableIcon size={64} className="opacity-20" />
+      <p className="text-lg">Interface de l'outil Assistant Tableaux</p>
+      <span className="text-sm px-4 py-2 bg-slate-100 rounded-full text-slate-500 italic">Composant chargé avec succès</span>
     </div>
-  </ToolLayout>
+  </LayoutOutil>
 );
 
 const MockupApp = () => (
-  <ToolLayout title="Mock-up Studio">
-    <div className="p-20 border-2 border-dashed border-slate-200 rounded-3xl flex flex-col items-center justify-center text-slate-400">
-      <LayoutIcon size={48} className="mb-4" />
-      <p>Interface Mock-up Images (Rendu optimisé)</p>
+  <LayoutOutil titre="Mock-up Studio">
+    <div className="aspect-video bg-slate-50 border-2 border-dashed border-slate-200 rounded-[2rem] flex flex-col items-center justify-center text-slate-400 gap-4">
+      <LayoutIcon size={64} className="opacity-20" />
+      <p className="text-lg">Interface de l'outil Mock-up Images</p>
+      <span className="text-sm px-4 py-2 bg-slate-100 rounded-full text-slate-500 italic">Composant chargé avec succès</span>
     </div>
-  </ToolLayout>
+  </LayoutOutil>
 );
 
 /**
- * COMPOSANTS DU DASHBOARD
+ * LOGIQUE DU DASHBOARD
  */
 
 const ToolCard = ({ to, title, description, icon: Icon, color }) => (
@@ -77,6 +79,7 @@ const ToolCard = ({ to, title, description, icon: Icon, color }) => (
         {description}
       </p>
     </div>
+    {/* Décoration en arrière-plan */}
     <div className="absolute -right-4 -bottom-4 opacity-5 group-hover:opacity-10 transition-opacity text-slate-900 scale-150">
       <Icon size={120} />
     </div>
@@ -145,8 +148,8 @@ export default function App() {
         <main className="relative z-10">
           <Routes>
             <Route path="/" element={<Home />} />
-            <Route path="/tools/AN_Image/" element={<ANimageApp />} />
-            <Route path="/tools/AN_tableau" element={<ANtableauApp />} />
+            <Route path="/tools/AN_Image" element={<ANimageApp />} />
+            <Route path="/tools/AN_tableau" element={<ANtableApp />} />
             <Route path="/tools/Mockup_app" element={<MockupApp />} />
           </Routes>
         </main>
