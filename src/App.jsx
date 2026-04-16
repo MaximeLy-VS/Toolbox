@@ -2,12 +2,12 @@ import React, { useState, useCallback, useEffect, useRef } from 'react';
 import { HashRouter as Router, Routes, Route, Link, useLocation } from 'react-router-dom';
 import backgroundImage from './assets/Background.jpg';
 import { 
-  Upload, 
+  Upload as IconUpload, 
   Image as ImageIcon, 
-  Copy, 
-  Check, 
-  AlertCircle, 
-  Loader2, 
+  Copy as IconCopy, 
+  Check as IconCheck, 
+  AlertCircle as IconAlert, 
+  Loader2 as IconLoader, 
   Info,
   Table as TableIcon,
   Layout as LayoutIcon,
@@ -26,6 +26,41 @@ const getApiKey = () => {
   }
 };
   const apiKey = getApiKey();
+const IconUpload = ({ size = 24, className = "" }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
+    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/>
+  </svg>
+);
+const IconImage = ({ size = 24, className = "" }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
+    <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/>
+  </svg>
+);
+const IconCopy = ({ size = 24, className = "" }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
+    <rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
+  </svg>
+);
+const IconCheck = ({ size = 24, className = "" }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
+    <polyline points="20 6 9 17 4 12"/>
+  </svg>
+);
+const IconAlert = ({ size = 24, className = "" }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
+    <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
+  </svg>
+);
+const IconLoader = ({ size = 24, className = "" }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={`animate-spin ${className}`}>
+    <line x1="12" y1="2" x2="12" y2="6"/><line x1="12" y1="18" x2="12" y2="22"/><line x1="4.93" y1="4.93" x2="7.76" y2="7.76"/><line x1="16.24" y1="16.24" x2="19.07" y2="19.07"/><line x1="2" y1="12" x2="6" y2="12"/><line x1="18" y1="12" x2="22" y2="12"/><line x1="4.93" y1="19.07" x2="7.76" y2="16.24"/><line x1="16.24" y1="7.76" x2="19.07" y2="4.93"/>
+  </svg>
+);
+const IconWand = ({ size = 24, className = "" }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
+    <path d="m2 22 1-1h3l9-9"/><path d="M11 8l3-3"/><path d="m15 4 2-2"/><path d="M20 7l2-2"/><path d="m19 11 3 3"/><path d="M16 11l2 2"/><path d="m11 16 2 2"/>
+  </svg>
+);
 
 // --- UTILS COMMUNS ---
 const copyToClipboard = (text) => {
