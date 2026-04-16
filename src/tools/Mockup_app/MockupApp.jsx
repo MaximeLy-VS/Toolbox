@@ -1,0 +1,422 @@
+import React, { useState, useRef, useEffect } from 'react';
+import { UploadCloud, Image as ImageIcon, Wand2, Download, Loader2, Zap, LayoutTemplate } from 'lucide-react';
+import backgroundImage from './assets/Background.jpg';
+
+// Fonction utilitaire pour injecter la métadonnée 90 DPI (pHYs chunk) dans un PNG en Base64
+const setDpiInPngBase64 = (base64Image, dpi) => {
+  try {
+    const data = atob(base64Image.split(',')[1]);
+    const dataArray = new Uint8Array(data.length);
+    for (let i = 0; i < data.length; i++) {
+      dataArray[i] = data.charCodeAt(i);
+    }
+
+    if (dataArray[0] !== 137 || dataArray[1] !== 80 || dataArray[2] !== 78 || dataArray[3] !== 71) {
+      return base64Image;
+    }
+
+    const ppm = Math.round(dpi / 0.0254);
+    const physChunk = new Uint8Array(21);
+    physChunk[3] = 9;
+    physChunk[4] = 112; physChunk[5] = 72; physChunk[6] = 89; physChunk[7] = 115;
+    
+    physChunk[8] = (ppm >>> 24) & 255; physChunk[9] = (ppm >>> 16) & 255; physChunk[10] = (ppm >>> 8) & 255; physChunk[11] = ppm & 255;
+    physChunk[12] = (ppm >>> 24) & 255; physChunk[13] = (ppm >>> 16) & 255; physChunk[14] = (ppm >>> 8) & 255; physChunk[15] = ppm & 255;
+    physChunk[16] = 1;
+
+    const crcTable = [];
+    for (let n = 0; n < 256; n++) {
+      let c = n;
+      for (let k = 0; k < 8; k++) c = (c & 1) ? (0xEDB88320 ^ (c >>> 1)) : (0xEDB88320 ^ (c >>> 1));
+      crcTable[n] = c;
+    }
+
+    let offset = 8;
+    while (offset < dataArray.length) {
+      const length = (dataArray[offset] << 24) | (dataArray[offset + 1] << 16) | (dataArray[offset + 2] << 8) | dataArray[offset + 3];
+      const type = String.fromCharCode(dataArray[offset + 4], dataArray[offset + 5], dataArray[offset + 6], dataArray[offset + 7]);
+      if (type === 'IHDR') {
+        offset += 12 + length;
+        break;
+      }
+      offset += 12 + length;
+    }
+
+    const newDataArray = new Uint8Array(dataArray.length + 21);
+    newDataArray.set(dataArray.subarray(0, offset), 0);
+    newDataArray.set(physChunk, offset);
+    newDataArray.set(dataArray.subarray(offset), offset + 21);
+
+    let newBase64 = '';
+    for (let i = 0; i < newDataArray.length; i++) {
+      newBase64 += String.fromCharCode(newDataArray[i]);
+    }
+    return 'data:image/png;base64,' + btoa(newBase64);
+  } catch (error) {
+    console.error("Erreur injection DPI:", error);
+    return base64Image;
+  }
+};
+
+export default function App() {
+  const [activeTab, setActiveTab] = useState('convert');
+  const [outputFormat, setOutputFormat] = useState('vignette'); // 'vignette' ou 'banner'
+  const [sourceImage, setSourceImage] = useState(null);
+  const [processedImageUrl, setProcessedImageUrl] = useState(null);
+  const [prompt, setPrompt] = useState('');
+  const [selectedModel, setSelectedModel] = useState('flux');
+  const [isGenerating, setIsGenerating] = useState(false);
+  const [error, setError] = useState('');
+  
+  const fileInputRef = useRef(null);
+  const canvasRef = useRef(null);
+
+  const handleFileUpload = (e) => {
+    const file = e.target.files[0];
+    if (file && file.type.startsWith('image/')) {
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        setSourceImage(event.target.result);
+        setError('');
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleGenerateImage = async () => {
+    if (!prompt.trim()) {
+      setError("Veuillez entrer une description.");
+      return;
+    }
+
+    setIsGenerating(true);
+    setError('');
+    
+    try {
+      const apiKey = import.meta.env.VITE_POLLINATIONS_API_KEY;
+
+      const encodedPrompt = encodeURIComponent(prompt + ", professional commercial photography, high quality, hyper realistic, centered composition");
+      const seed = Math.floor(Math.random() * 1000000);
+      
+      // On ajuste la taille demandée à l'IA en fonction du format de sortie pour un meilleur rendu
+      const aiWidth = outputFormat === 'banner' ? 2048 : 800;
+      const aiHeight = outputFormat === 'banner' ? 512 : 800;
+
+      const imageUrl = `https://gen.pollinations.ai/image/${encodedPrompt}?width=${aiWidth}&height=${aiHeight}&seed=${seed}&nologo=true&model=${selectedModel}`;
+      
+      const response = await fetch(imageUrl, {
+        method: 'GET',
+        headers: apiKey ? {
+          'Authorization': `Bearer ${apiKey}`
+        } : {}
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        const message = errorData.error?.message || "Le service de génération ne répond pas.";
+        
+        if (response.status === 401) {
+          throw new Error(`Accès refusé (401) : ${message}`);
+        }
+        throw new Error(message);
+      }
+
+      const blob = await response.blob();
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setSourceImage(reader.result);
+        setActiveTab('convert');
+        setIsGenerating(false);
+      };
+      reader.readAsDataURL(blob);
+
+    } catch (err) {
+      setError(err.message || "Désolé, la génération a échoué. Veuillez vérifier votre configuration.");
+      setIsGenerating(false);
+    }
+  };
+
+  useEffect(() => {
+    if (sourceImage && canvasRef.current) {
+      const canvas = canvasRef.current;
+      const ctx = canvas.getContext('2d');
+      const img = new Image();
+      img.crossOrigin = "anonymous"; 
+      
+      img.onload = () => {
+        if (outputFormat === 'vignette') {
+          // --- LOGIQUE VIGNETTE CARRÉE AVEC MARGES (398x398 PNG) ---
+          const innerW = 360;
+          const innerH = 300;
+          const marginX = 19;
+          const marginY = 49; // Ajusté de 48 à 49px pour obtenir un carré parfait de 398x398
+          
+          canvas.width = innerW + (marginX * 2);
+          canvas.height = innerH + (marginY * 2);
+          ctx.clearRect(0, 0, canvas.width, canvas.height); // Fond totalement transparent
+
+          ctx.save();
+          // On décale le dessin pour inclure les marges transparentes
+          ctx.translate(marginX, marginY);
+
+          const h = innerH; // 300
+          const off = 60; 
+          const w = h + off; // 360
+
+          ctx.fillStyle = '#dfdfdf';
+          ctx.beginPath();
+          ctx.arc(h/2 + off, h/2, h/2, 0, Math.PI * 2);
+          ctx.fill();
+
+          ctx.save();
+          ctx.beginPath();
+          ctx.arc(h/2, h/2, h/2, 0, Math.PI * 2);
+          ctx.clip(); 
+
+          const ratio = img.width / img.height;
+          let dW = h, dH = h, dX = 0, dY = 0;
+          if (ratio < 1) { dH = h / ratio; dY = (h - dH) / 2; }
+          else { dW = h * ratio; dX = (h - dW) / 2; }
+
+          ctx.drawImage(img, dX, dY, dW, dH);
+          ctx.restore(); 
+          
+          ctx.restore(); // Fin du décalage des marges
+
+          const raw = canvas.toDataURL('image/png');
+          setProcessedImageUrl(setDpiInPngBase64(raw, 90));
+          
+        } else if (outputFormat === 'banner') {
+          // --- LOGIQUE BANNIÈRE 2400x372 JPEG 50% ---
+          canvas.width = 2400;
+          canvas.height = 372;
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+          // Remplir d'un fond blanc au cas où l'image aurait de la transparence
+          ctx.fillStyle = '#FFFFFF';
+          ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+          const imgRatio = img.width / img.height;
+          const canvasRatio = canvas.width / canvas.height;
+          let drawW, drawH, drawX, drawY;
+
+          // Calcul pour un rendu "Cover" (remplissage centré)
+          if (imgRatio > canvasRatio) {
+            drawH = canvas.height;
+            drawW = img.width * (canvas.height / img.height);
+            drawX = (canvas.width - drawW) / 2;
+            drawY = 0;
+          } else {
+            drawW = canvas.width;
+            drawH = img.height * (canvas.width / img.width);
+            drawX = 0;
+            drawY = (canvas.height - drawH) / 2;
+          }
+
+          ctx.drawImage(img, drawX, drawY, drawW, drawH);
+          
+          // Export en JPEG avec qualité 50% (0.5)
+          const rawUrl = canvas.toDataURL('image/jpeg', 0.5);
+          setProcessedImageUrl(rawUrl);
+        }
+      };
+      img.src = sourceImage;
+    }
+  }, [sourceImage, outputFormat]); // Ajout de outputFormat dans les dépendances pour redessiner au changement
+
+  return (
+          <div className="min-h-screen flex items-center justify-center p-4 font-sans text-slate-900 bg-cover bg-center bg-no-repeat bg-fixed"
+      style={{ backgroundImage: `url(${backgroundImage})` }}>
+      <style>{`
+        @keyframes fadeSlideUp {
+          from { opacity: 0; transform: translateY(15px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fade-slide-up {
+          animation: fadeSlideUp 0.5s ease-in-out forwards;
+        }
+        .animate-fade-slide-up-delayed {
+          animation: fadeSlideUp 0.5s ease-in-out 0.15s forwards;
+          opacity: 0;
+        }
+      `}</style>
+      <div className="max-w-4xl w-full bg-white rounded-[2.5rem] shadow-2xl shadow-indigo-100 overflow-hidden flex flex-col md:flex-row border border-slate-100 animate-fade-slide-up">
+        
+        <div className="w-full md:w-1/2 bg-slate-50/50 p-10 flex flex-col border-b md:border-b-0 md:border-r border-slate-100">
+          <header className="mb-8 animate-fade-slide-up">
+            <div className="flex items-center gap-4 mb-3">
+              <div className="p-3 bg-indigo-600 rounded-2xl shadow-xl shadow-indigo-200">
+                <ImageIcon className="text-white" size={24} />
+              </div>
+              <div>
+                <h1 className="text-2xl font-black tracking-tight text-slate-800">Illustration – Mock-up</h1>
+                <p className="text-slate-400 text-[10px] font-bold uppercase tracking-[0.2em]">Convertisseur et générateur</p>
+              </div>
+            </div>
+          </header>
+
+          <div className="flex bg-slate-200/50 p-1.5 rounded-xl mb-6 animate-fade-slide-up-delayed">
+            <button
+              onClick={() => setOutputFormat('vignette')}
+              className={`flex-1 py-2 text-xs font-bold rounded-lg flex items-center justify-center gap-2 transition-all duration-300 ease-in-out ${outputFormat === 'vignette' ? 'bg-white shadow-sm text-indigo-700' : 'text-slate-500 hover:text-slate-700'}`}
+            >
+              <LayoutTemplate size={14} /> Vignette
+            </button>
+            <button
+              onClick={() => setOutputFormat('banner')}
+              className={`flex-1 py-2 text-xs font-bold rounded-lg flex items-center justify-center gap-2 transition-all duration-300 ease-in-out ${outputFormat === 'banner' ? 'bg-white shadow-sm text-indigo-700' : 'text-slate-500 hover:text-slate-700'}`}
+            >
+              <ImageIcon size={14} /> Bannière
+            </button>
+          </div>
+
+          <div className="flex bg-slate-200/50 p-1.5 rounded-2xl mb-8 animate-fade-slide-up-delayed">
+            <button
+              onClick={() => setActiveTab('convert')}
+              className={`flex-1 py-3 text-sm font-bold rounded-xl flex items-center justify-center gap-2 transition-all duration-300 ease-in-out ${activeTab === 'convert' ? 'bg-white shadow-md text-indigo-600' : 'text-slate-500 hover:text-slate-700'}`}
+            >
+              <UploadCloud size={18} /> Import
+            </button>
+            <button
+              onClick={() => setActiveTab('generate')}
+              className={`flex-1 py-3 text-sm font-bold rounded-xl flex items-center justify-center gap-2 transition-all duration-300 ease-in-out ${activeTab === 'generate' ? 'bg-white shadow-md text-indigo-600' : 'text-slate-500 hover:text-slate-700'}`}
+            >
+              <Zap size={18} /> Génération IA
+            </button>
+          </div>
+
+          <div className="flex-1 flex flex-col min-h-[320px]" key={activeTab}>
+            {activeTab === 'convert' ? (
+              <div 
+                onClick={() => fileInputRef.current?.click()}
+                className="animate-fade-slide-up flex-1 border-2 border-dashed border-slate-200 rounded-[2rem] p-8 text-center cursor-pointer hover:border-indigo-400 hover:bg-white transition-all duration-300 ease-in-out flex flex-col items-center justify-center group"
+              >
+                <div className="w-20 h-20 bg-white rounded-[1.5rem] shadow-sm border border-slate-50 flex items-center justify-center mb-5 group-hover:scale-105 transition-transform group-hover:shadow-lg">
+                  <UploadCloud className="text-indigo-600" size={36} />
+                </div>
+                <p className="text-slate-800 font-extrabold text-lg">Déposez votre visuel</p>
+                <p className="text-slate-400 text-xs mt-3 font-medium">PNG, JPG ou WEBP supportés</p>
+                <input type="file" ref={fileInputRef} onChange={handleFileUpload} accept="image/*" className="hidden" />
+              </div>
+            ) : (
+              <div className="space-y-5 animate-fade-slide-up">
+                <div className="px-4 py-2.5 bg-indigo-50 border border-indigo-100 rounded-xl flex justify-between items-center">
+                  <p className="text-[10px] text-indigo-600 font-black leading-tight uppercase tracking-wider">
+                    Moteur IA : Pollinations
+                  </p>
+                  <p className="text-[9px] text-indigo-400 font-bold uppercase tracking-wider">
+                    {outputFormat === 'banner' ? 'Format : Paysage' : 'Format : Carré'}
+                  </p>
+                </div>
+
+                <select
+                  value={selectedModel}
+                  onChange={(e) => setSelectedModel(e.target.value)}
+                  className="w-full p-4 border border-slate-200 rounded-[1.8rem] focus:ring-8 focus:ring-indigo-50 focus:border-indigo-400 outline-none text-sm bg-white shadow-inner transition-all duration-300 ease-in-out font-medium cursor-pointer"
+                >
+                  <option value="flux">Flux Schnell</option>
+                  <option value="klein">Flux.2 Klein 4B</option>
+                  <option value="klein-large">Flux.2 Klein9B</option>
+                  <option value="gpt-image-1-mini">GPT Image 1 mini</option>
+                </select>
+
+                <textarea
+                  value={prompt}
+                  onChange={(e) => setPrompt(e.target.value)}
+                  placeholder="Décrivez l'illustration souhaitée ici..."
+                  className="w-full h-36 p-6 border border-slate-200 rounded-[1.8rem] focus:ring-8 focus:ring-indigo-50 focus:border-indigo-400 outline-none resize-none text-sm bg-white shadow-inner transition-all duration-300 ease-in-out font-medium"
+                />
+                <button
+                  onClick={handleGenerateImage}
+                  disabled={isGenerating || !prompt.trim()}
+                  className="w-full bg-slate-900 text-white font-black py-4 rounded-2xl hover:bg-indigo-600 transition-all duration-300 ease-in-out flex items-center justify-center gap-3 disabled:bg-slate-200 shadow-2xl shadow-slate-200 hover:scale-[1.02] active:scale-95"
+                >
+                  {isGenerating ? <Loader2 className="animate-spin" size={20} /> : <Zap size={20} />}
+                  GÉNÉRER L'ILLUSTRATION
+                </button>
+              </div>
+            )}
+            
+            {error && (
+              <div className="mt-6 p-4 bg-red-50 border border-red-100 rounded-2xl animate-fade-slide-up">
+                <p className="text-red-600 text-[11px] font-black italic text-center">{error}</p>
+              </div>
+            )}
+          </div>
+        </div>
+
+        <div className="w-full md:w-1/2 p-12 flex flex-col items-center justify-center bg-white">
+          <div 
+            key={`${processedImageUrl ? 'image' : 'placeholder'}-${outputFormat}`}
+            className={`mb-12 w-full flex items-center justify-center bg-[#FAFAFA] border border-slate-50 relative overflow-hidden shadow-2xl shadow-slate-100 animate-fade-slide-up transition-all duration-500 ${
+              outputFormat === 'vignette' 
+                ? 'max-w-[398px] aspect-square rounded-[2.5rem]' 
+                : 'max-w-full aspect-[2400/372] rounded-xl'
+            }`} 
+            style={{ backgroundImage: 'radial-gradient(#E2E8F0 2px, transparent 2px)', backgroundSize: '28px 28px' }}
+          >
+            {processedImageUrl ? (
+              <img src={processedImageUrl} alt="Preview" className="w-full h-full object-cover" />
+            ) : (
+              <div className="text-center opacity-10 flex flex-col items-center">
+                <ImageIcon className="mb-2" size={outputFormat === 'banner' ? 32 : 72} />
+                <p className={`font-black uppercase tracking-[0.3em] ${outputFormat === 'banner' ? 'text-[8px]' : 'text-xs'}`}>
+                  {outputFormat === 'banner' ? 'Bannière' : 'Vignette'}
+                </p>
+              </div>
+            )}
+          </div>
+
+          <div className="w-full max-w-[320px] space-y-8 animate-fade-slide-up-delayed">
+            <div className="text-center">
+              <div className="inline-flex items-center gap-2.5 px-4 py-1.5 bg-emerald-50 text-emerald-600 text-[10px] font-black uppercase rounded-full mb-4 tracking-tight border border-emerald-100">
+                <div className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse" />
+                Rendu Optimisé
+              </div>
+              <p className="text-[11px] text-slate-400 font-bold tracking-wide transition-all">
+                {outputFormat === 'vignette' 
+                  ? '398x398px • 90 DPI • PNG Alpha' 
+                  : '2400x372px • JPEG Qualité 50 %'}
+              </p>
+            </div>
+
+            <div className="flex gap-3 w-full" key={sourceImage ? 'has-source' : 'no-source'}>
+              {activeTab === 'generate' && (
+                <a
+                  href={sourceImage || '#'}
+                  download="illustration-originale.png"
+                  className={`animate-fade-slide-up flex-1 py-4 rounded-2xl font-black text-[10px] tracking-widest flex flex-col items-center justify-center gap-1 transition-all duration-300 ease-in-out ${
+                    sourceImage 
+                      ? 'bg-slate-100 hover:bg-slate-200 text-slate-700 shadow-md hover:translate-y-[-2px]' 
+                      : 'bg-slate-50 text-slate-300 cursor-not-allowed'
+                  }`}
+                  onClick={(e) => !sourceImage && e.preventDefault()}
+                  title="Télécharger l'image originale"
+                >
+                  <Download size={16} />
+                  <span>ORIGINAL</span>
+                </a>
+              )}
+
+              <a
+                href={processedImageUrl || '#'}
+                download={outputFormat === 'vignette' ? 'vignette.png' : 'banniere.jpg'}
+                className={`animate-fade-slide-up flex-[2] py-4 rounded-2xl font-black text-[11px] tracking-widest flex items-center justify-center gap-2 transition-all duration-300 ease-in-out ${
+                  processedImageUrl 
+                    ? 'bg-indigo-600 hover:bg-indigo-700 text-white shadow-2xl shadow-indigo-200 hover:translate-y-[-2px]' 
+                    : 'bg-slate-100 text-slate-300 cursor-not-allowed'
+                }`}
+                onClick={(e) => !processedImageUrl && e.preventDefault()}
+              >
+                <Download size={18} />
+                <span>{outputFormat === 'vignette' ? 'VIGNETTE PNG' : 'BANNIÈRE JPG'}</span>
+              </a>
+            </div>
+          </div>   
+          <div className="mt-8 justify-center"><p className="text-[11px] text-slate-400 font-bold tracking-wide transition-all">Maxime Lyon</p></div>   
+        </div>
+        <canvas ref={canvasRef} className="hidden" />
+      </div>
+    </div>
+  );
+}
