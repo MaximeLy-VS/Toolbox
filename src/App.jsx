@@ -4,7 +4,7 @@ import { Upload, Image as ImageIcon, Copy, Check, AlertCircle, Loader2, Info } f
 import backgroundImage from './assets/Background.jpg';
 import './App.css';
 
-function App() {
+export default function App() {
   return (
     <Router>
       <nav className="p-4 bg-gray-100 flex gap-4">
