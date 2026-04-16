@@ -28,7 +28,7 @@ jobs:
           
       - name: Install dependencies
         # Force l'installation de Tailwind CSS version 3 pour garantir la compatibilité avec notre configuration
-        run: npm install && npm install lucide-react tailwindcss@^3.4.0 postcss autoprefixer @tailwindcss/typography react-router-dom
+        run: npm install && npm install --legacy-peer-deps lucide-react tailwindcss@^3.4.0 postcss autoprefixer @tailwindcss/typography react-router-dom
         
       - name: Build project
         # Création d'un fichier .env à la volée avant de compiler
