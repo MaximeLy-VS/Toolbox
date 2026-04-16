@@ -16,19 +16,13 @@ import {
   Sparkles
 } from 'lucide-react';
 
-/** * --- CONFIGURATION API --- 
- * En local : utilise import.meta.env
- * Ici : utilise la constante fournie par l'environnement
- */
 const getApiKey = () => {
   try {
     // @ts-ignore
-    return typeof __api_key !== 'undefined' ? __api_key : (import.meta.env.VITE_GEMINI_API_KEY || "");
+    return import.meta.env.VITE_GEMINI_API_KEY || "";
   } catch (e) {
     return "";
   }
-};
-const apiKey = ""; // Laissée vide pour injection par l'environnement
 
 // --- UTILS COMMUNS ---
 const copyToClipboard = (text) => {
