@@ -28,7 +28,6 @@ jobs:
           
       - name: Install dependencies
         # Force l'installation de Tailwind CSS version 3 pour garantir la compatibilité avec notre configuration
-        - name: Install dependencies
         run: npm install --legacy-peer-deps
         
       - name: Build project
