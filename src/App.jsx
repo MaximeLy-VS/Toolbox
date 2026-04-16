@@ -203,7 +203,6 @@ Renvoie le résultat au format JSON.`;
   };
   return (
     <ToolWrapper title="Assistant Images">
-     <div className="min-h-screen flex items-center justify-center p-4 font-sans text-slate-900 bg-slate-100 bg-gradient-to-br from-indigo-50 to-slate-200" style={{ backgroundImage: `url(${backgroundImage})` }}>
       <style>{`
         @keyframes fadeSlideUp {
           from { opacity: 0; transform: translateY(15px); }
@@ -342,7 +341,6 @@ Renvoie le résultat au format JSON.`;
           )}
         </div>
       </div>
-    </div>    
     </ToolWrapper>
   );
 }
@@ -400,6 +398,7 @@ const Home = () => (
 export default function App() {
   return (
     <Router>
+ <div className="min-h-screen flex items-center justify-center p-4 font-sans text-slate-900 bg-slate-100 bg-gradient-to-br from-indigo-50 to-slate-200" style={{ backgroundImage: `url(${backgroundImage})` }}>
       <div className="relative min-h-screen font-sans antialiased text-slate-900 bg-[#fbfcfd]">
         <div className="fixed inset-0 z-0 overflow-hidden pointer-events-none opacity-50">
           <div className="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] bg-blue-200/40 blur-[120px] rounded-full" />
@@ -414,6 +413,7 @@ export default function App() {
           </Routes>
         </main>
       </div>
+ </div>
     </Router>
   );
 }
