@@ -89,7 +89,7 @@ const CopyButton = ({ text }) => {
   );
 };
 
-export default function App() {
+export default function ANimageApp() {
   const [file, setFile] = useState(null);
   const [previewUrl, setPreviewUrl] = useState(null);
   const [loading, setLoading] = useState(false);
