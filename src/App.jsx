@@ -225,7 +225,7 @@ Renvoie le résultat au format JSON.`;
           <header className="mb-10 animate-fade-slide-up">
             <div className="flex items-center gap-4 mb-3">
               <div className="p-3 bg-indigo-600 rounded-2xl shadow-xl shadow-indigo-100">
-                <IconImage className="text-white" size={24} />
+                <ImageIcon className="text-white" size={24} />
               </div>
               <div className="flex flex-col">
                 <h1 className="text-L font-black tracking-tight text-slate-800">Assistant d'accessibilité des images</h1>
@@ -335,7 +335,7 @@ Renvoie le résultat au format JSON.`;
           ) : (
             <div className="flex flex-col items-center justify-center text-center space-y-4 opacity-20">
               <div className="w-24 h-24 bg-slate-200/50 rounded-[2rem] flex items-center justify-center border-4 border-white shadow-inner">
-                <IconImage size={48} className="text-slate-400" />
+                <ImageIcon size={48} className="text-slate-400" />
               </div>
               <p className="text-xs font-black uppercase tracking-[0.4em] text-slate-200">Maxime Lyon</p>
             </div>
