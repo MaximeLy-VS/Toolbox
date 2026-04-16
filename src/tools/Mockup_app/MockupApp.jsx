@@ -58,7 +58,7 @@ const setDpiInPngBase64 = (base64Image, dpi) => {
   }
 };
 
-export default function App() {
+export default function MockupApp() {
   const [activeTab, setActiveTab] = useState('convert');
   const [outputFormat, setOutputFormat] = useState('vignette'); // 'vignette' ou 'banner'
   const [sourceImage, setSourceImage] = useState(null);
