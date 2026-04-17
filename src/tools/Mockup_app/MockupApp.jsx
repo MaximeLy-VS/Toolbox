@@ -14,6 +14,19 @@ export default function MockupApp() {
   
   const fileInputRef = useRef(null);
   const canvasRef = useRef(null);
+  
+  const handleFileUpload = (e) => {
+    const file = e.target.files[0];
+    if (file && file.type.startsWith('image/')) {
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        setSourceImage(event.target.result);
+        setError('');
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+  
  const handleGenerateImage = async () => {
     if (!prompt.trim()) {
       setError("Veuillez entrer une description.");
