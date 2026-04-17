@@ -1,6 +1,9 @@
 import React, { useState, useCallback, useEffect, useRef } from 'react';
 import { HashRouter as Router, Routes, Route, Link, useLocation } from 'react-router-dom';
 import backgroundImage from './assets/Background.jpg';
+import ANimageApp from './src/tools/AN_Image/ANimageApp';
+import ANtableauApp from './src/tools/AN_tableau/ANtableApp';
+import MockupApp from './src/tools/Mockup_app/MockupApp';
 import { 
   Upload as IconUpload, 
   Image as IconImage, 
