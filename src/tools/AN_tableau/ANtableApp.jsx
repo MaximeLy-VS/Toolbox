@@ -232,33 +232,35 @@ Génère UNIQUEMENT un objet JSON valide avec cette structure précise :
           </div>
 
           <div className="flex-1 flex flex-col relative min-h-[300px] animate-fade-slide-up">
-            {inputType === 'image' ? (
-              <div
-                onDragOver={(e) => { e.preventDefault(); setIsDragging(true); }}
-                onDragLeave={() => setIsDragging(false)}
-                onDrop={(e) => { e.preventDefault(); setIsDragging(false); handleFile(e.dataTransfer.files[0]); }}
-                className={`flex-1 flex flex-col items-center justify-center p-6 border-2 border-dashed rounded-2xl transition-all cursor-pointer bg-slate-50
-                  ${isDragging ? 'border-indigo-400 bg-indigo-50/50' : 'border-slate-200 hover:border-indigo-300'}
-                `}
-                onClick={() => document.getElementById('file-input').click()}
-              >
-                <input id="file-input" type="file" accept="image/*" className="hidden" onChange={(e) => handleFile(e.target.files[0])} />
-                {previewUrl ? (
-                  <div className="w-full h-full flex flex-col items-center justify-center">
-                    <img src={previewUrl} alt="Aperçu" className="max-h-[250px] object-contain rounded-lg shadow-sm mb-4" />
-                    <span className="text-xs text-indigo-600 font-bold bg-indigo-50 px-3 py-1 rounded-full">Changer d'image</span>
+           {previewUrl ? (
+              <div className="w-full space-y-6">
+                <div className="relative group cursor-pointer" onClick={() => document.getElementById('file-input').click()}>
+                  <img src={previewUrl} alt="Preview" className="max-h-[320px] mx-auto rounded-2xl shadow-lg border border-slate-50" />
+                  <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center rounded-2xl text-white text-xs font-bold tracking-widest">
+                    Changer l'image
                   </div>
-                ) : (
-                  <div className="text-center space-y-3 pointer-events-none">
-                    <div className="w-12 h-12 bg-white shadow-sm rounded-full flex items-center justify-center mx-auto text-indigo-400">
-                      <IconUpload size={24} />
-                    </div>
-                    <div>
-                      <p className="text-slate-700 font-bold text-sm">Déposez l'image du tableau</p>
-                      <p className="text-slate-400 text-xs mt-1">Ctrl+V pour coller</p>
-                    </div>
-                  </div>
-                )}
+                </div>
+                
+                <button
+                  onClick={(e) => { e.stopPropagation(); processContent(apiKey); }}
+                  disabled={loading}
+                  className="w-full py-4 bg-blue-600 hover:bg-blue-700 text-white font-black rounded-2xl shadow-xl shadow-indigo-100 disabled:bg-slate-200 disabled:shadow-none transition-all flex items-center justify-center gap-3 text-xs tracking-widest"
+                >
+                  {loading ? <IconLoader size={18} /> : <IconWand size={18} />}
+                  {loading ? "Analyse en cours..." : "Lancer l'analyse"}
+                </button>
+              </div>
+            ) : (
+              <div className="text-center py-16 space-y-4 pointer-events-none">
+                <div className="w-16 h-16 bg-slate-50 rounded-full flex items-center justify-center mx-auto text-slate-300">
+                  <IconUpload size={32} />
+                </div>
+                <div className="space-y-1">
+                  <p className="text-slate-800 font-extrabold text-lg leading-tight">Déposez votre visuel</p>
+                  <p className="text-slate-400 text-xs">PNG, JPG ou WEBP • Ctrl+V supporté</p>
+                </div>
+              </div>
+            )}
               </div>
             ) : (
               <textarea
@@ -268,6 +270,12 @@ Génère UNIQUEMENT un objet JSON valide avec cette structure précise :
                 className="flex-1 w-full p-4 border-2 border-slate-200 rounded-2xl bg-slate-50 text-sm font-mono text-slate-700 focus:border-indigo-400 focus:ring-0 outline-none resize-none"
               />
             )}
+          {error && (
+            <div className="p-4 bg-red-50 text-red-600 rounded-2xl border border-red-100 text-[10px] font-bold flex gap-3 animate-fade-slide-up">
+              <IconAlert size={16} className="shrink-0" />
+              <span>{error}</span>
+            </div>
+          )}
           </div>
 
           <button
