@@ -38,7 +38,7 @@ export default function ANimageApp() {
     setPreviewUrl(objectUrl);
   };
 
-const processContent = async () => {
+const processImage = async (imageFile) => {
   const apiKey = getApiKey(); // On récupère la clé ici !
 
   if (!currentKey) {
