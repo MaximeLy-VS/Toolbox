@@ -165,8 +165,7 @@ export default function MockupApp() {
   }, [sourceImage, outputFormat]); // Ajout de outputFormat dans les dépendances pour redessiner au changement
 
   return (
-          <div className="min-h-screen flex items-center justify-center p-4 font-sans text-slate-900 bg-cover bg-center bg-no-repeat bg-fixed"
-      style={{ backgroundImage: `url(${backgroundImage})` }}>
+    <ToolWrapper title="Assistant Mockup">
       <style>{`
         @keyframes fadeSlideUp {
           from { opacity: 0; transform: translateY(15px); }
@@ -357,6 +356,6 @@ export default function MockupApp() {
         </div>
         <canvas ref={canvasRef} className="hidden" />
       </div>
-    </div>
+    </ToolWrapper>
   );
 }
