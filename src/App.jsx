@@ -22,16 +22,6 @@ import {
   FileText as IconText,
 } from 'lucide-react';
 
-const getApiKey = () => {
-  try {
-    // @ts-ignore
-    return import.meta.env.VITE_GEMINI_API_KEY || "";
-  } catch (e) {
-    return "";
-  }
-};
-export const apiKey = getApiKey();
-
 /**
  * --- UTILS COMMUNS ---
  * Ces fonctions sont exportées pour être utilisées dans vos fichiers tools/*.jsx
