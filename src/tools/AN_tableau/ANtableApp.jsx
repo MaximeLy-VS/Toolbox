@@ -150,8 +150,7 @@ Génère UNIQUEMENT un objet JSON valide avec cette structure précise :
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4 font-sans text-slate-900 bg-slate-100 bg-gradient-to-br from-indigo-50 to-slate-200" style={{ backgroundImage: `url(${backgroundImage})` }}>
-      
+    <ToolWrapper title="Assistant Tableau">
       {/* Styles globaux pour le rendu du tableau généré */}
       <style>{`
         .generated-table {
@@ -358,6 +357,6 @@ Génère UNIQUEMENT un objet JSON valide avec cette structure précise :
           )}
         </div>
       </div>
-    </div>
+    </ToolWrapper>
   );
 }
