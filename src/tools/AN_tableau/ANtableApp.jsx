@@ -44,7 +44,7 @@ export default function ANtableauApp() {
     setPreviewUrl(objectUrl);
   };
 
-  const processContent = async () => {
+  const processContent = async (apiKey) => {
     console.log("Valeur de la clé API détectée :", apiKey);
     if (!apiKey || apiKey === "") {
       setError("Clé API manquante. L'environnement ne l'a pas injectée.");
@@ -271,7 +271,7 @@ Génère UNIQUEMENT un objet JSON valide avec cette structure précise :
           </div>
 
           <button
-            onClick={processContent}
+            onClick={processContent(apiKey}
             disabled={loading}
             className="mt-6 w-full py-4 bg-indigo-900 hover:bg-indigo-800 text-white font-black rounded-xl shadow-xl shadow-indigo-200 disabled:bg-slate-300 disabled:shadow-none transition-all flex items-center justify-center gap-3 text-xs uppercase tracking-widest shrink-0"
           >
