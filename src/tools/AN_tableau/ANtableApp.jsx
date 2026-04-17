@@ -195,11 +195,11 @@ Génère UNIQUEMENT un objet JSON valide avec cette structure précise :
         }
       `}</style>
 
-      <div className="w-full max-w-7xl bg-white rounded-[2rem] shadow-2xl overflow-hidden flex flex-col lg:flex-row border border-slate-100 min-h-[85vh]">
+      <div className="w-full max-w-7xl bg-white rounded-[2rem] shadow-2xl overflow-hidden flex flex-col lg:flex-row border border-slate-100 min-h-[85vh] animate-fade-slide-up">
         
         {/* --- PARTIE GAUCHE : IMPORT --- */}
-        <div className="lg:w-[40%] p-8 flex flex-col border-r border-slate-100 bg-white">
-          <header className="mb-8">
+        <div className="lg:w-[40%] p-8 flex flex-col border-r border-slate-100 bg-white animate-fade-slide-up">
+          <header className="mb-8 animate-fade-slide-up">
             <div className="flex items-center gap-4 mb-2">
               <div className="p-3 bg-indigo-600 rounded-xl shadow-lg shadow-indigo-200">
                 <IconTable className="text-white" size={24} />
@@ -215,7 +215,7 @@ Génère UNIQUEMENT un objet JSON valide avec cette structure précise :
           </header>
 
           {/* Onglets de sélection du mode d'entrée */}
-          <div className="flex p-1 bg-slate-100 rounded-xl mb-6 shrink-0">
+          <div className="flex p-1 bg-slate-100 rounded-xl mb-6 shrink-0 animate-fade-slide-up">
             <button 
               onClick={() => setInputType('image')}
               className={`flex-1 py-2 text-xs font-bold rounded-lg transition-all flex items-center justify-center gap-2 ${inputType === 'image' ? 'bg-white text-indigo-700 shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}
@@ -230,7 +230,7 @@ Génère UNIQUEMENT un objet JSON valide avec cette structure précise :
             </button>
           </div>
 
-          <div className="flex-1 flex flex-col relative min-h-[300px]">
+          <div className="flex-1 flex flex-col relative min-h-[300px] animate-fade-slide-up">
             {inputType === 'image' ? (
               <div
                 onDragOver={(e) => { e.preventDefault(); setIsDragging(true); }}
@@ -287,7 +287,7 @@ Génère UNIQUEMENT un objet JSON valide avec cette structure précise :
         </div>
 
         {/* --- PARTIE DROITE : RÉSULTATS --- */}
-        <div className="lg:w-[60%] p-8 bg-[#f8fafc] flex flex-col overflow-y-auto">
+        <div className="lg:w-[60%] p-8 bg-[#f8fafc] flex flex-col overflow-y-auto animate-fade-slide-up">
           {result ? (
             <div className="space-y-6 animate-fade-slide-up h-full pb-10">
               
