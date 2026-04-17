@@ -260,8 +260,6 @@ Génère UNIQUEMENT un objet JSON valide avec cette structure précise :
                   <p className="text-slate-400 text-xs">PNG, JPG ou WEBP • Ctrl+V supporté</p>
                 </div>
               </div>
-            )}
-              </div>
             ) : (
               <textarea
                 value={rawText}
@@ -276,7 +274,6 @@ Génère UNIQUEMENT un objet JSON valide avec cette structure précise :
               <span>{error}</span>
             </div>
           )}
-          </div>
 
           <button
             onClick={(e) => {processContent(apiKey); }}
@@ -357,6 +354,7 @@ Génère UNIQUEMENT un objet JSON valide avec cette structure précise :
                     />
                   </div>
                 </div>
+                
                 <div 
                   className="bg-white border border-slate-200 rounded-xl overflow-x-auto p-1 shadow-sm"
                   id="generated-table-container"
@@ -370,6 +368,7 @@ Génère UNIQUEMENT un objet JSON valide avec cette structure précise :
                   />
                 </div>
               </div>
+
             </div>
           ) : (
             <div className="h-full flex flex-col items-center justify-center text-center space-y-4 opacity-30">
