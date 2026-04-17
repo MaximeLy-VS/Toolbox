@@ -55,21 +55,19 @@ const copyToClipboard = (text) => {
 const CopyButton = ({ text, onClick, label = "Copier", primary = false }) => {
   const [copied, setCopied] = useState(false);
   const handleCopy = () => {
-    if (copyToClipboard(text)) {
+    let success = false;
+    if (onClick) {
+      success = onClick();
+    } else {
+      success = copyTextToClipboard(text);
+    }
+    
+    if (success) {
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
     }
   };
-  return (
-    <button
-      onClick={handleCopy}
-      className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold text-slate-500 bg-slate-50 hover:bg-indigo-50 hover:text-indigo-600 rounded-lg transition-all"
-    >
-      {copied ? <Check size={14} className="text-green-600" /> : <IconCopy size={14} />}
-      {copied ? <span className="text-green-600">Copié</span> : 'Copier'}
-    </button>
-  );
-};
+  
   const baseClass = "flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold rounded-lg transition-all";
   const colorClass = primary 
     ? (copied ? "bg-emerald-500 text-white" : "bg-indigo-600 hover:bg-indigo-700 text-white shadow-sm")
