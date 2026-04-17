@@ -41,7 +41,7 @@ export default function ANimageApp() {
 const processImage = async (imageFile) => {
   const apiKey = getApiKey(); // On récupère la clé ici !
 
-  if (!currentKey) {
+  if (!apiKey) {
     setError("La clé API est introuvable dans l'environnement VITE.");
     return;
   }
