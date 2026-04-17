@@ -42,9 +42,10 @@ export default function ANtableauApp() {
     setPreviewUrl(objectUrl);
   };
 
-  const processContent = async (currentApiKey) => {
-    if (!currentApiKey || currentApiKey === "") {
-      setError("Clé API manquante. L'environnement ne l'a pas injectée.");
+const processContent = async () => { 
+    // Ici, le code va chercher la 'apiKey' que tu as importée en haut du fichier
+    if (!apiKey || apiKey === "") {
+      setError("Clé API manquante.");
       return;
     }
     setLoading(true);
