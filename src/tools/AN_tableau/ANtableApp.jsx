@@ -76,7 +76,7 @@ export default function ANtableauApp() {
         mimeType = file.type;
       }
 
-      const response = await fetchWithRetry(inputType, base64Data, mimeType, rawText);
+      const response = await fetchWithRetry(apiKey, inputType, base64Data, mimeType, rawText);
       setResult(response);
     } catch (err) {
       console.error(err);
