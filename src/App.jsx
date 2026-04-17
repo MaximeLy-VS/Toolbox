@@ -35,7 +35,7 @@ export const apiKey = getApiKey();
 /**
  * --- UTILS COMMUNS ---
  * Ces fonctions sont exportées pour être utilisées dans vos fichiers tools/*.jsx
- */
+ */ 
 
 export const copyToClipboard = (text) => {
   const textArea = document.createElement("textarea");
