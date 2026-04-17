@@ -1,6 +1,6 @@
-import { copyToClipboard } from '../../../App';
-import { copyHTMLTableToClipboard } from '../../../App';
-import { CopyButton } from '../../../App';
+import { copyToClipboard } from '../../App';
+import { copyHTMLTableToClipboard } from '../../App';
+import { CopyButton } from '../../App';
 export default function ANtableauApp() {
   const [inputType, setInputType] = useState('image'); // 'image' ou 'text'
   const [file, setFile] = useState(null);
