@@ -192,8 +192,8 @@ export default function MockupApp() {
                 <IconImage className="text-white" size={24} />
               </div>
               <div>
-                <h1 className="text-2xl font-black tracking-tight text-slate-800">Illustration – Mock-up</h1>
-                <p className="text-slate-400 text-[10px] font-bold uppercase tracking-[0.2em]">Convertisseur et générateur</p>
+                <h1 className="text-L font-black tracking-tight text-slate-800">Mock-up – Vignettes et bannières</h1>
+                <p className="text-indigo-600 text-[10px] font-bold tracking-[0.2em]">Convertisseur et générateur</p>
               </div>
             </div>
           </header>
