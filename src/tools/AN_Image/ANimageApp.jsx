@@ -259,7 +259,7 @@ Renvoie le résultat au format JSON.`;
               <div className="w-24 h-24 bg-slate-200/50 rounded-[2rem] flex items-center justify-center border-4 border-white shadow-inner">
                 <IconImage size={48} className="text-slate-400" />
               </div>
-              <p className="text-xs font-black uppercase tracking-[0.4em] text-slate-200">Maxime Lyon</p>
+              <p className="text-xs font-black uppercase tracking-[0.4em] text-slate-200">En attente de&nbsp;données</p>
             </div>
           )}
         </div>
