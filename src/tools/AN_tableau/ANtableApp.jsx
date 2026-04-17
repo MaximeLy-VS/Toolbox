@@ -180,6 +180,19 @@ Génère UNIQUEMENT un objet JSON valide avec cette structure précise :
         .generated-table tbody tr:nth-child(even) td {
           background-color: #f8fafc;
         }
+      `}
+      {`
+        @keyframes fadeSlideUp {
+          from { opacity: 0; transform: translateY(15px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fade-slide-up {
+          animation: fadeSlideUp 0.5s ease-in-out forwards;
+        }
+        .animate-fade-slide-up-delayed {
+          animation: fadeSlideUp 0.5s ease-in-out 0.15s forwards;
+          opacity: 0;
+        }
       `}</style>
 
       <div className="w-full max-w-7xl bg-white rounded-[2rem] shadow-2xl overflow-hidden flex flex-col lg:flex-row border border-slate-100 min-h-[85vh]">
