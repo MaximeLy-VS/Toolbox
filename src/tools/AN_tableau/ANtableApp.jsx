@@ -231,44 +231,52 @@ Génère UNIQUEMENT un objet JSON valide avec cette structure précise :
             </button>
           </div>
 
-          <div className="flex-1 flex flex-col relative min-h-[300px] animate-fade-slide-up">
-           {previewUrl ? (
-              <div className="w-full space-y-6">
-                <div className="relative group cursor-pointer" onClick={() => document.getElementById('file-input').click()}>
-                  <img src={previewUrl} alt="Preview" className="max-h-[320px] mx-auto rounded-2xl shadow-lg border border-slate-50" />
-                  <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center rounded-2xl text-white text-xs font-bold tracking-widest">
-                    Changer l'image
-                  </div>
-                </div>
-                
-                <button
-                  onClick={(e) => { e.stopPropagation(); processContent(apiKey); }}
-                  disabled={loading}
-                  className="w-full py-4 bg-blue-600 hover:bg-blue-700 text-white font-black rounded-2xl shadow-xl shadow-indigo-100 disabled:bg-slate-200 disabled:shadow-none transition-all flex items-center justify-center gap-3 text-xs tracking-widest"
-                >
-                  {loading ? <IconLoader size={18} /> : <IconWand size={18} />}
-                  {loading ? "Analyse en cours..." : "Lancer l'analyse"}
-                </button>
-              </div>
-            ) : (
-              <div className="text-center py-16 space-y-4 pointer-events-none">
-                <div className="w-16 h-16 bg-slate-50 rounded-full flex items-center justify-center mx-auto text-slate-300">
-                  <IconUpload size={32} />
-                </div>
-                <div className="space-y-1">
-                  <p className="text-slate-800 font-extrabold text-lg leading-tight">Déposez votre visuel</p>
-                  <p className="text-slate-400 text-xs">PNG, JPG ou WEBP • Ctrl+V supporté</p>
-                </div>
-              </div>
-            ) : (
-              <textarea
-                value={rawText}
-                onChange={(e) => setRawText(e.target.value)}
-                placeholder="Collez ici les données brutes de votre tableau (Excel, CSV, texte aligné...)"
-                className="flex-1 w-full p-4 border-2 border-slate-200 rounded-2xl bg-slate-50 text-sm font-mono text-slate-700 focus:border-indigo-400 focus:ring-0 outline-none resize-none"
-              />
-            )}
-            </div>
+<div className="flex-1 flex flex-col relative min-h-[300px] animate-fade-slide-up">
+  {/* CAS 1 : On a une image (Preview) */}
+  {inputType === 'image' && previewUrl && (
+    <div className="w-full space-y-6">
+      <div className="relative group cursor-pointer" onClick={() => fileInputRef.current.click()}>
+        <img src={previewUrl} alt="Preview" className="max-h-[320px] mx-auto rounded-2xl shadow-lg border border-slate-50" />
+        <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center rounded-2xl text-white text-xs font-bold tracking-widest">
+          Changer l'image
+        </div>
+      </div>
+      
+      <button
+        onClick={(e) => { e.stopPropagation(); processContent(apiKey); }}
+        disabled={loading}
+        className="w-full py-4 bg-blue-600 hover:bg-blue-700 text-white font-black rounded-2xl shadow-xl disabled:bg-slate-200 transition-all flex items-center justify-center gap-3 text-xs tracking-widest"
+      >
+        {loading ? <IconLoader className="animate-spin" size={18} /> : <IconWand size={18} />}
+        {loading ? "Analyse en cours..." : "Lancer l'analyse"}
+      </button>
+    </div>
+  )}
+
+  {/* CAS 2 : On est en mode texte */}
+  {inputType === 'text' && (
+    <textarea
+      value={rawText}
+      onChange={(e) => setRawText(e.target.value)}
+      placeholder="Collez ici les données brutes..."
+      className="flex-1 w-full p-4 border-2 border-slate-200 rounded-2xl bg-slate-50 text-sm font-mono text-slate-700 focus:border-indigo-400 outline-none resize-none"
+    />
+  )}
+
+  {/* CAS 3 : État vide (ni image, ni texte en cours) */}
+  {inputType === 'image' && !previewUrl && (
+    <div className="text-center py-16 space-y-4 cursor-pointer" onClick={() => fileInputRef.current.click()}>
+      <div className="w-16 h-16 bg-slate-50 rounded-full flex items-center justify-center mx-auto text-slate-300">
+        <IconUpload size={32} />
+      </div>
+      <div className="space-y-1">
+        <p className="text-slate-800 font-extrabold text-lg leading-tight">Déposez votre visuel</p>
+        <p className="text-slate-400 text-xs">PNG, JPG ou WEBP • Ctrl+V supporté</p>
+      </div>
+    </div>
+  )}
+</div>
+          
           <button
             onClick={(e) => {processContent(apiKey); }}
             disabled={loading}
