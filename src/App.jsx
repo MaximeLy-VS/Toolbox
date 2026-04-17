@@ -21,10 +21,6 @@ import {
   FileText as IconText,
 } from 'lucide-react';
 
-/**
- * CONFIGURATION API
- * Détecte l'environnement (Vite local ou Preview)
- */
 const getApiKey = () => {
   try {
     // @ts-ignore
