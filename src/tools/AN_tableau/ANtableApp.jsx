@@ -357,7 +357,6 @@ Génère UNIQUEMENT un objet JSON valide avec cette structure précise :
                     />
                   </div>
                 </div>
-                
                 <div 
                   className="bg-white border border-slate-200 rounded-xl overflow-x-auto p-1 shadow-sm"
                   id="generated-table-container"
@@ -371,7 +370,6 @@ Génère UNIQUEMENT un objet JSON valide avec cette structure précise :
                   />
                 </div>
               </div>
-
             </div>
           ) : (
             <div className="h-full flex flex-col items-center justify-center text-center space-y-4 opacity-30">
@@ -384,5 +382,5 @@ Génère UNIQUEMENT un objet JSON valide avec cette structure précise :
         </div>
       </div>
     </div>
-  );
+  ;
 }
