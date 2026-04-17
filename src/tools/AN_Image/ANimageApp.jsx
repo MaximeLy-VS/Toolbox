@@ -125,7 +125,6 @@ Renvoie le résultat au format JSON.`;
     }
   };
   return (
-    <ToolWrapper title="Assistant Images">
       <style>{`
         @keyframes fadeSlideUp {
           from { opacity: 0; transform: translateY(15px); }
@@ -264,6 +263,5 @@ Renvoie le résultat au format JSON.`;
           )}
         </div>
       </div>
-    </ToolWrapper>
   );
 }
