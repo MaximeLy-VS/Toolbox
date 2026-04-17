@@ -1,7 +1,16 @@
 import React, { useState, useCallback, useEffect, useRef } from 'react';
 import { copyToClipboard, CopyButton, copyHTMLTableToClipboard, setDpiInPngBase64 } from '../../App';
-import { getApiKey } from '../../config/api';
 import { Upload as IconUpload, AlertCircle as IconAlert, Loader2 as IconLoader, Info, Table as IconTable, Wand2 as IconWand, FileText as IconText, Check as IconCheck } from 'lucide-react';
+
+const getApiKey = () => {
+  try {
+    // @ts-ignore
+    return import.meta.env.VITE_GEMINI_API_KEY || "";
+  } catch (e) {
+    return "";
+  }
+};
+const apiKey = getApiKey();
 
 export default function ANtableauApp() {
   const [inputType, setInputType] = useState('image');
@@ -43,13 +52,20 @@ export default function ANtableauApp() {
     setPreviewUrl(objectUrl);
   };
 
-const processContent = async () => {
-  const apiKey = getApiKey();
+  const processContent = async () => {
+    if (!apiKey || apiKey === "") {
+      setError("Clé API manquante. L'environnement ne l'a pas injectée.");
+      return;
+    }
+    if (inputType === 'image' && !file) {
+      setError("Veuillez ajouter une image.");
+      return;
+    }
+    if (inputType === 'text' && rawText.trim() === "") {
+      setError("Veuillez coller le texte de votre tableau.");
+      return;
+    }
 
-  if (!apiKey) {
-    setError("La clé API est introuvable dans l'environnement VITE.");
-    return;
-  }
     setLoading(true);
     setError(null);
 
