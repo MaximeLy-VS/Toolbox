@@ -1,5 +1,5 @@
 import React, { useState, useCallback, useEffect, useRef } from 'react';
-import { CopyButton, copyHTMLTableToClipboard, setDpiInPngBase64 } from '../../App';
+import { CopyButton, copyToClipboard, copyHTMLTableToClipboard, setDpiInPngBase64 } from '../../App';
 import { Upload as IconUpload, AlertCircle as IconAlert, Loader2 as IconLoader, Info, Table as IconTable, Wand2 as IconWand, FileText as IconText, Check as IconCheck } from 'lucide-react';
 
 const getApiKey = () => {
@@ -11,16 +11,6 @@ const getApiKey = () => {
   }
 };
 const apiKey = getApiKey();
-
-const copyToClipboard = (text) => {
-  const textArea = document.createElement("textarea");
-  textArea.value = text;
-  document.body.appendChild(textArea);
-  textArea.select();
-  try { document.execCommand('copy'); return true; } 
-  catch (err) { return false; } 
-  finally { document.body.removeChild(textArea); }
-};
 
 export default function ANtableauApp() {
   const [inputType, setInputType] = useState('image');
