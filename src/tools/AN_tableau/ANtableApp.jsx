@@ -45,6 +45,7 @@ export default function ANtableauApp() {
   };
 
   const processContent = async () => {
+    console.log("Valeur de la clé API détectée :", apiKey);
     if (!apiKey || apiKey === "") {
       setError("Clé API manquante. L'environnement ne l'a pas injectée.");
       return;
