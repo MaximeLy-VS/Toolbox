@@ -127,7 +127,7 @@ Génère UNIQUEMENT un objet JSON valide avec cette structure précise :
   "complexite": "SIMPLE" ou "COMPLEXE"
 }`;
 
-  const fetchWithRetry = async (key, type, base64Data, mimeType, textData, maxRetries = 3) => {
+  const fetchWithRetry = async ( type, base64Data, mimeType, textData, maxRetries = 3) => {
     const delays = [1000, 2000, 4000];
     const promptText = getOptimizedPrompt();
 
