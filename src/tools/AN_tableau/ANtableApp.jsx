@@ -320,6 +320,13 @@ Génère UNIQUEMENT un objet JSON valide avec cette structure précise :
               </div>
 
             </div>
+          ) : (
+            <div className="h-full flex flex-col items-center justify-center text-center space-y-4 opacity-30">
+              <div className="w-24 h-24 bg-slate-200 rounded-3xl flex items-center justify-center border-4 border-white shadow-inner">
+                <IconTable size={48} className="text-slate-500" />
+              </div>
+              <p className="text-xs font-black uppercase tracking-[0.2em] text-slate-500 max-w-[200px]">En attente de données</p>
+            </div>
           )}
         </div>
       </div>
