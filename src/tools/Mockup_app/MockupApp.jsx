@@ -1,5 +1,5 @@
-import { copyToClipboard } from '../../../App';
-import { setDpiInPngBase64 } from '../../../App';
+import { copyToClipboard } from '../../App';
+import { setDpiInPngBase64 } from '../../App';
 export default function MockupApp() {
   const [activeTab, setActiveTab] = useState('convert');
   const [outputFormat, setOutputFormat] = useState('vignette'); // 'vignette' ou 'banner'
