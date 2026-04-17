@@ -1,5 +1,6 @@
 import React, { useState, useCallback, useEffect, useRef } from 'react';
-import { copyToClipboard, CopyButton, apiKey } from '../../App'; 
+import { copyToClipboard, CopyButton } from '../../App'; 
+import { getApiKey } from '../../config/api';
 import {   Upload as IconUpload, Image as IconImage, Copy as IconCopy, Check as IconCheck, AlertCircle as IconAlert, Loader2 as IconLoader, Info, Brain, Table as IconTable, Layout as IconLayout, ArrowRight, Wrench, ChevronLeft, Sparkles, Wand2 as IconWand, Download, Zap, FileText as IconText,} from 'lucide-react';
 
 export default function ANimageApp() {
@@ -37,14 +38,13 @@ export default function ANimageApp() {
     setPreviewUrl(objectUrl);
   };
 
-  const processImage = async (imageFile) => {
-    if (!apiKey || apiKey === "") {
-      setError("Clé API manquante. Vérifiez vos secrets sur GitHub.");
-      return;
-    }
-    setLoading(true);
-    setError(null);
+const processContent = async () => {
+  const apiKey = getApiKey(); // On récupère la clé ici !
 
+  if (!currentKey) {
+    setError("La clé API est introuvable dans l'environnement VITE.");
+    return;
+  }
     try {
       const base64Data = await new Promise((resolve, reject) => {
         const reader = new FileReader();
