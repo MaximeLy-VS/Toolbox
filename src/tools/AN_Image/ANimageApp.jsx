@@ -1,6 +1,6 @@
 import React, { useState, useCallback, useEffect, useRef } from 'react';
 import { copyToClipboard, CopyButton, apiKey } from '../../App'; 
-import {   Upload as IconUpload, Image as IconImage, Copy as IconCopy, Check as IconCheck, AlertCircle as IconAlert, Loader2 as IconLoader, Info, Table as IconTable, Layout as IconLayout, ArrowRight, Wrench, ChevronLeft, Sparkles, Wand2 as IconWand, Download, Zap, FileText as IconText,} from 'lucide-react';
+import {   Upload as IconUpload, Image as IconImage, Copy as IconCopy, Check as IconCheck, AlertCircle as IconAlert, Loader2 as IconLoader, Info, Brain, Table as IconTable, Layout as IconLayout, ArrowRight, Wrench, ChevronLeft, Sparkles, Wand2 as IconWand, Download, Zap, FileText as IconText,} from 'lucide-react';
 
 export default function ANimageApp() {
  const [file, setFile] = useState(null);
@@ -147,7 +147,7 @@ Renvoie le résultat au format JSON.`;
           <header className="mb-10 animate-fade-slide-up">
             <div className="flex items-center gap-4 mb-3">
               <div className="p-3 bg-blue-600 rounded-2xl shadow-xl shadow-indigo-100">
-                <IconImage className="text-white" size={24} />
+                <Brain className="text-white" size={24} />
               </div>
               <div className="flex flex-col">
                 <h1 className="text-L font-black tracking-tight text-slate-800">Assistant d'accessibilité des images</h1>
