@@ -271,7 +271,7 @@ Génère UNIQUEMENT un objet JSON valide avec cette structure précise :
           </div>
 
           <button
-            onClick={processContent(apiKey}
+            onClick={processContent(apiKey)}
             disabled={loading}
             className="mt-6 w-full py-4 bg-indigo-900 hover:bg-indigo-800 text-white font-black rounded-xl shadow-xl shadow-indigo-200 disabled:bg-slate-300 disabled:shadow-none transition-all flex items-center justify-center gap-3 text-xs uppercase tracking-widest shrink-0"
           >
