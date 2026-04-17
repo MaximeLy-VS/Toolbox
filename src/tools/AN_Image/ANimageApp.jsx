@@ -146,12 +146,12 @@ Renvoie le résultat au format JSON.`;
         <div className="md:w-[42%] p-8 md:p-12 flex flex-col border-r border-slate-50 bg-white">
           <header className="mb-10 animate-fade-slide-up">
             <div className="flex items-center gap-4 mb-3">
-              <div className="p-3 bg-indigo-600 rounded-2xl shadow-xl shadow-indigo-100">
+              <div className="p-3 bg-blue-600 rounded-2xl shadow-xl shadow-indigo-100">
                 <IconImage className="text-white" size={24} />
               </div>
               <div className="flex flex-col">
                 <h1 className="text-L font-black tracking-tight text-slate-800">Assistant d'accessibilité des images</h1>
-                <p className="text-indigo-600 text-[10px] font-bold tracking-[0.2em]">Générez des alternatives et descriptions</p>
+                <p className="text-blue-600 text-[10px] font-bold tracking-[0.2em]">Générez des alternatives et descriptions</p>
               </div>
             </div>
           </header>
@@ -161,7 +161,7 @@ Renvoie le résultat au format JSON.`;
             onDragLeave={() => setIsDragging(false)}
             onDrop={(e) => { e.preventDefault(); setIsDragging(false); handleFile(e.dataTransfer.files[0]); }}
             className={`flex-1 flex flex-col items-center justify-center p-8 border-2 border-dashed rounded-[2.5rem] transition-all bg-white relative mb-6
-              ${isDragging ? 'border-indigo-400 bg-indigo-50/30' : 'border-slate-100'}
+              ${isDragging ? 'border-blue-400 bg-blue-50/30' : 'border-slate-100'}
               ${!file ? 'cursor-pointer hover:border-slate-200' : ''}
             `}
             onClick={() => !file && document.getElementById('file-input').click()}
@@ -180,7 +180,7 @@ Renvoie le résultat au format JSON.`;
                 <button
                   onClick={(e) => { e.stopPropagation(); processImage(file); }}
                   disabled={loading}
-                  className="w-full py-4 bg-indigo-600 hover:bg-indigo-700 text-white font-black rounded-2xl shadow-xl shadow-indigo-100 disabled:bg-slate-200 disabled:shadow-none transition-all flex items-center justify-center gap-3 text-xs tracking-widest"
+                  className="w-full py-4 bg-blue-600 hover:bg-blue-700 text-white font-black rounded-2xl shadow-xl shadow-indigo-100 disabled:bg-slate-200 disabled:shadow-none transition-all flex items-center justify-center gap-3 text-xs tracking-widest"
                 >
                   {loading ? <IconLoader size={18} /> : <IconWand size={18} />}
                   {loading ? "Analyse en cours..." : "Lancer l'analyse"}
@@ -215,7 +215,7 @@ Renvoie le résultat au format JSON.`;
                 <span className={`px-4 py-1.5 rounded-full text-[9px] font-black tracking-widest shadow-sm border ${
                   result.complexite === 'SIMPLE' 
                     ? 'bg-emerald-50 text-emerald-600 border-emerald-100' 
-                    : 'bg-indigo-50 text-indigo-600 border-indigo-100'
+                    : 'bg-blue-50 text-blue-600 border-blue-100'
                 }`}>
                   Image {result.complexite}
                 </span>
