@@ -1,5 +1,5 @@
 import React, { useState, useCallback, useEffect, useRef } from 'react';
-import { apiKey, copyToClipboard, CopyButton, copyHTMLTableToClipboard, setDpiInPngBase64 } from '../../App';
+import { copyToClipboard, CopyButton, copyHTMLTableToClipboard, setDpiInPngBase64 } from '../../App';
 import { getApiKey } from '../../config/api';
 import { Upload as IconUpload, AlertCircle as IconAlert, Loader2 as IconLoader, Info, Table as IconTable, Wand2 as IconWand, FileText as IconText, Check as IconCheck } from 'lucide-react';
 
