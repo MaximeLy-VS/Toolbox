@@ -1,63 +1,3 @@
-import React, { useState, useRef, useEffect } from 'react';
-import { UploadCloud, Image as ImageIcon, Wand2, Download, Loader2, Zap, LayoutTemplate } from 'lucide-react';
-import backgroundImage from './assets/Background.jpg';
-
-// Fonction utilitaire pour injecter la métadonnée 90 DPI (pHYs chunk) dans un PNG en Base64
-const setDpiInPngBase64 = (base64Image, dpi) => {
-  try {
-    const data = atob(base64Image.split(',')[1]);
-    const dataArray = new Uint8Array(data.length);
-    for (let i = 0; i < data.length; i++) {
-      dataArray[i] = data.charCodeAt(i);
-    }
-
-    if (dataArray[0] !== 137 || dataArray[1] !== 80 || dataArray[2] !== 78 || dataArray[3] !== 71) {
-      return base64Image;
-    }
-
-    const ppm = Math.round(dpi / 0.0254);
-    const physChunk = new Uint8Array(21);
-    physChunk[3] = 9;
-    physChunk[4] = 112; physChunk[5] = 72; physChunk[6] = 89; physChunk[7] = 115;
-    
-    physChunk[8] = (ppm >>> 24) & 255; physChunk[9] = (ppm >>> 16) & 255; physChunk[10] = (ppm >>> 8) & 255; physChunk[11] = ppm & 255;
-    physChunk[12] = (ppm >>> 24) & 255; physChunk[13] = (ppm >>> 16) & 255; physChunk[14] = (ppm >>> 8) & 255; physChunk[15] = ppm & 255;
-    physChunk[16] = 1;
-
-    const crcTable = [];
-    for (let n = 0; n < 256; n++) {
-      let c = n;
-      for (let k = 0; k < 8; k++) c = (c & 1) ? (0xEDB88320 ^ (c >>> 1)) : (0xEDB88320 ^ (c >>> 1));
-      crcTable[n] = c;
-    }
-
-    let offset = 8;
-    while (offset < dataArray.length) {
-      const length = (dataArray[offset] << 24) | (dataArray[offset + 1] << 16) | (dataArray[offset + 2] << 8) | dataArray[offset + 3];
-      const type = String.fromCharCode(dataArray[offset + 4], dataArray[offset + 5], dataArray[offset + 6], dataArray[offset + 7]);
-      if (type === 'IHDR') {
-        offset += 12 + length;
-        break;
-      }
-      offset += 12 + length;
-    }
-
-    const newDataArray = new Uint8Array(dataArray.length + 21);
-    newDataArray.set(dataArray.subarray(0, offset), 0);
-    newDataArray.set(physChunk, offset);
-    newDataArray.set(dataArray.subarray(offset), offset + 21);
-
-    let newBase64 = '';
-    for (let i = 0; i < newDataArray.length; i++) {
-      newBase64 += String.fromCharCode(newDataArray[i]);
-    }
-    return 'data:image/png;base64,' + btoa(newBase64);
-  } catch (error) {
-    console.error("Erreur injection DPI:", error);
-    return base64Image;
-  }
-};
-
 export default function MockupApp() {
   const [activeTab, setActiveTab] = useState('convert');
   const [outputFormat, setOutputFormat] = useState('vignette'); // 'vignette' ou 'banner'
@@ -246,7 +186,7 @@ export default function MockupApp() {
           <header className="mb-8 animate-fade-slide-up">
             <div className="flex items-center gap-4 mb-3">
               <div className="p-3 bg-indigo-600 rounded-2xl shadow-xl shadow-indigo-200">
-                <ImageIcon className="text-white" size={24} />
+                <IconImage className="text-white" size={24} />
               </div>
               <div>
                 <h1 className="text-2xl font-black tracking-tight text-slate-800">Illustration – Mock-up</h1>
@@ -266,7 +206,7 @@ export default function MockupApp() {
               onClick={() => setOutputFormat('banner')}
               className={`flex-1 py-2 text-xs font-bold rounded-lg flex items-center justify-center gap-2 transition-all duration-300 ease-in-out ${outputFormat === 'banner' ? 'bg-white shadow-sm text-indigo-700' : 'text-slate-500 hover:text-slate-700'}`}
             >
-              <ImageIcon size={14} /> Bannière
+              <IconImage size={14} /> Bannière
             </button>
           </div>
 
@@ -359,7 +299,7 @@ export default function MockupApp() {
               <img src={processedImageUrl} alt="Preview" className="w-full h-full object-cover" />
             ) : (
               <div className="text-center opacity-10 flex flex-col items-center">
-                <ImageIcon className="mb-2" size={outputFormat === 'banner' ? 32 : 72} />
+                <IconImage className="mb-2" size={outputFormat === 'banner' ? 32 : 72} />
                 <p className={`font-black uppercase tracking-[0.3em] ${outputFormat === 'banner' ? 'text-[8px]' : 'text-xs'}`}>
                   {outputFormat === 'banner' ? 'Bannière' : 'Vignette'}
                 </p>
