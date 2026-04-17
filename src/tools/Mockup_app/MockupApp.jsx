@@ -1,5 +1,7 @@
-import { copyToClipboard } from '../../App';
-import { setDpiInPngBase64 } from '../../App';
+import React, { useState, useCallback, useEffect, useRef } from 'react';
+import { copyToClipboard, CopyButton, apiKey, setDpiInPngBase64 } from '../../App'; 
+import { Upload as IconUpload, Image as IconImage, Copy as IconCopy, Check as IconCheck, AlertCircle as IconAlert, Loader2 as IconLoader, Info, Table as IconTable, Layout as IconLayout, ArrowRight, Wrench, ChevronLeft, Sparkles, Wand2 as IconWand, Download, Zap, FileText as IconText,} from 'lucide-react';
+
 export default function MockupApp() {
   const [activeTab, setActiveTab] = useState('convert');
   const [outputFormat, setOutputFormat] = useState('vignette'); // 'vignette' ou 'banner'
@@ -167,7 +169,7 @@ export default function MockupApp() {
   }, [sourceImage, outputFormat]); // Ajout de outputFormat dans les dépendances pour redessiner au changement
 
   return (
-    <ToolWrapper title="Assistant Mockup">
+    <div>
       <style>{`
         @keyframes fadeSlideUp {
           from { opacity: 0; transform: translateY(15px); }
@@ -358,6 +360,6 @@ export default function MockupApp() {
         </div>
         <canvas ref={canvasRef} className="hidden" />
       </div>
-    </ToolWrapper>
+    </div>
   );
 }
