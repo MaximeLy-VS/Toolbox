@@ -196,10 +196,7 @@ const Home = () => (
 export default function App() {
   return (
     <Router>
-      {/* Le fond utilise une couleur de repli car le fichier image n'est pas disponible dans l'aperçu.
-          En local, vous pouvez rétablir : backgroundImage: `url(${backgroundImage})`
-      */}
-      <div className="relative min-h-screen font-sans antialiased text-slate-900 bg-[#fbfcfd]" style={{ backgroundSize: 'cover' }}>
+      <div className="relative min-h-screen font-sans antialiased text-slate-900 bg-[#fbfcfd]" style={{ backgroundImage: `url(${backgroundImage})` }}>
         <div className="fixed inset-0 z-0 pointer-events-none">
           <div className="absolute top-0 left-0 w-full h-full bg-white/60 backdrop-blur-[2px]" />
           <div className="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] bg-blue-100/40 blur-[120px] rounded-full" />
@@ -209,9 +206,9 @@ export default function App() {
         <main className="relative z-10">
           <Routes>
             <Route path="/" element={<Home />} />
-            <Route path="/tools/AN_Image" element={<ToolWrapper><ANimageAppContent /></ToolWrapper>} />
-            <Route path="/tools/AN_tableau" element={<ANtableApp />} />
-            <Route path="/tools/Mockup_app" element={<MockupApp />} />
+            <Route path="/tools/AN_Image" element={<ToolWrapper><ANimageApp /></ToolWrapper>} />
+            <Route path="/tools/AN_tableau" element={<ToolWrapper><ANtableApp /></ToolWrapper>} />
+            <Route path="/tools/Mockup_app" element={<ToolWrapper><MockupApp /></ToolWrapper>} />
           </Routes>
         </main>
       </div>
