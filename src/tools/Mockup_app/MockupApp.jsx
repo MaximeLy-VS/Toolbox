@@ -1,6 +1,6 @@
 import React, { useState, useCallback, useEffect, useRef } from 'react';
 import { copyToClipboard, CopyButton, apiKey, setDpiInPngBase64 } from '../../App'; 
-import { Upload as IconUpload, UploadCloud, Image as IconImage, Copy as IconCopy, Check as IconCheck, AlertCircle as IconAlert, Loader2 as IconLoader, Info, Table as IconTable, Layout as IconLayout, ArrowRight, Wrench, ChevronLeft, Sparkles, Wand2 as IconWand, Download, Zap, FileText as IconText, LayoutTemplate} from 'lucide-react';
+import { Upload as IconUpload, UploadCloud, Image as IconImage, Copy as IconCopy, Check as IconCheck, AlertCircle as IconAlert, IconLoader as IconLoader, Info, Table as IconTable, Layout as IconLayout, ArrowRight, Wrench, ChevronLeft, Sparkles, Wand2 as IconWand, Download, Zap, FileText as IconText, LayoutTemplate} from 'lucide-react';
 
 export default function MockupApp() {
   const [activeTab, setActiveTab] = useState('convert');
@@ -274,7 +274,7 @@ export default function MockupApp() {
                   disabled={isGenerating || !prompt.trim()}
                   className="w-full bg-slate-900 text-white font-black py-4 rounded-2xl hover:bg-indigo-600 transition-all duration-300 ease-in-out flex items-center justify-center gap-3 disabled:bg-slate-200 shadow-2xl shadow-slate-200 hover:scale-[1.02] active:scale-95"
                 >
-                  {isGenerating ? <Loader2 className="animate-spin" size={20} /> : <Zap size={20} />}
+                  {isGenerating ? <IconLoader className="animate-spin" size={20} /> : <Zap size={20} />}
                   GÉNÉRER L'ILLUSTRATION
                 </button>
               </div>
