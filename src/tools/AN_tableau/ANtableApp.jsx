@@ -268,13 +268,7 @@ Génère UNIQUEMENT un objet JSON valide avec cette structure précise :
                 className="flex-1 w-full p-4 border-2 border-slate-200 rounded-2xl bg-slate-50 text-sm font-mono text-slate-700 focus:border-indigo-400 focus:ring-0 outline-none resize-none"
               />
             )}
-          {error && (
-            <div className="p-4 bg-red-50 text-red-600 rounded-2xl border border-red-100 text-[10px] font-bold flex gap-3 animate-fade-slide-up">
-              <IconAlert size={16} className="shrink-0" />
-              <span>{error}</span>
             </div>
-          )}
-
           <button
             onClick={(e) => {processContent(apiKey); }}
             disabled={loading}
