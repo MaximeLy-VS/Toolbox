@@ -1,4 +1,5 @@
 import { copyToClipboard } from '../../../App';
+import { copyHTMLTableToClipboard } from '../../../App';
 export default function ANtableauApp() {
   const [inputType, setInputType] = useState('image'); // 'image' ou 'text'
   const [file, setFile] = useState(null);
