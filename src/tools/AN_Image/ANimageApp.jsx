@@ -1,3 +1,4 @@
+import { copyToClipboard } from '../../../App';
 export default function ANimageApp() {
  const [file, setFile] = useState(null);
   const [previewUrl, setPreviewUrl] = useState(null);
