@@ -14,20 +14,7 @@ export default function MockupApp() {
   
   const fileInputRef = useRef(null);
   const canvasRef = useRef(null);
-
-  const handleFileUpload = (e) => {
-    const file = e.target.files[0];
-    if (file && file.type.startsWith('image/')) {
-      const reader = new FileReader();
-      reader.onload = (event) => {
-        setSourceImage(event.target.result);
-        setError('');
-      };
-      reader.readAsDataURL(file);
-    }
-  };
-  
-const handleGenerateImage = async () => {
+ const handleGenerateImage = async () => {
     if (!prompt.trim()) {
       setError("Veuillez entrer une description.");
       return;
@@ -37,12 +24,14 @@ const handleGenerateImage = async () => {
     setError('');
     
     try {
-      // 1. Récupération et nettoyage de la clé
-      const rawKey = import.meta.env.VITE_POLLINATIONS_API_KEY;
-      
-      // Vérification rigoureuse : on s'assure que ce n'est pas vide, 
-      // ni la chaîne "undefined", ni "null"
-      const apiKeyPolli = (rawKey && rawKey !== "undefined" && rawKey !== "null") ? rawKey : null;
+      // 1. Récupération de la clé
+      // On s'assure de récupérer la variable d'environnement définie via Vite
+      const apiKeyPolli = import.meta.env.VITE_POLLINATIONS_API_KEY;
+
+      // Diagnostic interne (visible en console) pour vérifier la présence sans exposer la clé
+      if (!apiKeyPolli || apiKeyPolli === "undefined") {
+        throw new Error("Clé API introuvable. Vérifiez la configuration de vos secrets GitHub.");
+      }
 
       const encodedPrompt = encodeURIComponent(prompt + ", professional commercial photography, high quality, hyper realistic, centered composition");
       const seed = Math.floor(Math.random() * 1000000);
@@ -50,32 +39,29 @@ const handleGenerateImage = async () => {
       const aiWidth = outputFormat === 'banner' ? 2048 : 800;
       const aiHeight = outputFormat === 'banner' ? 512 : 800;
 
-      // 2. Construction de l'URL
-      // On utilise le paramètre ?key= si la clé existe, c'est souvent plus stable que les headers
-      let imageUrl = `https://gen.pollinations.ai/image/${encodedPrompt}?width=${aiWidth}&height=${aiHeight}&seed=${seed}&nologo=true&model=${selectedModel}`;
+      // L'URL ne contient plus la clé
+      const imageUrl = `https://gen.pollinations.ai/image/${encodedPrompt}?width=${aiWidth}&height=${aiHeight}&seed=${seed}&nologo=true&model=${selectedModel}`;
       
-      if (apiKeyPolli) {
-        imageUrl += `&key=${apiKeyPolli}`;
-      }
-      
+      // 2. Requête avec Header Authorization
       const response = await fetch(imageUrl, {
         method: 'GET',
-        // On ne met les headers que si la clé est valide et qu'on ne l'a pas mise en URL
-        // Ici, on a privilégié l'URL (key=), donc on peut laisser les headers vides ou les doubler
-        headers: {} 
+        headers: {
+          'Authorization': `Bearer ${apiKeyPolli}`,
+          'Content-Type': 'application/json'
+        }
       });
 
       if (!response.ok) {
+        if (response.status === 401) {
+          throw new Error("Accès refusé (401) : La clé API fournie est invalide pour ce service.");
+        }
+        
         let message = "Le service de génération ne répond pas.";
         try {
           const errorData = await response.json();
           message = errorData.error?.message || errorData.message || message;
         } catch (e) {
-          // Si le JSON crash, on garde le message par défaut
-        }
-        
-        if (response.status === 401) {
-          throw new Error(`Clé API invalide ou expirée (401).`);
+          // Si pas de JSON, on garde le message par défaut
         }
         throw new Error(message);
       }
@@ -90,7 +76,7 @@ const handleGenerateImage = async () => {
       reader.readAsDataURL(blob);
 
     } catch (err) {
-      console.error("Erreur génération:", err);
+      console.error("Détails de l'erreur:", err);
       setError(err.message || "Désolé, la génération a échoué.");
       setIsGenerating(false);
     }
