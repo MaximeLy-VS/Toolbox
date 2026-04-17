@@ -1,5 +1,5 @@
 export default function ANimageApp() {
-  const [file, setFile] = useState(null);
+ const [file, setFile] = useState(null);
   const [previewUrl, setPreviewUrl] = useState(null);
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState(null);
@@ -120,9 +120,8 @@ Renvoie le résultat au format JSON.`;
       }
     }
   };
-
   return (
-    <div className="min-h-screen flex items-center justify-center p-4 font-sans text-slate-900 bg-slate-100 bg-gradient-to-br from-indigo-50 to-slate-200" style={{ backgroundImage: `url(${backgroundImage})` }}>
+    <ToolWrapper title="Assistant Images">
       <style>{`
         @keyframes fadeSlideUp {
           from { opacity: 0; transform: translateY(15px); }
@@ -144,7 +143,7 @@ Renvoie le résultat au format JSON.`;
           <header className="mb-10 animate-fade-slide-up">
             <div className="flex items-center gap-4 mb-3">
               <div className="p-3 bg-indigo-600 rounded-2xl shadow-xl shadow-indigo-100">
-                <IconImage className="text-white" size={24} />
+                <ImageIcon className="text-white" size={24} />
               </div>
               <div className="flex flex-col">
                 <h1 className="text-L font-black tracking-tight text-slate-800">Assistant d'accessibilité des images</h1>
@@ -254,13 +253,13 @@ Renvoie le résultat au format JSON.`;
           ) : (
             <div className="flex flex-col items-center justify-center text-center space-y-4 opacity-20">
               <div className="w-24 h-24 bg-slate-200/50 rounded-[2rem] flex items-center justify-center border-4 border-white shadow-inner">
-                <IconImage size={48} className="text-slate-400" />
+                <ImageIcon size={48} className="text-slate-400" />
               </div>
               <p className="text-xs font-black uppercase tracking-[0.4em] text-slate-200">Maxime Lyon</p>
             </div>
           )}
         </div>
       </div>
-    </div>
+    </ToolWrapper>
   );
 }
