@@ -34,6 +34,7 @@ jobs:
         # Création d'un fichier .env à la volée avant de compiler
         run: |
           echo "VITE_GEMINI_API_KEY=${{ secrets.VITE_GEMINI_API_KEY }}" > .env
+          echo "VITE_POLLINATIONS_API_KEY=${{ secrets.VITE_POLLINATIONS_API_KEY }}" > .env
           npm run build
           
       - name: Upload artifact
