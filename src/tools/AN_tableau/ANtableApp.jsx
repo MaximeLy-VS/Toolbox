@@ -246,17 +246,79 @@ Génère UNIQUEMENT un objet JSON valide avec cette structure précise :
         <div className="lg:w-[60%] p-8 bg-[#f8fafc] flex flex-col overflow-y-auto">
           {result ? (
             <div className="space-y-6 animate-fade-slide-up h-full pb-10">
-              {/* Le rendu de tes résultats (Titre, Résumé, Tableau) reste ici tel quel */}
+         
+              {/* En-tête des résultats */}
               <div className="flex items-center justify-between pb-4 border-b border-slate-200">
-                 <span className={`px-3 py-1 rounded-md text-[10px] font-black tracking-widest uppercase border ${result.complexite === 'SIMPLE' ? 'bg-emerald-100 text-emerald-700' : 'bg-amber-100 text-amber-700'}`}>Tableau {result.complexite}</span>
+                <span className={`px-3 py-1 rounded-md text-[10px] font-black tracking-widest uppercase border ${
+                  result.complexite === 'SIMPLE' 
+                    ? 'bg-emerald-100 text-emerald-700 border-emerald-200' 
+                    : 'bg-amber-100 text-amber-700 border-amber-200'
+                }`}>
+                  Tableau {result.complexite}
+                </span>
               </div>
-              {/* ... reste de ton bloc résultat ... */}
-              <div id="generated-table-container" dangerouslySetInnerHTML={{ __html: result.html_table.replace('<table', '<table class="generated-table"') }} />
-            </div>
-          ) : (
-            <div className="h-full flex flex-col items-center justify-center text-center space-y-4 opacity-30">
-              <div className="w-24 h-24 bg-slate-200 rounded-3xl flex items-center justify-center border-4 border-white shadow-inner"><IconTable size={48} className="text-slate-500" /></div>
-              <p className="text-xs font-black uppercase tracking-[0.2em] text-slate-500 max-w-[200px]">En attente de données</p>
+
+              {/* Champ : Titre */}
+              <div className="space-y-2">
+                <div className="flex justify-between items-center">
+                  <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest">1. Titre (Légende)</label>
+                  <CopyButton text={result.titre} />
+                </div>
+                <input 
+                  type="text" 
+                  readOnly 
+                  value={result.titre} 
+                  className="w-full p-3 bg-white border border-slate-200 rounded-xl text-slate-800 font-bold text-sm focus:outline-none"
+                />
+              </div>
+
+              {/* Champ : Résumé (si complexe) */}
+              {result.complexite === 'COMPLEXE' && result.resume && (
+                <div className="space-y-2">
+                  <div className="flex justify-between items-center">
+                    <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest">2. Résumé (Description)</label>
+                    <CopyButton text={result.resume} />
+                  </div>
+                  <textarea 
+                    readOnly 
+                    value={result.resume} 
+                    rows={3}
+                    className="w-full p-3 bg-white border border-slate-200 rounded-xl text-slate-600 text-sm resize-none focus:outline-none"
+                  />
+                </div>
+              )}
+
+              {/* Champ : Tableau rendu */}
+              <div className="space-y-2 pt-4">
+                <div className="flex justify-between items-end mb-2">
+                  <div className="space-y-1">
+                    <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest">3. Tableau généré</label>
+                    <p className="text-[10px] text-slate-400">Ce rendu respecte les balises thead, tbody, th (scope) et td.</p>
+                  </div>
+                  <div className="flex gap-2">
+                    <CopyButton text={result.html_table} label="Copier le code HTML" />
+                    <CopyButton 
+                      onClick={() => copyHTMLTableToClipboard('generated-table-container')} 
+                      label="Copier pour Word" 
+                      primary={true}
+                    />
+                  </div>
+                </div>
+                
+                <div 
+                  className="bg-white border border-slate-200 rounded-xl overflow-x-auto p-1 shadow-sm"
+                  id="generated-table-container"
+                >
+                  {/* On injecte le HTML rendu en appliquant notre classe CSS */}
+                  <div 
+                    className="p-4"
+                    dangerouslySetInnerHTML={{ 
+                      __html: result.html_table.replace('<table', '<table class="generated-table"') 
+                    }} 
+                  />
+                </div>
+              </div>
+
             </div>
           )}
         </div>
