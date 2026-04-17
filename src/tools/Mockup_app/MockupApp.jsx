@@ -355,8 +355,7 @@ export default function MockupApp() {
                 <span>{outputFormat === 'vignette' ? 'VIGNETTE PNG' : 'BANNIÈRE JPG'}</span>
               </a>
             </div>
-          </div>   
-          <div className="mt-8 justify-center"><p className="text-[11px] text-slate-400 font-bold tracking-wide transition-all">Maxime Lyon</p></div>   
+          </div>    
         </div>
         <canvas ref={canvasRef} className="hidden" />
       </div>
