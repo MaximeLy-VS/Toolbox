@@ -185,7 +185,7 @@ export default function MockupApp() {
       `}</style>
       <div className="w-full bg-white rounded-[2.5rem] shadow-2xl shadow-indigo-100 overflow-hidden flex flex-col md:flex-row border border-slate-100 animate-fade-slide-up">
         
-        <div className="w-full md:w-1/2 bg-slate-50/50 p-10 flex flex-col border-b md:border-b-0 md:border-r border-slate-100">
+        <div className="md:w-[42%] bg-slate-50/50 p-10 flex flex-col border-b md:border-b-0 md:border-r border-slate-100">
           <header className="mb-8 animate-fade-slide-up">
             <div className="flex items-center gap-4 mb-3">
               <div className="p-3 bg-sky-600 rounded-2xl shadow-xl shadow-indigo-200">
@@ -288,7 +288,7 @@ export default function MockupApp() {
           </div>
         </div>
 
-        <div className="w-full md:w-1/2 p-12 flex flex-col items-center justify-center bg-white">
+        <div className="md:w-[58%] p-12 flex flex-col items-center justify-center bg-white">
           <div 
             key={`${processedImageUrl ? 'image' : 'placeholder'}-${outputFormat}`}
             className={`mb-12 w-full flex items-center justify-center bg-[#FAFAFA] border border-slate-50 relative overflow-hidden shadow-2xl shadow-slate-100 animate-fade-slide-up transition-all duration-500 ${
