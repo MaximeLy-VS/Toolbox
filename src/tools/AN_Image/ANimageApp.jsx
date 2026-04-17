@@ -1,7 +1,15 @@
 import React, { useState, useCallback, useEffect, useRef } from 'react';
 import { copyToClipboard, CopyButton } from '../../App'; 
-import { getApiKey } from '../../config/api';
 import {   Upload as IconUpload, Image as IconImage, Copy as IconCopy, Check as IconCheck, AlertCircle as IconAlert, Loader2 as IconLoader, Info, Brain, Table as IconTable, Layout as IconLayout, ArrowRight, Wrench, ChevronLeft, Sparkles, Wand2 as IconWand, Download, Zap, FileText as IconText,} from 'lucide-react';
+
+const getApiKey = () => {
+  try {
+    // @ts-ignore
+    return import.meta.env.VITE_GEMINI_API_KEY || "";
+  } catch (e) {
+    return "";
+  }
+};
 
 export default function ANimageApp() {
  const [file, setFile] = useState(null);
