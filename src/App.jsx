@@ -187,6 +187,7 @@ const Home = () => (
         </Link>
       ))}
     </div>
+    <footer><p>Maxime Lyon</p></footer>
   </div>
 );
 
