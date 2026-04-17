@@ -1,5 +1,5 @@
-import { copyToClipboard } from '../../../App';
-import { CopyButton } from '../../../App';
+import { copyToClipboard } from '../../App';
+import { CopyButton } from '../../App';
 
 export default function ANimageApp() {
  const [file, setFile] = useState(null);
