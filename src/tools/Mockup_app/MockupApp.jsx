@@ -33,7 +33,7 @@ export default function MockupApp() {
     setError('');
     
     try {
-      const apiKey = import.meta.env.VITE_POLLINATIONS_API_KEY;
+      const apiKeyPolli = import.meta.env.VITE_POLLINATIONS_API_KEY;
 
       const encodedPrompt = encodeURIComponent(prompt + ", professional commercial photography, high quality, hyper realistic, centered composition");
       const seed = Math.floor(Math.random() * 1000000);
@@ -46,8 +46,8 @@ export default function MockupApp() {
       
       const response = await fetch(imageUrl, {
         method: 'GET',
-        headers: apiKey ? {
-          'Authorization': `Bearer ${apiKey}`
+        headers: apiKeyPolli ? {
+          'Authorization': `Bearer ${apiKeyPolli}`
         } : {}
       });
 
