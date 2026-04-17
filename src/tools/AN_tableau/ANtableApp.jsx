@@ -382,5 +382,5 @@ Génère UNIQUEMENT un objet JSON valide avec cette structure précise :
         </div>
       </div>
     </div>
-  ;
+  );
 }
