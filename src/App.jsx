@@ -3,7 +3,7 @@ import { HashRouter as Router, Routes, Route, Link, useLocation } from 'react-ro
 import backgroundImage from './assets/Background.jpg';
 import { 
   Upload as IconUpload, 
-  Image as ImageIcon, 
+  Image as IconImage, 
   Copy as IconCopy, 
   Check as IconCheck, 
   AlertCircle as IconAlert, 
@@ -328,7 +328,7 @@ Renvoie le résultat au format JSON.`;
           <header className="mb-10 animate-fade-slide-up">
             <div className="flex items-center gap-4 mb-3">
               <div className="p-3 bg-indigo-600 rounded-2xl shadow-xl shadow-indigo-100">
-                <ImageIcon className="text-white" size={24} />
+                <IconImage className="text-white" size={24} />
               </div>
               <div className="flex flex-col">
                 <h1 className="text-L font-black tracking-tight text-slate-800">Assistant d'accessibilité des images</h1>
@@ -438,7 +438,7 @@ Renvoie le résultat au format JSON.`;
           ) : (
             <div className="flex flex-col items-center justify-center text-center space-y-4 opacity-20">
               <div className="w-24 h-24 bg-slate-200/50 rounded-[2rem] flex items-center justify-center border-4 border-white shadow-inner">
-                <ImageIcon size={48} className="text-slate-400" />
+                <IconImage size={48} className="text-slate-400" />
               </div>
               <p className="text-xs font-black uppercase tracking-[0.4em] text-slate-200">Maxime Lyon</p>
             </div>
@@ -472,7 +472,7 @@ const Home = () => (
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
         {[
-          { to: "/tools/AN_Image", title: "Assistant Images", desc: "Alternatives textuelles et descriptions par IA.", icon: ImageIcon, color: "bg-blue-600" },
+          { to: "/tools/AN_Image", title: "Assistant Images", desc: "Alternatives textuelles et descriptions par IA.", icon: IconImage, color: "bg-blue-600" },
           { to: "/tools/AN_tableau", title: "Assistant Tableaux", desc: "Extraction de données complexes depuis vos écrans.", icon: IconTable, color: "bg-indigo-600" },
           { to: "/tools/Mockup_app", title: "Mock-up Studio", desc: "Rendus professionnels et exports optimisés.", icon: IconLayout, color: "bg-purple-600" }
         ].map((tool, i) => (
