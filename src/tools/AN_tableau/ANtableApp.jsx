@@ -1,5 +1,6 @@
 import React, { useState, useCallback, useEffect, useRef } from 'react';
-import { apiKey, copyToClipboard, CopyButton, copyHTMLTableToClipboard, setDpiInPngBase64 } from '../../App'; 
+import { apiKey, copyToClipboard, CopyButton, copyHTMLTableToClipboard, setDpiInPngBase64 } from '../../App';
+import { getApiKey } from '../../config/api';
 import { Upload as IconUpload, AlertCircle as IconAlert, Loader2 as IconLoader, Info, Table as IconTable, Wand2 as IconWand, FileText as IconText, Check as IconCheck } from 'lucide-react';
 
 export default function ANtableauApp() {
@@ -42,12 +43,13 @@ export default function ANtableauApp() {
     setPreviewUrl(objectUrl);
   };
 
-const processContent = async () => { 
-    // Ici, le code va chercher la 'apiKey' que tu as importée en haut du fichier
-    if (!apiKey || apiKey === "") {
-      setError("Clé API manquante.");
-      return;
-    }
+const processContent = async () => {
+  const apiKey = getApiKey(); // On récupère la clé ici !
+
+  if (!currentKey) {
+    setError("La clé API est introuvable dans l'environnement VITE.");
+    return;
+  }
     setLoading(true);
     setError(null);
 
