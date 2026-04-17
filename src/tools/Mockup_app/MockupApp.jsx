@@ -188,12 +188,12 @@ export default function MockupApp() {
         <div className="w-full md:w-1/2 bg-slate-50/50 p-10 flex flex-col border-b md:border-b-0 md:border-r border-slate-100">
           <header className="mb-8 animate-fade-slide-up">
             <div className="flex items-center gap-4 mb-3">
-              <div className="p-3 bg-purple-600 rounded-2xl shadow-xl shadow-indigo-200">
+              <div className="p-3 bg-sky-600 rounded-2xl shadow-xl shadow-indigo-200">
                 <IconImage className="text-white" size={24} />
               </div>
               <div>
                 <h1 className="text-L font-black tracking-tight text-slate-800">Mock-up – Vignettes et bannières</h1>
-                <p className="text-purple-600 text-[10px] font-bold tracking-[0.2em]">Convertisseur et générateur</p>
+                <p className="text-sky-600 text-[10px] font-bold tracking-[0.2em]">Convertisseur et générateur</p>
               </div>
             </div>
           </header>
@@ -235,7 +235,7 @@ export default function MockupApp() {
                 className="animate-fade-slide-up flex-1 border-2 border-dashed border-slate-200 rounded-[2rem] p-8 text-center cursor-pointer hover:border-indigo-400 hover:bg-white transition-all duration-300 ease-in-out flex flex-col items-center justify-center group"
               >
                 <div className="w-20 h-20 bg-white rounded-[1.5rem] shadow-sm border border-slate-50 flex items-center justify-center mb-5 group-hover:scale-105 transition-transform group-hover:shadow-lg">
-                  <UploadCloud className="text-purple-600" size={36} />
+                  <UploadCloud className="text-sky-600" size={36} />
                 </div>
                 <p className="text-slate-800 font-extrabold text-lg">Déposez votre visuel</p>
                 <p className="text-slate-400 text-xs mt-3 font-medium">PNG, JPG ou WEBP supportés</p>
@@ -243,11 +243,11 @@ export default function MockupApp() {
               </div>
             ) : (
               <div className="space-y-5 animate-fade-slide-up">
-                <div className="px-4 py-2.5 bg-purple-50 border border-purple-100 rounded-xl flex justify-between items-center">
-                  <p className="text-[10px] text-purple-600 font-black leading-tight uppercase tracking-wider">
+                <div className="px-4 py-2.5 bg-sky-50 border border-sky-100 rounded-xl flex justify-between items-center">
+                  <p className="text-[10px] text-sky-600 font-black leading-tight uppercase tracking-wider">
                     Moteur IA : Pollinations
                   </p>
-                  <p className="text-[9px] text-purple-400 font-bold uppercase tracking-wider">
+                  <p className="text-[9px] text-sky-400 font-bold uppercase tracking-wider">
                     {outputFormat === 'banner' ? 'Format : Paysage' : 'Format : Carré'}
                   </p>
                 </div>
@@ -255,7 +255,7 @@ export default function MockupApp() {
                 <select
                   value={selectedModel}
                   onChange={(e) => setSelectedModel(e.target.value)}
-                  className="w-full p-4 border border-slate-200 rounded-[1.8rem] focus:ring-8 focus:ring-purple-50 focus:border-purple-400 outline-none text-sm bg-white shadow-inner transition-all duration-300 ease-in-out font-medium cursor-pointer"
+                  className="w-full p-4 border border-slate-200 rounded-[1.8rem] focus:ring-8 focus:ring-sky-50 focus:border-sky-400 outline-none text-sm bg-white shadow-inner transition-all duration-300 ease-in-out font-medium cursor-pointer"
                 >
                   <option value="flux">Flux Schnell</option>
                   <option value="klein">Flux.2 Klein 4B</option>
@@ -267,12 +267,12 @@ export default function MockupApp() {
                   value={prompt}
                   onChange={(e) => setPrompt(e.target.value)}
                   placeholder="Décrivez l'illustration souhaitée ici..."
-                  className="w-full h-36 p-6 border border-slate-200 rounded-[1.8rem] focus:ring-8 focus:ring-purple-50 focus:border-purple-400 outline-none resize-none text-sm bg-white shadow-inner transition-all duration-300 ease-in-out font-medium"
+                  className="w-full h-36 p-6 border border-slate-200 rounded-[1.8rem] focus:ring-8 focus:ring-sky-50 focus:border-sky-400 outline-none resize-none text-sm bg-white shadow-inner transition-all duration-300 ease-in-out font-medium"
                 />
                 <button
                   onClick={handleGenerateImage}
                   disabled={isGenerating || !prompt.trim()}
-                  className="w-full bg-slate-900 text-white font-black py-4 rounded-2xl hover:bg-purple-600 transition-all duration-300 ease-in-out flex items-center justify-center gap-3 disabled:bg-slate-200 shadow-2xl shadow-slate-200 hover:scale-[1.02] active:scale-95"
+                  className="w-full bg-slate-900 text-white font-black py-4 rounded-2xl hover:bg-sky-600 transition-all duration-300 ease-in-out flex items-center justify-center gap-3 disabled:bg-slate-200 shadow-2xl shadow-slate-200 hover:scale-[1.02] active:scale-95"
                 >
                   {isGenerating ? <IconLoader className="animate-spin" size={20} /> : <Zap size={20} />}
                   GÉNÉRER L'ILLUSTRATION
@@ -346,7 +346,7 @@ export default function MockupApp() {
                 download={outputFormat === 'vignette' ? 'vignette.png' : 'banniere.jpg'}
                 className={`animate-fade-slide-up flex-[2] py-4 rounded-2xl font-black text-[11px] tracking-widest flex items-center justify-center gap-2 transition-all duration-300 ease-in-out ${
                   processedImageUrl 
-                    ? 'bg-purple-600 hover:bg-purple-700 text-white shadow-2xl shadow-indigo-200 hover:translate-y-[-2px]' 
+                    ? 'bg-sky-600 hover:bg-sky-700 text-white shadow-2xl shadow-indigo-200 hover:translate-y-[-2px]' 
                     : 'bg-slate-100 text-slate-300 cursor-not-allowed'
                 }`}
                 onClick={(e) => !processedImageUrl && e.preventDefault()}
