@@ -1,3 +1,4 @@
+import { copyToClipboard } from '../../../App';
 export default function MockupApp() {
   const [activeTab, setActiveTab] = useState('convert');
   const [outputFormat, setOutputFormat] = useState('vignette'); // 'vignette' ou 'banner'
