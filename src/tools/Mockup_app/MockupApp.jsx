@@ -26,8 +26,8 @@ export default function MockupApp() {
       reader.readAsDataURL(file);
     }
   };
-
-  const handleGenerateImage = async () => {
+  
+const handleGenerateImage = async () => {
     if (!prompt.trim()) {
       setError("Veuillez entrer une description.");
       return;
@@ -37,30 +37,45 @@ export default function MockupApp() {
     setError('');
     
     try {
-      const apiKeyPolli = import.meta.env.VITE_POLLINATIONS_API_KEY;
+      // 1. Récupération et nettoyage de la clé
+      const rawKey = import.meta.env.VITE_POLLINATIONS_API_KEY;
+      
+      // Vérification rigoureuse : on s'assure que ce n'est pas vide, 
+      // ni la chaîne "undefined", ni "null"
+      const apiKeyPolli = (rawKey && rawKey !== "undefined" && rawKey !== "null") ? rawKey : null;
 
       const encodedPrompt = encodeURIComponent(prompt + ", professional commercial photography, high quality, hyper realistic, centered composition");
       const seed = Math.floor(Math.random() * 1000000);
       
-      // On ajuste la taille demandée à l'IA en fonction du format de sortie pour un meilleur rendu
       const aiWidth = outputFormat === 'banner' ? 2048 : 800;
       const aiHeight = outputFormat === 'banner' ? 512 : 800;
 
-      const imageUrl = `https://gen.pollinations.ai/image/${encodedPrompt}?width=${aiWidth}&height=${aiHeight}&seed=${seed}&nologo=true&model=${selectedModel}`;
+      // 2. Construction de l'URL
+      // On utilise le paramètre ?key= si la clé existe, c'est souvent plus stable que les headers
+      let imageUrl = `https://gen.pollinations.ai/image/${encodedPrompt}?width=${aiWidth}&height=${aiHeight}&seed=${seed}&nologo=true&model=${selectedModel}`;
+      
+      if (apiKeyPolli) {
+        imageUrl += `&key=${apiKeyPolli}`;
+      }
       
       const response = await fetch(imageUrl, {
         method: 'GET',
-        headers: apiKeyPolli ? {
-          'Authorization': `Bearer ${apiKeyPolli}`
-        } : {}
+        // On ne met les headers que si la clé est valide et qu'on ne l'a pas mise en URL
+        // Ici, on a privilégié l'URL (key=), donc on peut laisser les headers vides ou les doubler
+        headers: {} 
       });
 
       if (!response.ok) {
-        const errorData = await response.json().catch(() => ({}));
-        const message = errorData.error?.message || "Le service de génération ne répond pas.";
+        let message = "Le service de génération ne répond pas.";
+        try {
+          const errorData = await response.json();
+          message = errorData.error?.message || errorData.message || message;
+        } catch (e) {
+          // Si le JSON crash, on garde le message par défaut
+        }
         
         if (response.status === 401) {
-          throw new Error(`Accès refusé (401) : ${message}`);
+          throw new Error(`Clé API invalide ou expirée (401).`);
         }
         throw new Error(message);
       }
@@ -69,13 +84,14 @@ export default function MockupApp() {
       const reader = new FileReader();
       reader.onloadend = () => {
         setSourceImage(reader.result);
-        setActiveTab('convert');
+        if (setActiveTab) setActiveTab('convert');
         setIsGenerating(false);
       };
       reader.readAsDataURL(blob);
 
     } catch (err) {
-      setError(err.message || "Désolé, la génération a échoué. Veuillez vérifier votre configuration.");
+      console.error("Erreur génération:", err);
+      setError(err.message || "Désolé, la génération a échoué.");
       setIsGenerating(false);
     }
   };
