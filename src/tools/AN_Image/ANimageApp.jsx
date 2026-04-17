@@ -10,6 +10,7 @@ const getApiKey = () => {
     return "";
   }
 };
+const apiKey = getApiKey();
 
 export default function ANimageApp() {
  const [file, setFile] = useState(null);
@@ -46,16 +47,14 @@ export default function ANimageApp() {
     setPreviewUrl(objectUrl);
   };
 
-const processImage = async (imageFile) => {
-  const apiKey = getApiKey(); // On récupère la clé ici !
-
-  if (!apiKey) {
-    setError("La clé API est introuvable dans l'environnement VITE.");
-    return;
-  }
+  const processImage = async (imageFile) => {
+    if (!apiKey || apiKey === "") {
+      setError("Clé API manquante. Vérifiez vos secrets sur GitHub.");
+      return;
+    }
     setLoading(true);
     setError(null);
- 
+
     try {
       const base64Data = await new Promise((resolve, reject) => {
         const reader = new FileReader();
