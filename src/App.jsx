@@ -163,10 +163,10 @@ const Home = () => (
   <div className="min-h-screen flex flex-col items-center justify-center p-6 text-center">
     <header className="mb-16 animate-in fade-in slide-in-from-bottom duration-700">
       <div className="inline-flex items-center gap-2 px-4 py-2 bg-indigo-50 text-indigo-600 rounded-full text-sm font-bold mb-6">
-        <Wrench size={16} /> <span>Toolbox Collaborative</span>
+        <Wrench size={16} /> <span>Toolbox</span>
       </div>
-      <h1 className="text-5xl font-black text-slate-900 mb-4 tracking-tight">Mes Outils <span className="text-indigo-600">Productivité</span></h1>
-      <p className="text-slate-500 text-lg max-w-xl mx-auto leading-relaxed">Centralisez vos applications métiers dans une interface unique et cohérente.</p>
+      <h1 className="text-5xl font-black text-slate-900 mb-4 tracking-tight">Mes outils <span className="text-indigo-600">accessibilité numérique</span></h1>
+      <p className="text-slate-500 text-lg max-w-xl mx-auto leading-relaxed">Une boite à outils pour faciliter la création de contenus accessibles suivant les directives RGAA.</p>
     </header>
 
     <div className="grid grid-cols-1 md:grid-cols-3 gap-8 w-full max-w-6xl">
