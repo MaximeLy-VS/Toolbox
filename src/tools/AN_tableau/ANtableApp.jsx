@@ -46,7 +46,7 @@ export default function ANtableauApp() {
 const processContent = async () => {
   const apiKey = getApiKey(); // On récupère la clé ici !
 
-  if (!currentKey) {
+  if (!apiKey) {
     setError("La clé API est introuvable dans l'environnement VITE.");
     return;
   }
