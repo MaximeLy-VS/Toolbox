@@ -45,6 +45,9 @@ const processContent = async () => {
     setError("La clé API est introuvable dans l'environnement VITE.");
     return;
   }
+    setLoading(true);
+    setError(null);
+ 
     try {
       const base64Data = await new Promise((resolve, reject) => {
         const reader = new FileReader();
