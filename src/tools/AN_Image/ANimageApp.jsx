@@ -1,5 +1,5 @@
 import React, { useState, useCallback, useEffect, useRef } from 'react';
-import { copyToClipboard, CopyButton } from '../../App'; 
+import { copyToClipboard, CopyButton, apiKey } from '../../App'; 
 import {   Upload as IconUpload, Image as IconImage, Copy as IconCopy, Check as IconCheck, AlertCircle as IconAlert, Loader2 as IconLoader, Info, Table as IconTable, Layout as IconLayout, ArrowRight, Wrench, ChevronLeft, Sparkles, Wand2 as IconWand, Download, Zap, FileText as IconText,} from 'lucide-react';
 
 export default function ANimageApp() {
