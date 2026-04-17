@@ -44,7 +44,7 @@ export default function ANtableauApp() {
   };
 
 const processContent = async () => {
-  const apiKey = getApiKey(); // On récupère la clé ici !
+  const apiKey = getApiKey();
 
   if (!apiKey) {
     setError("La clé API est introuvable dans l'environnement VITE.");
@@ -67,7 +67,7 @@ const processContent = async () => {
         mimeType = file.type;
       }
 
-      const response = await fetchWithRetry(currentApiKey, inputType, base64Data, mimeType, rawText);
+      const response = await fetchWithRetry(apiKey, inputType, base64Data, mimeType, rawText);
       setResult(response);
     } catch (err) {
       console.error(err);
@@ -148,7 +148,7 @@ const processContent = async () => {
           {/* Affichage du bouton uniquement si données présentes */}
           {canGenerate && (
             <button
-              onClick={() => processContent(apiKey)}
+              onClick={() => processContent()}
               disabled={loading}
               className="mt-6 w-full py-4 bg-indigo-900 hover:bg-indigo-800 text-white font-black rounded-xl shadow-xl transition-all flex items-center justify-center gap-3 text-xs uppercase tracking-widest shrink-0 animate-fade-slide-up"
             >
