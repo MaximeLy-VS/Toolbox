@@ -9,13 +9,20 @@ import {
   AlertCircle as IconAlert, 
   Loader2 as IconLoader, 
   Info,
-  Table as TableIcon,
-  Layout as LayoutIcon,
+  Table as IconTable,
+  Layout as IconLayout,
+  LayoutTemplate,
   ArrowRight,
   Wrench,
+  UploadCloud,
   ChevronLeft,
-  Sparkles, 
-  Wand as IconWand
+  Sparkles,
+  Wand as IconWand,
+  Wand2,
+  Download,
+  Loader2,
+  Zap,
+  Texte as IconText,
 } from 'lucide-react';
 
 const getApiKey = () => {
@@ -45,7 +52,7 @@ const copyToClipboard = (text) => {
   }
 };
 
-const CopyButton = ({ text }) => {
+const CopyButton = ({ text, onClick, label = "Copier", primary = false }) => {
   const [copied, setCopied] = useState(false);
   const handleCopy = () => {
     if (copyToClipboard(text)) {
@@ -62,6 +69,103 @@ const CopyButton = ({ text }) => {
       {copied ? <span className="text-green-600">Copié</span> : 'Copier'}
     </button>
   );
+};
+  const baseClass = "flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold rounded-lg transition-all";
+  const colorClass = primary 
+    ? (copied ? "bg-emerald-500 text-white" : "bg-indigo-600 hover:bg-indigo-700 text-white shadow-sm")
+    : (copied ? "text-emerald-600 bg-emerald-50" : "text-slate-500 bg-slate-100 hover:bg-indigo-50 hover:text-indigo-600");
+
+  return (
+    <button onClick={handleCopy} className={`${baseClass} ${colorClass}`}>
+      {copied ? <IconCheck size={14} /> : <IconCopy size={14} />}
+      {copied ? <span>Copié</span> : <span>{label}</span>}
+    </button>
+  );
+};
+
+// Fonction spéciale pour copier un tableau HTML de manière à ce que Word l'interprète comme un tableau.
+const copyHTMLTableToClipboard = (elementId) => {
+  const el = document.getElementById(elementId);
+  if (!el) return false;
+  
+  let range, sel;
+  if (document.createRange && window.getSelection) {
+    range = document.createRange();
+    sel = window.getSelection();
+    sel.removeAllRanges();
+    try {
+      range.selectNodeContents(el);
+      sel.addRange(range);
+    } catch (e) {
+      range.selectNode(el);
+      sel.addRange(range);
+    }
+    try {
+      document.execCommand("copy");
+      sel.removeAllRanges();
+      return true;
+    } catch (err) {
+      sel.removeAllRanges();
+      return false;
+    }
+  }
+  return false;
+};
+
+// Fonction utilitaire pour injecter la métadonnée 90 DPI (pHYs chunk) dans un PNG en Base64
+const setDpiInPngBase64 = (base64Image, dpi) => {
+  try {
+    const data = atob(base64Image.split(',')[1]);
+    const dataArray = new Uint8Array(data.length);
+    for (let i = 0; i < data.length; i++) {
+      dataArray[i] = data.charCodeAt(i);
+    }
+
+    if (dataArray[0] !== 137 || dataArray[1] !== 80 || dataArray[2] !== 78 || dataArray[3] !== 71) {
+      return base64Image;
+    }
+
+    const ppm = Math.round(dpi / 0.0254);
+    const physChunk = new Uint8Array(21);
+    physChunk[3] = 9;
+    physChunk[4] = 112; physChunk[5] = 72; physChunk[6] = 89; physChunk[7] = 115;
+    
+    physChunk[8] = (ppm >>> 24) & 255; physChunk[9] = (ppm >>> 16) & 255; physChunk[10] = (ppm >>> 8) & 255; physChunk[11] = ppm & 255;
+    physChunk[12] = (ppm >>> 24) & 255; physChunk[13] = (ppm >>> 16) & 255; physChunk[14] = (ppm >>> 8) & 255; physChunk[15] = ppm & 255;
+    physChunk[16] = 1;
+
+    const crcTable = [];
+    for (let n = 0; n < 256; n++) {
+      let c = n;
+      for (let k = 0; k < 8; k++) c = (c & 1) ? (0xEDB88320 ^ (c >>> 1)) : (0xEDB88320 ^ (c >>> 1));
+      crcTable[n] = c;
+    }
+
+    let offset = 8;
+    while (offset < dataArray.length) {
+      const length = (dataArray[offset] << 24) | (dataArray[offset + 1] << 16) | (dataArray[offset + 2] << 8) | dataArray[offset + 3];
+      const type = String.fromCharCode(dataArray[offset + 4], dataArray[offset + 5], dataArray[offset + 6], dataArray[offset + 7]);
+      if (type === 'IHDR') {
+        offset += 12 + length;
+        break;
+      }
+      offset += 12 + length;
+    }
+
+    const newDataArray = new Uint8Array(dataArray.length + 21);
+    newDataArray.set(dataArray.subarray(0, offset), 0);
+    newDataArray.set(physChunk, offset);
+    newDataArray.set(dataArray.subarray(offset), offset + 21);
+
+    let newBase64 = '';
+    for (let i = 0; i < newDataArray.length; i++) {
+      newBase64 += String.fromCharCode(newDataArray[i]);
+    }
+    return 'data:image/png;base64,' + btoa(newBase64);
+  } catch (error) {
+    console.error("Erreur injection DPI:", error);
+    return base64Image;
+  }
 };
 
 // --- COMPOSANT LAYOUT POUR LES OUTILS ---
@@ -371,8 +475,8 @@ const Home = () => (
       <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
         {[
           { to: "/tools/AN_Image", title: "Assistant Images", desc: "Alternatives textuelles et descriptions par IA.", icon: ImageIcon, color: "bg-blue-600" },
-          { to: "/tools/AN_tableau", title: "Assistant Tableaux", desc: "Extraction de données complexes depuis vos écrans.", icon: TableIcon, color: "bg-indigo-600" },
-          { to: "/tools/Mockup_app", title: "Mock-up Studio", desc: "Rendus professionnels et exports optimisés.", icon: LayoutIcon, color: "bg-purple-600" }
+          { to: "/tools/AN_tableau", title: "Assistant Tableaux", desc: "Extraction de données complexes depuis vos écrans.", icon: IconTable, color: "bg-indigo-600" },
+          { to: "/tools/Mockup_app", title: "Mock-up Studio", desc: "Rendus professionnels et exports optimisés.", icon: IconLayout, color: "bg-purple-600" }
         ].map((tool, i) => (
           <Link 
             key={i} 
