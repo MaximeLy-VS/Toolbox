@@ -26,15 +26,13 @@ jobs:
           node-version: 24
           
       - name: Install dependencies
-        # Étape 1 : On installe d'abord les outils
         run: npm install --legacy-peer-deps
         
       - name: Build project
-        # Étape 2 : On compile ensuite avec les secrets
-        env:
-          VITE_GEMINI_API_KEY: ${{ secrets.VITE_GEMINI_API_KEY }}
-          VITE_POLLINATIONS_API_KEY: ${{ secrets.VITE_POLLINATIONS_API_KEY }}
-        run: npm run build
+        run: |
+          echo "VITE_GEMINI_API_KEY=${{ secrets.VITE_GEMINI_API_KEY }}" > .env
+          echo "VITE_POLLINATIONS_API_KEY=${{ secrets.VITE_POLLINATIONS_API_KEY }}" >> .env
+          npm run build
           
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
