@@ -201,13 +201,13 @@ export default function MockupApp() {
           <div className="flex bg-slate-200/50 p-1.5 rounded-xl mb-6 animate-fade-slide-up-delayed">
             <button
               onClick={() => setOutputFormat('vignette')}
-              className={`flex-1 py-2 text-xs font-bold rounded-lg flex items-center justify-center gap-2 transition-all duration-300 ease-in-out ${outputFormat === 'vignette' ? 'bg-white shadow-sm text-purple-700' : 'text-slate-500 hover:text-slate-700'}`}
+              className={`flex-1 py-2 text-xs font-bold rounded-lg flex items-center justify-center gap-2 transition-all duration-300 ease-in-out ${outputFormat === 'vignette' ? 'bg-white shadow-sm text-sky-700' : 'text-slate-500 hover:text-slate-700'}`}
             >
               <LayoutTemplate size={14} /> Vignette
             </button>
             <button
               onClick={() => setOutputFormat('banner')}
-              className={`flex-1 py-2 text-xs font-bold rounded-lg flex items-center justify-center gap-2 transition-all duration-300 ease-in-out ${outputFormat === 'banner' ? 'bg-white shadow-sm text-purple-700' : 'text-slate-500 hover:text-slate-700'}`}
+              className={`flex-1 py-2 text-xs font-bold rounded-lg flex items-center justify-center gap-2 transition-all duration-300 ease-in-out ${outputFormat === 'banner' ? 'bg-white shadow-sm text-sky-700' : 'text-slate-500 hover:text-slate-700'}`}
             >
               <IconImage size={14} /> Bannière
             </button>
@@ -216,13 +216,13 @@ export default function MockupApp() {
           <div className="flex bg-slate-200/50 p-1.5 rounded-2xl mb-8 animate-fade-slide-up-delayed">
             <button
               onClick={() => setActiveTab('convert')}
-              className={`flex-1 py-3 text-sm font-bold rounded-xl flex items-center justify-center gap-2 transition-all duration-300 ease-in-out ${activeTab === 'convert' ? 'bg-white shadow-md text-purple-600' : 'text-slate-500 hover:text-slate-700'}`}
+              className={`flex-1 py-3 text-sm font-bold rounded-xl flex items-center justify-center gap-2 transition-all duration-300 ease-in-out ${activeTab === 'convert' ? 'bg-white shadow-md text-sky-600' : 'text-slate-500 hover:text-slate-700'}`}
             >
               <UploadCloud size={18} /> Import
             </button>
             <button
               onClick={() => setActiveTab('generate')}
-              className={`flex-1 py-3 text-sm font-bold rounded-xl flex items-center justify-center gap-2 transition-all duration-300 ease-in-out ${activeTab === 'generate' ? 'bg-white shadow-md text-purple-600' : 'text-slate-500 hover:text-slate-700'}`}
+              className={`flex-1 py-3 text-sm font-bold rounded-xl flex items-center justify-center gap-2 transition-all duration-300 ease-in-out ${activeTab === 'generate' ? 'bg-white shadow-md text-sky-600' : 'text-slate-500 hover:text-slate-700'}`}
             >
               <Zap size={18} /> Génération IA
             </button>
