@@ -10,7 +10,6 @@ permissions:
   pages: write
   id-token: write
 
-# Ajout de la variable d'environnement globale pour forcer Node 24
 env:
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
 
@@ -24,18 +23,18 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: 24 # Mise à jour de la version 20 vers la 24
-      
+          node-version: 24
+          
+      - name: Install dependencies
+        # Étape 1 : On installe d'abord les outils
+        run: npm install --legacy-peer-deps
+        
       - name: Build project
+        # Étape 2 : On compile ensuite avec les secrets
         env:
           VITE_GEMINI_API_KEY: ${{ secrets.VITE_GEMINI_API_KEY }}
           VITE_POLLINATIONS_API_KEY: ${{ secrets.VITE_POLLINATIONS_API_KEY }}
         run: npm run build
-          
-      - name: Install dependencies
-        # Force l'installation de Tailwind CSS version 3 pour garantir la compatibilité avec notre configuration
-        run: npm install --legacy-peer-deps
-
           
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
@@ -45,7 +44,6 @@ jobs:
   deploy:
     environment:
       name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
     needs: build
     runs-on: ubuntu-latest
     steps:
