@@ -1,5 +1,5 @@
 import React, { useState, useCallback, useEffect, useRef } from 'react';
-import { copyToClipboard, CopyButton, apiKey, setDpiInPngBase64 } from '../../App'; 
+import { copyToClipboard, CopyButton, setDpiInPngBase64 } from '../../App'; 
 import { Upload as IconUpload, UploadCloud, Image as IconImage, Copy as IconCopy, Check as IconCheck, AlertCircle as IconAlert, Loader2 as IconLoader, Info, Table as IconTable, Layout as IconLayout, ArrowRight, Wrench, ChevronLeft, Sparkles, Wand2 as IconWand, Download, Zap, FileText as IconText, LayoutTemplate} from 'lucide-react';
 
 export default function MockupApp() {
