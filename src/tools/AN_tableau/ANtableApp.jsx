@@ -83,7 +83,7 @@ export default function ANtableauApp() {
         mimeType = file.type;
       }
 
-      const response = await fetchWithRetry(apiKey, inputType, base64Data, mimeType, rawText);
+      const response = await fetchWithRetry(inputType, base64Data, mimeType, rawText);
       setResult(response);
     } catch (err) {
       console.error(err);
@@ -94,12 +94,73 @@ export default function ANtableauApp() {
   };
 
   // Logique du prompt et fetch (Inchangée)
-  const getOptimizedPrompt = () => `... (ton prompt complet) ...`;
+  const getOptimizedPrompt = () => `Tu es un expert en accessibilité numérique (RGAA 4.1.2, WCAG 2.2) et en conception pédagogique.
+Ta mission est de transformer les données fournies (image ou texte) en un tableau HTML parfaitement accessible et structuré, destiné à être copié dans Word ou InDesign.
+
+Règles de fabrication strictes issues du Guide de fabrication accessible :
+1. ANALYSE ET TITRE : Déduis un titre pertinent et court pour le tableau.
+2. RÉSUMÉ (si complexe) : Si le tableau a plusieurs niveaux d'en-tête ou des en-têtes de ligne ET de colonne, rédige un "résumé" expliquant sa structure. Sinon, laisse vide.
+3. STRUCTURE HTML STRICTE :
+   - Utilise UNIQUEMENT les balises <table>, <thead>, <tbody>, <tr>, <th>, <td>.
+   - NE METS PAS de balise <caption> dans le HTML (le titre sera géré dans un champ à part).
+   - Les cellules d'en-tête (<th>) DOIVENT avoir un attribut scope="col" (pour les colonnes) ou scope="row" (pour les lignes).
+4. RÈGLE DE LA CELLULE VIDE : Si le tableau comporte à la fois des en-têtes de ligne et de colonne, la cellule à leur intersection (en haut à gauche) DOIT être une cellule de donnée vide : <td></td> (ne pas utiliser <th> pour cette intersection).
+5. DONNÉES MANQUANTES : AUCUNE cellule ne doit être laissée vide si elle appartient au jeu de données. Remplaces les cases vides, les tirets ou les croix par un tiret demi cadratin "–".
+6. CELLULE FUSIONNÉES : Le tableau ne doit pas comporter de cellule fusionnées, défusionnes les cellules et les cases vides generées contiendront un "–". Si les cellules fusionnées servent d'en-têtes et contiennent des sous-section, garder les sous-sections en répétant le contenu de la cellule fusionnées dans chacune des sous-sections en gardant la logique. 
+7. RÈGLES TYPOGRAPHIQUES ACCESSIBLES : Garder une typographie lisible, sans surlignage, ne pas écrire des mots entiers en majuscules, sans italique.
+
+Génère UNIQUEMENT un objet JSON valide avec cette structure précise :
+{
+  "titre": "Titre explicite du tableau",
+  "resume": "Résumé détaillé de la structure (ou vide si tableau simple)",
+  "html_table": "<table class='table-accessible'>...</table>",
+  "complexite": "SIMPLE" ou "COMPLEXE"
+}`;
 
   const fetchWithRetry = async (key, type, base64Data, mimeType, textData, maxRetries = 3) => {
-    // ... ta logique fetchWithRetry ...
-  };
+    const delays = [1000, 2000, 4000];
+    const promptText = getOptimizedPrompt();
 
+    // Construction du payload selon la source (Image ou Texte)
+    const parts = [{ text: promptText }];
+    if (type === 'image') {
+      parts.push({ inlineData: { mimeType: mimeType, data: base64Data } });
+    } else {
+      parts.push({ text: `Voici les données textuelles brutes à structurer en tableau :\n\n${textData}` });
+    }
+
+    const payload = {
+      contents: [{ role: "user", parts: parts }],
+      generationConfig: {
+        responseMimeType: "application/json",
+        responseSchema: {
+          type: "OBJECT",
+          properties: {
+            titre: { type: "STRING" },
+            resume: { type: "STRING" },
+            html_table: { type: "STRING" },
+            complexite: { type: "STRING", enum: ["SIMPLE", "COMPLEXE"] }
+          },
+          required: ["titre", "resume", "html_table", "complexite"]
+        }
+      }
+    };
+
+    const url = `https://generativelanguage.googleapis.com/v1beta/models/gemma-4-31b-it:generateContent?key=${apiKey}`;
+
+    for (let i = 0; i < maxRetries; i++) {
+      try {
+        const response = await fetch(url, { method: 'POST', body: JSON.stringify(payload) });
+        if (!response.ok) throw new Error("HTTP " + response.status);
+        const data = await response.json();
+        return JSON.parse(data.candidates[0].content.parts[0].text);
+      } catch (err) {
+        if (i === maxRetries - 1) throw err;
+        await new Promise(r => setTimeout(r, delays[i]));
+      }
+    }
+  };
+  
   // Condition pour afficher le bouton
   const canGenerate = (inputType === 'image' && file) || (inputType === 'text' && rawText.trim() !== "");
 
