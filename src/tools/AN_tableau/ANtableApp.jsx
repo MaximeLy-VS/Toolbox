@@ -206,7 +206,7 @@ Génère UNIQUEMENT un objet JSON valide avec cette structure précise :
               </div>
               <div className="flex flex-col">
                 <h1 className="text-L font-black tracking-tight text-slate-800">Assistant d'accessibilité des tableaux</h1>
-                <p className="text-indigo-600 text-[10px] font-bold tracking-[0.2em] uppercase">Générateur de tableaux accessibles</p>
+                <p className="text-indigo-600 text-[10px] font-bold tracking-[0.2em]">Générateur de tableaux accessibles</p>
               </div>
             </div>
             <p className="text-slate-500 text-xs mt-4 leading-relaxed">
