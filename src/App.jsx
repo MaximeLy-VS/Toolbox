@@ -171,7 +171,7 @@ const Home = () => (
 
     <div className="grid grid-cols-1 md:grid-cols-3 gap-8 w-full max-w-6xl">
       {[
-        { to: "/tools/AN_Image", title: "Assistant accessibilité des&nbsp;images", desc: "Analyse et génération de titre, d'alternative textuelle et&nbsp;description&nbsp;détaillée.", icon: IconImage, color: "bg-blue-600" },
+        { to: "/tools/AN_Image", title: "Assistant accessibilité des{`\u00A0`}images", desc: "Analyse et génération de titre, d'alternative textuelle et&nbsp;description&nbsp;détaillée.", icon: IconImage, color: "bg-blue-600" },
         { to: "/tools/AN_tableau", title: "Assistant accessibilité des&nbsp;tableaux", desc: "Mise en forme accessible des&nbsp;tableaux.", icon: IconTable, color: "bg-indigo-600" },
         { to: "/tools/Mockup_app", title: "Mock-up Studio", desc: "Convertisseur et générateur de&nbsp;vignettes et&nbsp;bannières.", icon: IconLayout, color: "bg-purple-600" }
       ].map((tool, i) => (
