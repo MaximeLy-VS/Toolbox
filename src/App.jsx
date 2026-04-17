@@ -33,7 +33,7 @@ const getApiKey = () => {
     return "";
   }
 };
-const apiKey = getApiKey();
+export const apiKey = getApiKey();
 
 /**
  * --- UTILS COMMUNS ---
