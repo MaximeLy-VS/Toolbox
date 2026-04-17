@@ -1,6 +1,7 @@
-import { copyToClipboard } from '../../App';
-import { copyHTMLTableToClipboard } from '../../App';
-import { CopyButton } from '../../App';
+import React, { useState, useCallback, useEffect, useRef } from 'react';
+import { copyToClipboard, CopyButton, copyHTMLTableToClipboard, apiKey } from '../../App'; 
+import {   Upload as IconUpload, Image as IconImage, Copy as IconCopy, Check as IconCheck, AlertCircle as IconAlert, Loader2 as IconLoader, Info, Table as IconTable, Layout as IconLayout, ArrowRight, Wrench, ChevronLeft, Sparkles, Wand2 as IconWand, Download, Zap, FileText as IconText,} from 'lucide-react';
+
 export default function ANtableauApp() {
   const [inputType, setInputType] = useState('image'); // 'image' ou 'text'
   const [file, setFile] = useState(null);
@@ -153,7 +154,7 @@ Génère UNIQUEMENT un objet JSON valide avec cette structure précise :
   };
 
   return (
-    <ToolWrapper title="Assistant Tableau">
+    <div>
       {/* Styles globaux pour le rendu du tableau généré */}
       <style>{`
         .generated-table {
@@ -360,6 +361,6 @@ Génère UNIQUEMENT un objet JSON valide avec cette structure précise :
           )}
         </div>
       </div>
-    </ToolWrapper>
+    </div>
   );
 }
