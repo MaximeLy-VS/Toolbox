@@ -24,44 +24,30 @@ export default function MockupApp() {
     setError('');
     
     try {
-      // 1. Récupération de la clé
-      // On s'assure de récupérer la variable d'environnement définie via Vite
       const apiKeyPolli = import.meta.env.VITE_POLLINATIONS_API_KEY;
-
-      // Diagnostic interne (visible en console) pour vérifier la présence sans exposer la clé
-      if (!apiKeyPolli || apiKeyPolli === "undefined") {
-        throw new Error("Clé API introuvable. Vérifiez la configuration de vos secrets GitHub.");
-      }
 
       const encodedPrompt = encodeURIComponent(prompt + ", professional commercial photography, high quality, hyper realistic, centered composition");
       const seed = Math.floor(Math.random() * 1000000);
       
+      // On ajuste la taille demandée à l'IA en fonction du format de sortie pour un meilleur rendu
       const aiWidth = outputFormat === 'banner' ? 2048 : 800;
       const aiHeight = outputFormat === 'banner' ? 512 : 800;
 
-      // L'URL ne contient plus la clé
       const imageUrl = `https://gen.pollinations.ai/image/${encodedPrompt}?width=${aiWidth}&height=${aiHeight}&seed=${seed}&nologo=true&model=${selectedModel}`;
       
-      // 2. Requête avec Header Authorization
       const response = await fetch(imageUrl, {
         method: 'GET',
-        headers: {
-          'Authorization': `Bearer ${apiKeyPolli}`,
-          'Content-Type': 'application/json'
-        }
+        headers: apiKeyPolli ? {
+          'Authorization': `Bearer ${apiKeyPolli}`
+        } : {}
       });
 
       if (!response.ok) {
-        if (response.status === 401) {
-          throw new Error("Accès refusé (401) : La clé API fournie est invalide pour ce service.");
-        }
+        const errorData = await response.json().catch(() => ({}));
+        const message = errorData.error?.message || "Le service de génération ne répond pas.";
         
-        let message = "Le service de génération ne répond pas.";
-        try {
-          const errorData = await response.json();
-          message = errorData.error?.message || errorData.message || message;
-        } catch (e) {
-          // Si pas de JSON, on garde le message par défaut
+        if (response.status === 401) {
+          throw new Error(`Accès refusé (401) : ${message}`);
         }
         throw new Error(message);
       }
@@ -70,14 +56,13 @@ export default function MockupApp() {
       const reader = new FileReader();
       reader.onloadend = () => {
         setSourceImage(reader.result);
-        if (setActiveTab) setActiveTab('convert');
+        setActiveTab('convert');
         setIsGenerating(false);
       };
       reader.readAsDataURL(blob);
 
     } catch (err) {
-      console.error("Détails de l'erreur:", err);
-      setError(err.message || "Désolé, la génération a échoué.");
+      setError(err.message || "Désolé, la génération a échoué. Veuillez vérifier votre configuration.");
       setIsGenerating(false);
     }
   };
