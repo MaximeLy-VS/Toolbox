@@ -1,6 +1,6 @@
 import React, { useState, useCallback, useEffect, useRef } from 'react';
 import { copyToClipboard, CopyButton } from '../../App'; 
-import {   Upload as IconUpload, Image as IconImage, Copy as IconCopy, Check as IconCheck, AlertCircle as IconAlert, Loader2 as IconLoader, Info, Brain, Table as IconTable, Layout as IconLayout, ArrowRight, Wrench, ChevronLeft, Sparkles, Wand2 as IconWand, Download, Zap, FileText as IconText,} from 'lucide-react';
+import {   Upload as IconUpload, Image as IconImage, Copy as IconCopy, Check as IconCheck, AlertCircle as IconAlert, form as IconForm, Loader2 as IconLoader, Info, Brain, Table as IconTable, Layout as IconLayout, ArrowRight, Wrench, ChevronLeft, Sparkles, Wand2 as IconWand, Download, Zap, FileText as IconText,} from 'lucide-react';
 
 const getApiKey = () => {
   try {
@@ -267,9 +267,9 @@ Renvoie le résultat au format JSON.`;
           ) : (
             <div className="flex flex-col items-center justify-center text-center space-y-4 opacity-20">
               <div className="w-24 h-24 bg-slate-200/50 rounded-[2rem] flex items-center justify-center border-4 border-white shadow-inner">
-                <IconImage size={48} className="text-slate-400" />
+                <IconForm size={48} className="text-slate-400" />
               </div>
-              <p className="text-xs font-black uppercase tracking-[0.4em] text-slate-200">En attente de&nbsp;données</p>
+              <p className="text-xs font-black uppercase tracking-[0.4em] text-slate-400">En attente de&nbsp;données</p>
             </div>
           )}
         </div>
