@@ -178,7 +178,7 @@ Génère UNIQUEMENT un objet JSON valide avec cette structure précise :
       {/* Input de fichier masqué */}
       <input type="file" ref={fileInputRef} className="hidden" accept="image/*" onChange={(e) => handleFile(e.target.files[0])} />
 
-      <div className="w-full max-w-7xl bg-white rounded-[2rem] shadow-2xl overflow-hidden flex flex-col lg:flex-row border border-slate-100 min-h-[85vh] animate-fade-slide-up">
+      <div className="w-full max-w-7xl bg-white rounded-[2rem] shadow-2xl overflow-hidden flex flex-col lg:flex-row border border-slate-100 animate-fade-slide-up">
         
         {/* --- PARTIE GAUCHE : IMPORT --- */}
         <div className="lg:w-[40%] p-8 flex flex-col border-r border-slate-100 bg-white animate-fade-slide-up">
@@ -202,7 +202,7 @@ Génère UNIQUEMENT un objet JSON valide avec cette structure précise :
             <button onClick={() => setInputType('text')} className={`flex-1 py-2 text-xs font-bold rounded-lg transition-all flex items-center justify-center gap-2 ${inputType === 'text' ? 'bg-white text-indigo-700 shadow-sm' : 'text-slate-500'}`}><IconText size={16} /> Texte / CSV</button>
           </div>
 
-          <div className="flex-1 flex flex-col relative min-h-[300px]">
+          <div className="flex-1 flex flex-col relative min-h-[200px]">
             {inputType === 'image' ? (
               previewUrl ? (
                 <div className="w-full space-y-6 animate-fade-slide-up">
