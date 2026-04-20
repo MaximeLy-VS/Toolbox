@@ -150,7 +150,7 @@ Renvoie le résultat au format JSON.`;
         }
       `}</style>
 
-      <div className="w-full max-w-6xl bg-white rounded-[2rem] shadow-[0_30px_100px_rgba(0,0,0,0.08)] overflow-hidden flex flex-col md:flex-row border border-slate-100 animate-fade-slide-up">
+      <div className="w-full max-w-7xl bg-white rounded-[2rem] shadow-[0_30px_100px_rgba(0,0,0,0.08)] overflow-hidden flex flex-col md:flex-row border border-slate-100 animate-fade-slide-up">
         
         {/* --- PARTIE GAUCHE : IMPORT --- */}
         <div className="md:w-[42%] p-8 md:p-12 flex flex-col border-r border-slate-50 bg-white">
