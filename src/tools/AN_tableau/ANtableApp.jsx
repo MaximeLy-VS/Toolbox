@@ -185,7 +185,7 @@ Génère UNIQUEMENT un objet JSON valide avec cette structure précise :
           <header className="mb-8 animate-fade-slide-up">
             <div className="flex items-center gap-4 mb-2">
               <div className="p-3 bg-indigo-600 rounded-xl shadow-lg shadow-indigo-200">
-                <IconTable className="text-white" size={24} />
+                <TableOK className="text-white" size={24} />
               </div>
               <div className="flex flex-col">
                 <h1 className="text-L font-black tracking-tight text-slate-800">Assistant d'accessibilité des tableaux</h1>
