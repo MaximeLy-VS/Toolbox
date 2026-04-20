@@ -216,7 +216,7 @@ Renvoie le résultat au format JSON.`;
         </div>
 
         {/* --- PARTIE DROITE : RÉSULTATS --- */}
-        <div className="md:w-[58%] p-8 md:p-16 flex flex-col bg-[#fafbfc] justify-center">
+        <div className="md:w-[58%] p-8 md:p-16 flex flex-col bg-[#f8fafc] justify-center">
           {result ? (
             <div className="w-full animate-fade-slide-up-delayed space-y-6">
               <div className="flex items-center gap-3 mb-4">
