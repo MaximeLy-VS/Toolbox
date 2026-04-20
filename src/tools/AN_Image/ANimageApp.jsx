@@ -170,7 +170,7 @@ Renvoie le résultat au format JSON.`;
             onDragOver={(e) => { e.preventDefault(); setIsDragging(true); }}
             onDragLeave={() => setIsDragging(false)}
             onDrop={(e) => { e.preventDefault(); setIsDragging(false); handleFile(e.dataTransfer.files[0]); }}
-            className={`flex-1 flex flex-col items-center justify-center p-8 border-2 border-dashed rounded-[2.5rem] transition-all bg-white relative mb-6
+            className={`flex-1 flex flex-col items-center justify-center p-8 border-2 border-dashed rounded-[2.5rem] transition-all bg-white relative mb-6 hover:border-indigo-300
               ${isDragging ? 'border-blue-400 bg-blue-50/30' : 'border-slate-100'}
               ${!file ? 'cursor-pointer hover:border-slate-200' : ''}
             `}
