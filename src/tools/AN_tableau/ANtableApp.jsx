@@ -202,7 +202,7 @@ Génère UNIQUEMENT un objet JSON valide avec cette structure précise :
             <button onClick={() => setInputType('text')} className={`flex-1 py-2 text-xs font-bold rounded-lg transition-all flex items-center justify-center gap-2 ${inputType === 'text' ? 'bg-white text-indigo-700 shadow-sm' : 'text-slate-500'}`}><IconText size={16} /> Texte / CSV</button>
           </div>
 
-          <div className="flex-1 flex flex-col relative min-h-[300px]">
+          <div className="flex-1 flex flex-col relative min-h-[400px]">
             {inputType === 'image' ? (
               previewUrl ? (
                 <div className="w-full space-y-6 animate-fade-slide-up">
