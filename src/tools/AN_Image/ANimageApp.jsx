@@ -201,10 +201,8 @@ Renvoie le résultat au format JSON.`;
                 <div className="w-20 h-20 bg-white rounded-[1.5rem] shadow-sm border border-slate-50 flex items-center justify-center mb-5 group-hover:scale-105 transition-transform group-hover:shadow-lg">
                   <UploadCloud className="text-sky-600" size={32} />
                 </div>
-                <div className="space-y-1">
                   <p className="text-slate-800 font-extrabold text-lg">Déposez votre visuel</p>
                   <p className="text-slate-400 text-xs mt-3 font-medium">PNG, JPG ou WEBP • Ctrl+V supporté</p>
-                </div>
               </div>
             )}
           </div>
