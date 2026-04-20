@@ -183,7 +183,7 @@ export default function MockupApp() {
           opacity: 0;
         }
       `}</style>
-      <div className="w-full bg-white rounded-[2.5rem] shadow-2xl shadow-indigo-100 overflow-hidden flex flex-col md:flex-row border border-slate-100 animate-fade-slide-up">
+      <div className="w-full bg-white rounded-[2rem] shadow-2xl shadow-indigo-100 overflow-hidden flex flex-col md:flex-row border border-slate-100 animate-fade-slide-up">
         
         <div className="md:w-[42%] bg-slate-50/50 p-10 flex flex-col border-b md:border-b-0 md:border-r border-slate-100">
           <header className="mb-8 animate-fade-slide-up">
