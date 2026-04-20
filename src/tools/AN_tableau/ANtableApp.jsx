@@ -1,6 +1,6 @@
 import React, { useState, useCallback, useEffect, useRef } from 'react';
 import { CopyButton, copyToClipboard, copyHTMLTableToClipboard, setDpiInPngBase64 } from '../../App';
-import { Upload as IconUpload, AlertCircle as IconAlert, Loader2 as IconLoader, Info, Table as IconTable, Grid2x2Check as TableOK, Wand2 as IconWand, FileText as IconText, Check as IconCheck } from 'lucide-react';
+import { Upload as IconUpload, UploadCloud, AlertCircle as IconAlert, Loader2 as IconLoader, Info, Table as IconTable, Grid2x2Check as TableOK, Wand2 as IconWand, FileText as IconText, Check as IconCheck } from 'lucide-react';
 
 const getApiKey = () => {
   try {
