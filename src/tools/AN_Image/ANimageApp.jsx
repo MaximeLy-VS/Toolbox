@@ -171,7 +171,7 @@ Renvoie le résultat au format JSON.`;
             onDragLeave={() => setIsDragging(false)}
             onDrop={(e) => { e.preventDefault(); setIsDragging(false); handleFile(e.dataTransfer.files[0]); }}
             className={`flex-1 flex flex-col items-center justify-center p-8 border-2 border-dashed rounded-[2.5rem] transition-all bg-white relative mb-6 hover:border-indigo-300
-              ${isDragging ? 'border-indigo-300'}
+              ${isDragging ? 'border-indigo-300' : ''}
               ${!file ? 'cursor-pointer hover:border-indigo-300' : ''}
             `}
             onClick={() => !file && document.getElementById('file-input').click()}
