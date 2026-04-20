@@ -266,7 +266,7 @@ Renvoie le résultat au format JSON.`;
             </div>
           ) : (
             <div className="flex flex-col items-center justify-center text-center space-y-4 opacity-20">
-            <div className="flex row space-x-4 align-middle">
+            <div className="flex row space-x-4 items-center">
               <div className="w-24 h-24 bg-slate-200/50 rounded-[2rem] flex items-center justify-center border-4 border-white shadow-inner">
                 <IconImage size={48} className="text-slate-400" />
               </div>
