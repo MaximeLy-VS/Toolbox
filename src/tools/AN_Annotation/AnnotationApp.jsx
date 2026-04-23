@@ -742,7 +742,7 @@ export default function AnnotationApp() {
               </div>
 
               {/* Liste des annotations */}
-              <div className="flex-1 max-h-40 bg-slate-50/50 rounded-2xl p-5 border border-slate-100 overflow-y-auto">
+              <div className="flex-1 max-h-35 bg-slate-50/50 rounded-2xl p-5 border border-slate-100 overflow-y-auto">
                 <h3 className="text-xs font-bold text-slate-500 uppercase tracking-wider flex mb-4 items-center gap-2">
                   <ListPlus className="w-4 h-4" />
                   Légendes actives ({annotations.length})
@@ -769,7 +769,7 @@ export default function AnnotationApp() {
                         }}
                       >
                         <span className="text-sm font-medium text-slate-700 truncate pr-4 flex items-center gap-2">
-                          {(anno.type === 'brush' || anno.type === 'rectangle') && <div className="w-3 h-3 rounded-full shrink-0" style={{ backgroundColor: anno.color || '#2563eb' }} />}
+                          {(anno.type === 'brush' || anno.type === 'rectangle') && <div className="w-2 h-2 rounded-full shrink-0" style={{ backgroundColor: anno.color || '#2563eb' }} />}
                           {anno.type === 'brush' ? 'Retouche pinceau' :
                            anno.type === 'rectangle' ? 'Zone rectangulaire' : 
                            anno.type === 'line' ? 'Ligne simple' :
