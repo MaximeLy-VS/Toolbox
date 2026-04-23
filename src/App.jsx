@@ -169,7 +169,7 @@ const Home = () => (
         { to: "/tools/AN_Image", title: "Assistant accessibilité des\u00A0images", desc: "Analyse et génération de titre, d'alternative textuelle et\u00A0description\u00A0détaillée.", icon: Brain, color: "bg-blue-600" },
         { to: "/tools/AN_tableau", title: "Assistant accessibilité des\u00A0tableaux", desc: "Mise en forme accessible des\u00A0tableaux.", icon: TableOK, color: "bg-indigo-600" },
         { to: "/tools/Mockup_app", title: "Mock-up Studio", desc: "Convertisseur et générateur de\u00A0vignettes et\u00A0bannières.", icon: IconImage, color: "bg-sky-600" },
-        { to: "/tools/AN_Annotation", title: "Éditeur de schémas", desc: "Ajoutez facilement des légendes à\u00A0vos\u00A0schémas scientifiques ", icon: PenLine, color: "bg-cyan-600" }
+        { to: "/tools/AN_Annotation", title: "Éditeur de schémas", desc: "Ajoutez facilement des légendes à\u00A0vos\u00A0schémas\u00A0scientifiques ", icon: PenLine, color: "bg-cyan-600" }
       ].map((tool, i) => (
         <Link key={i} to={tool.to} className="group bg-white p-8 rounded-[2.5rem] shadow-xl shadow-indigo-500/5 border border-slate-100 hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 flex flex-col items-start text-left gap-4">
           <div className={`p-4 rounded-2xl ${tool.color} text-white shadow-lg`}><tool.icon size={24} /></div>
