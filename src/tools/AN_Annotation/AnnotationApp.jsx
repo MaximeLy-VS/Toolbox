@@ -531,6 +531,20 @@ export default function AnnotationApp() {
 
   // --- RENDU UI ---
   return (
+    <div>
+      <style>{`
+        @keyframes fadeSlideUp {
+          from { opacity: 0; transform: translateY(15px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fade-slide-up {
+          animation: fadeSlideUp 0.5s ease-in-out forwards;
+        }
+        .animate-fade-slide-up-delayed {
+          animation: fadeSlideUp 0.5s ease-in-out 0.15s forwards;
+          opacity: 0;
+        }
+      `}</style>
     <div className="w-full max-w-7xl bg-white rounded-[2rem] shadow-[0_30px_100px_rgba(0,0,0,0.08)] overflow-hidden flex flex-col md:flex-row border border-slate-100 animate-fade-slide-up">
 
       {/* CARTE PRINCIPALE (Split View) */}
@@ -540,15 +554,15 @@ export default function AnnotationApp() {
         <div className="w-full lg:w-[40%] flex flex-col border-r border-slate-100 p-8 lg:p-12 relative bg-white z-10">
           
           {/* Header */}
-          <div className="flex items-start gap-4 mb-10">
-            <div className="w-14 h-14 bg-blue-600 rounded-2xl flex items-center justify-center text-white shadow-lg shadow-blue-600/20 shrink-0">
+          <div className="flex items-center gap-4 mb-3">
+            <div className="p-3 bg-blue-600 rounded-2xl shadow-xl shadow-indigo-100">
               <PenLine className="w-7 h-7" />
             </div>
-            <div>
-              <h1 className="text-xl font-extrabold text-slate-900 leading-tight">
+            <div className="flex flex-col">
+              <h1 className="text-L font-black tracking-tight text-slate-800">
                 Éditeur de schémas
               </h1>
-              <p className="text-blue-600 text-sm font-semibold mt-1">
+              <p className="text-blue-600 text-[10px] font-bold tracking-[0.2em]">
                 Ajoutez facilement des légendes à&nbsp;vos&nbsp;schémas scientifiques 
               </p>
             </div>
@@ -1044,5 +1058,6 @@ export default function AnnotationApp() {
 
       </div>
     </div>
+  </div>
   );
 }
