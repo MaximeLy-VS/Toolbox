@@ -551,7 +551,7 @@ export default function AnnotationApp() {
       <div className="w-full max-w-[1400px] bg-white rounded-[2rem] shadow-xl overflow-hidden flex flex-col lg:flex-row min-h-[750px] border border-slate-100">
         
         {/* === PANNEAU GAUCHE : IMPORT & OUTILS (40%) === */}
-        <div className="w-full lg:w-[40%] min-h-[750px] flex flex-col border-r border-slate-100 p-8 lg:p-12 relative bg-white z-10">
+        <div className="w-full lg:w-[40%] flex flex-col border-r border-slate-100 p-8 lg:p-12 relative bg-white z-10">
           
           {/* Header */}
           <div className="flex items-center gap-4 mb-10">
@@ -755,7 +755,7 @@ export default function AnnotationApp() {
                     {annotations.map((anno) => (
                       <div 
                         key={anno.id} 
-                        className={`flex items-center justify-between p-3 rounded-xl bg-white border transition-all ${
+                        className={`flex items-center justify-between px-3 py-2 rounded-xl bg-white border transition-all ${
                           selectedAnnoId === anno.id ? 'border-cyan-500 ring-2 ring-cyan-100' : 'border-slate-200'
                         }`}
                         onClick={() => { 
@@ -769,7 +769,7 @@ export default function AnnotationApp() {
                         }}
                       >
                         <span className="text-sm font-medium text-slate-700 truncate pr-4 flex items-center gap-2">
-                          {(anno.type === 'brush' || anno.type === 'rectangle') && <div className="w-2 h-2 rounded-full shrink-0" style={{ backgroundColor: anno.color || '#2563eb' }} />}
+                          {(anno.type === 'brush' || anno.type === 'rectangle') && <div className="w-3 h-3 rounded-full shrink-0" style={{ backgroundColor: anno.color || '#2563eb' }} />}
                           {anno.type === 'brush' ? 'Retouche pinceau' :
                            anno.type === 'rectangle' ? 'Zone rectangulaire' : 
                            anno.type === 'line' ? 'Ligne simple' :
