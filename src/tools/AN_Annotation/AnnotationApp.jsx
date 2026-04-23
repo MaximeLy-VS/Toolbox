@@ -556,7 +556,7 @@ export default function AnnotationApp() {
           {/* Header */}
           <div className="flex items-center gap-4 mb-3">
             <div className="p-3 bg-blue-600 rounded-2xl shadow-xl shadow-indigo-100">
-              <PenLine className="w-7 h-7" />
+              <PenLine className="text-white w-7 h-7" />
             </div>
             <div className="flex flex-col">
               <h1 className="text-L font-black tracking-tight text-slate-800">
