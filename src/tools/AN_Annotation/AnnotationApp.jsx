@@ -554,8 +554,8 @@ export default function AnnotationApp() {
         <div className="w-full lg:w-[40%] flex flex-col border-r border-slate-100 p-8 lg:p-12 relative bg-white z-10">
           
           {/* Header */}
-          <div className="flex items-center gap-4 mb-3">
-            <div className="p-3 bg-blue-600 rounded-2xl shadow-xl shadow-indigo-100">
+          <div className="flex items-center gap-4 mb-7">
+            <div className="p-3 bg-cyan-600 rounded-2xl shadow-xl shadow-indigo-100">
               <PenLine className="text-white w-7 h-7" />
             </div>
             <div className="flex flex-col">
@@ -582,7 +582,7 @@ export default function AnnotationApp() {
               onClick={() => fileInputRef.current?.click()}
               className="flex-1 border-2 border-dashed border-slate-200 rounded-[2rem] flex flex-col items-center justify-center p-8 text-center cursor-pointer hover:border-blue-500 hover:bg-blue-50/50 transition-all group"
             >
-              <div className="w-16 h-16 bg-white shadow-sm border border-slate-100 text-blue-600 rounded-full flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+              <div className="w-16 h-16 bg-white shadow-sm border border-slate-100 text-cyan-600 rounded-full flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
                 <UploadCloud className="w-7 h-7" />
               </div>
               <h2 className="text-xl font-bold mb-2">Déposez votre visuel</h2>
@@ -602,7 +602,7 @@ export default function AnnotationApp() {
                 <button 
                   onClick={handleCleanText}
                   disabled={isCleaning}
-                  className="w-full flex items-center justify-center gap-3 bg-blue-50 text-blue-700 hover:bg-blue-100 px-5 py-4 rounded-2xl font-bold transition-all disabled:opacity-50"
+                  className="w-full flex items-center justify-center gap-3 bg-cyan-50 text-cyan-700 hover:bg-cyan-100 px-5 py-4 rounded-2xl font-bold transition-all disabled:opacity-50"
                 >
                   {isCleaning ? <Loader2 className="w-5 h-5 animate-spin" /> : <Wand2 className="w-5 h-5" />}
                   {isCleaning ? 'Nettoyage par l\'IA en cours...' : 'Effacer le texte d\'origine par IA'}
@@ -612,7 +612,7 @@ export default function AnnotationApp() {
                 <div className="bg-slate-50 p-2 rounded-2xl border border-slate-200 grid grid-cols-5 gap-1">
                   <button 
                     onClick={() => changeTool('cursor')} 
-                    className={`flex flex-col items-center justify-center py-3 px-1 rounded-xl transition-all ${activeTool === 'cursor' ? 'bg-white shadow-sm text-blue-600 ring-1 ring-slate-200' : 'text-slate-500 hover:bg-slate-100 hover:text-slate-800'}`}
+                    className={`flex flex-col items-center justify-center py-3 px-1 rounded-xl transition-all ${activeTool === 'cursor' ? 'bg-white shadow-sm text-cyan-600 ring-1 ring-slate-200' : 'text-slate-500 hover:bg-slate-100 hover:text-slate-800'}`}
                     title="Sélectionner / Déplacer"
                   >
                     <MousePointer2 className="w-5 h-5 mb-1" />
@@ -620,7 +620,7 @@ export default function AnnotationApp() {
                   </button>
                   <button 
                     onClick={() => changeTool('legend')} 
-                    className={`flex flex-col items-center justify-center py-3 px-1 rounded-xl transition-all ${activeTool === 'legend' ? 'bg-white shadow-sm text-blue-600 ring-1 ring-slate-200' : 'text-slate-500 hover:bg-slate-100 hover:text-slate-800'}`}
+                    className={`flex flex-col items-center justify-center py-3 px-1 rounded-xl transition-all ${activeTool === 'legend' ? 'bg-white shadow-sm text-cyan-600 ring-1 ring-slate-200' : 'text-slate-500 hover:bg-slate-100 hover:text-slate-800'}`}
                     title="Légende avec texte"
                   >
                     <TextCursorInput className="w-5 h-5 mb-1" />
@@ -628,7 +628,7 @@ export default function AnnotationApp() {
                   </button>
                   <button 
                     onClick={() => changeTool('line')} 
-                    className={`flex flex-col items-center justify-center py-3 px-1 rounded-xl transition-all ${activeTool === 'line' ? 'bg-white shadow-sm text-blue-600 ring-1 ring-slate-200' : 'text-slate-500 hover:bg-slate-100 hover:text-slate-800'}`}
+                    className={`flex flex-col items-center justify-center py-3 px-1 rounded-xl transition-all ${activeTool === 'line' ? 'bg-white shadow-sm text-cyan-600 ring-1 ring-slate-200' : 'text-slate-500 hover:bg-slate-100 hover:text-slate-800'}`}
                     title="Ligne continue"
                   >
                     <Slash className="w-5 h-5 mb-1" />
@@ -636,7 +636,7 @@ export default function AnnotationApp() {
                   </button>
                   <button 
                     onClick={() => changeTool('rectangle')} 
-                    className={`flex flex-col items-center justify-center py-3 px-1 rounded-xl transition-all ${activeTool === 'rectangle' ? 'bg-white shadow-sm text-blue-600 ring-1 ring-slate-200' : 'text-slate-500 hover:bg-slate-100 hover:text-slate-800'}`}
+                    className={`flex flex-col items-center justify-center py-3 px-1 rounded-xl transition-all ${activeTool === 'rectangle' ? 'bg-white shadow-sm text-cyan-600 ring-1 ring-slate-200' : 'text-slate-500 hover:bg-slate-100 hover:text-slate-800'}`}
                     title="Zone rectangulaire"
                   >
                     <Square className="w-5 h-5 mb-1" />
@@ -644,7 +644,7 @@ export default function AnnotationApp() {
                   </button>
                   <button 
                     onClick={() => changeTool('brush')} 
-                    className={`flex flex-col items-center justify-center py-3 px-1 rounded-xl transition-all ${activeTool === 'brush' ? 'bg-white shadow-sm text-blue-600 ring-1 ring-slate-200' : 'text-slate-500 hover:bg-slate-100 hover:text-slate-800'}`}
+                    className={`flex flex-col items-center justify-center py-3 px-1 rounded-xl transition-all ${activeTool === 'brush' ? 'bg-white shadow-sm text-cyan-600 ring-1 ring-slate-200' : 'text-slate-500 hover:bg-slate-100 hover:text-slate-800'}`}
                     title="Pinceau de retouche"
                   >
                     <Paintbrush className="w-5 h-5 mb-1" />
@@ -679,7 +679,7 @@ export default function AnnotationApp() {
                         min="2" max="50" step="1"
                         value={brushConfig.size}
                         onChange={(e) => setBrushConfig(prev => ({ ...prev, size: parseInt(e.target.value) }))}
-                        className="w-full accent-blue-600"
+                        className="w-full accent-cyan-600"
                       />
                     </div>
                   </div>
@@ -756,7 +756,7 @@ export default function AnnotationApp() {
                       <div 
                         key={anno.id} 
                         className={`flex items-center justify-between p-3 rounded-xl bg-white border transition-all ${
-                          selectedAnnoId === anno.id ? 'border-blue-500 ring-2 ring-blue-100' : 'border-slate-200'
+                          selectedAnnoId === anno.id ? 'border-cyan-500 ring-2 ring-cyan-100' : 'border-slate-200'
                         }`}
                         onClick={() => { 
                           setSelectedAnnoId(anno.id); 
@@ -825,7 +825,7 @@ export default function AnnotationApp() {
               <div 
                 ref={containerRef}
                 className={`relative inline-block max-w-full max-h-full shadow-lg rounded-xl transition-all ${
-                  activeTool !== 'cursor' ? 'cursor-crosshair ring-4 ring-blue-500/20' : 'cursor-default'
+                  activeTool !== 'cursor' ? 'cursor-crosshair ring-4 ring-cyan-500/20' : 'cursor-default'
                 }`}
                 onMouseDown={handleMouseDown}
                 onMouseMove={handleMouseMove}
@@ -835,7 +835,7 @@ export default function AnnotationApp() {
               >
                 {/* Instruction volante pour la ligne continue */}
                 {activeTool === 'line' && draftShape && (
-                  <div className="absolute top-4 left-1/2 -translate-x-1/2 bg-blue-600/90 text-white px-4 py-2 rounded-full text-xs font-bold shadow-lg animate-pulse pointer-events-none z-20 whitespace-nowrap">
+                  <div className="absolute top-4 left-1/2 -translate-x-1/2 bg-cyan-600/90 text-white px-4 py-2 rounded-full text-xs font-bold shadow-lg animate-pulse pointer-events-none z-20 whitespace-nowrap">
                     Double-cliquez ou appuyez sur Échap pour terminer
                   </div>
                 )}
@@ -1001,10 +1001,10 @@ export default function AnnotationApp() {
                   const isBlackBg = styleId === 'black-bg';
                   
                   const wrapperStyleClass = isNoBg 
-                    ? `bg-transparent ${selectedAnnoId === anno.id ? 'ring-2 ring-blue-500 bg-white/20' : ''}`
+                    ? `bg-transparent ${selectedAnnoId === anno.id ? 'ring-2 ring-cyan-500 bg-white/20' : ''}`
                     : isBlackBg 
-                      ? `bg-slate-900 shadow-md border ${selectedAnnoId === anno.id ? 'ring-2 ring-blue-500 shadow-blue-500/30 border-blue-500' : 'border-slate-900'}`
-                      : `bg-white shadow-md border ${selectedAnnoId === anno.id ? 'ring-2 ring-blue-500 shadow-blue-500/30 border-blue-500' : 'border-slate-200'}`;
+                      ? `bg-slate-900 shadow-md border ${selectedAnnoId === anno.id ? 'ring-2 ring-cyan-500 shadow-blue-500/30 border-cyan-500' : 'border-slate-900'}`
+                      : `bg-white shadow-md border ${selectedAnnoId === anno.id ? 'ring-2 ring-cyan-500 shadow-blue-500/30 border-cyan-500' : 'border-slate-200'}`;
 
                   return (
                   <div 
@@ -1023,7 +1023,7 @@ export default function AnnotationApp() {
                       }}
                       className={`absolute bottom-full mb-1 cursor-grab active:cursor-grabbing p-1 bg-white/80 backdrop-blur rounded-full shadow-sm opacity-0 group-hover:opacity-100 transition-opacity ${selectedAnnoId === anno.id ? 'opacity-100' : ''}`}
                     >
-                      <GripHorizontal className="w-4 h-4 text-slate-400 hover:text-blue-600" />
+                      <GripHorizontal className="w-4 h-4 text-slate-400 hover:text-cyan-600" />
                     </div>
 
                     <div className={`rounded px-3 py-1.5 transition-shadow ${wrapperStyleClass}`}>
