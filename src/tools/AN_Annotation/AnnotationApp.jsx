@@ -583,7 +583,7 @@ export default function AnnotationApp() {
               className="animate-fade-slide-up flex-1 border-2 border-dashed border-slate-200 rounded-[2rem] flex flex-col items-center justify-center p-8 text-center cursor-pointer hover:border-blue-500 hover:bg-blue-50/50 transition-all group"
             >
               <div className="w-20 h-20 bg-white rounded-[1.5rem] shadow-sm border border-slate-50 flex items-center justify-center mb-5 group-hover:scale-105 transition-transform group-hover:shadow-lg mx-auto">
-                <UploadCloud className="w-7 h-7" />
+                <UploadCloud className="text-cyan-600 w-7 h-7" />
               </div>
               <h2 className="text-xl font-bold mb-2">Déposez votre visuel</h2>
               <p className="text-slate-400 text-sm">PNG, JPG ou WEBP • Clic ou Glisser-déposer</p>
