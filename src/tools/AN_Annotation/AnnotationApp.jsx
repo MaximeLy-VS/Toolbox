@@ -545,13 +545,13 @@ export default function AnnotationApp() {
           opacity: 0;
         }
       `}</style>
-    <div className="w-full max-w-[1400px] min-h-[750px] bg-white rounded-[2rem] shadow-[0_30px_100px_rgba(0,0,0,0.08)] overflow-hidden flex flex-col md:flex-row border border-slate-100 animate-fade-slide-up">
+    <div className="w-full max-w-[1400px] bg-white rounded-[2rem] shadow-[0_30px_100px_rgba(0,0,0,0.08)] overflow-hidden flex flex-col md:flex-row border border-slate-100 animate-fade-slide-up">
 
       {/* CARTE PRINCIPALE (Split View) */}
       <div className="w-full max-w-[1400px] bg-white rounded-[2rem] shadow-xl overflow-hidden flex flex-col lg:flex-row min-h-[750px] border border-slate-100">
         
         {/* === PANNEAU GAUCHE : IMPORT & OUTILS (40%) === */}
-        <div className="w-full lg:w-[40%] flex flex-col border-r border-slate-100 p-8 lg:p-12 relative bg-white z-10">
+        <div className="w-full lg:w-[40%] min-h-[750px] flex flex-col border-r border-slate-100 p-8 lg:p-12 relative bg-white z-10">
           
           {/* Header */}
           <div className="flex items-center gap-4 mb-10">
@@ -742,7 +742,7 @@ export default function AnnotationApp() {
               </div>
 
               {/* Liste des annotations */}
-              <div className="flex-1 max-h-30 bg-slate-50/50 rounded-2xl p-5 border border-slate-100 overflow-y-auto">
+              <div className="flex-1 max-h-40 bg-slate-50/50 rounded-2xl p-5 border border-slate-100 overflow-y-auto">
                 <h3 className="text-xs font-bold text-slate-500 uppercase tracking-wider flex mb-4 items-center gap-2">
                   <ListPlus className="w-4 h-4" />
                   Légendes actives ({annotations.length})
