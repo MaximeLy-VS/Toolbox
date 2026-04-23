@@ -531,15 +531,7 @@ export default function AnnotationApp() {
 
   // --- RENDU UI ---
   return (
-    <div className="min-h-screen bg-[#f1f5f9] text-slate-800 font-sans p-6 md:p-10 flex flex-col items-center">
-      
-      {/* BOUTON RETOUR (Hors carte) */}
-      <div className="w-full max-w-[1400px] flex items-center justify-start mb-6">
-        <button className="flex items-center gap-2 text-slate-500 hover:text-slate-800 font-medium bg-white/50 px-4 py-2 rounded-full shadow-sm backdrop-blur-sm transition-all">
-          <ChevronLeft className="w-4 h-4" />
-          Retour au Dashboard
-        </button>
-      </div>
+    <div className="w-full max-w-7xl bg-white rounded-[2rem] shadow-[0_30px_100px_rgba(0,0,0,0.08)] overflow-hidden flex flex-col md:flex-row border border-slate-100 animate-fade-slide-up">
 
       {/* CARTE PRINCIPALE (Split View) */}
       <div className="w-full max-w-[1400px] bg-white rounded-[2rem] shadow-xl overflow-hidden flex flex-col lg:flex-row min-h-[750px] border border-slate-100">
