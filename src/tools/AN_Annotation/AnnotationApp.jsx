@@ -742,7 +742,7 @@ export default function AnnotationApp() {
               </div>
 
               {/* Liste des annotations */}
-              <div className="flex-1 max-h-60 bg-slate-50/50 rounded-2xl p-5 border border-slate-100 overflow-y-auto">
+              <div className="flex-1 max-h-30 bg-slate-50/50 rounded-2xl p-5 border border-slate-100 overflow-y-auto">
                 <h3 className="text-xs font-bold text-slate-500 uppercase tracking-wider flex mb-4 items-center gap-2">
                   <ListPlus className="w-4 h-4" />
                   Légendes actives ({annotations.length})
