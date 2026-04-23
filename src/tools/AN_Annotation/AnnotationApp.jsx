@@ -59,7 +59,7 @@ const fetchWithRetry = async (url, options, maxRetries = 5) => {
   }
 };
 
-export default function App() {
+export default function AnnotationApp() {
   // --- STATE MANAGEMENT ---
   const [imageOriginal, setImageOriginal] = useState(null);
   const [imagePreview, setImagePreview] = useState(null);
