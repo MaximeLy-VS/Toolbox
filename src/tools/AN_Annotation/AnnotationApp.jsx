@@ -925,7 +925,7 @@ export default function AnnotationApp() {
                     const type = anno.type || 'legend';
                     
                     return (
-                      <g key={`shape-${anno.id}`} className={isSelected && type !== 'brush' ? 'opacity-100' : 'opacity-80'}>
+                      <g key={`shape-${anno.id}`} className={isSelected && type !== 'brush' ? 'opacity-100' : 'opacity-100'}>
                         {type === 'brush' ? (
                            <g className={isSelected ? 'drop-shadow-[0_0_4px_rgba(37,99,235,0.8)]' : ''}>
                              {anno.points.map((p, i) => {
