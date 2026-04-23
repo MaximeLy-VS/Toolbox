@@ -149,6 +149,7 @@ const ToolWrapper = ({ children }) => (
 import ANimageApp from './tools/AN_Image/ANimageApp';
 import ANtableApp from './tools/AN_tableau/ANtableApp';
 import MockupApp from './tools/Mockup_app/MockupApp';
+import AnnotationApp from './tools/AN_Annotation/AnnotationApp';
 
 /**
  * --- DASHBOARD PRINCIPAL ---
