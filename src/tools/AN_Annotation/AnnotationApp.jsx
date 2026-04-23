@@ -554,7 +554,7 @@ export default function AnnotationApp() {
         <div className="w-full lg:w-[40%] flex flex-col border-r border-slate-100 p-8 lg:p-12 relative bg-white z-10">
           
           {/* Header */}
-          <div className="flex items-center gap-4 mb-7">
+          <div className="flex items-center gap-4 mb-10">
             <div className="p-3 bg-cyan-600 rounded-2xl shadow-xl shadow-indigo-100">
               <PenLine className="text-white w-7 h-7" />
             </div>
