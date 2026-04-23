@@ -580,9 +580,9 @@ export default function AnnotationApp() {
           {!imageOriginal ? (
             <div 
               onClick={() => fileInputRef.current?.click()}
-              className="flex-1 border-2 border-dashed border-slate-200 rounded-[2rem] flex flex-col items-center justify-center p-8 text-center cursor-pointer hover:border-blue-500 hover:bg-blue-50/50 transition-all group"
+              className="animate-fade-slide-up flex-1 border-2 border-dashed border-slate-200 rounded-[2rem] flex flex-col items-center justify-center p-8 text-center cursor-pointer hover:border-blue-500 hover:bg-blue-50/50 transition-all group"
             >
-              <div className="w-16 h-16 bg-white shadow-sm border border-slate-100 text-cyan-600 rounded-full flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+              <div className="w-20 h-20 bg-white rounded-[1.5rem] shadow-sm border border-slate-50 flex items-center justify-center mb-5 group-hover:scale-105 transition-transform group-hover:shadow-lg mx-auto">
                 <UploadCloud className="w-7 h-7" />
               </div>
               <h2 className="text-xl font-bold mb-2">Déposez votre visuel</h2>
