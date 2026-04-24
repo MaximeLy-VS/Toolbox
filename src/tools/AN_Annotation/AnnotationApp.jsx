@@ -72,7 +72,7 @@ export default function AnnotationApp() {
   const [activeTool, setActiveTool] = useState('cursor'); // 'cursor', 'legend', 'line', 'rectangle', 'brush'
   const [currentLegendStyle, setCurrentLegendStyle] = useState('white-bg'); 
   const [currentRectStyle, setCurrentRectStyle] = useState('outline'); // NOUVEAU: 'outline', 'filled'
-  const [rectColor, setRectColor] = useState('#2563eb'); // NOUVEAU: Couleur pour les zones
+  const [rectColor, setRectColor] = useState('#2563eb');
   const [brushConfig, setBrushConfig] = useState({ color: '#ef4444', size: 12 }); // Configuration par défaut du pinceau (rouge, taille 12)
   const [draftShape, setDraftShape] = useState(null);
   const [selectedAnnoId, setSelectedAnnoId] = useState(null);
@@ -548,10 +548,10 @@ export default function AnnotationApp() {
     <div className="w-full max-w-[1400px] bg-white rounded-[2rem] shadow-[0_30px_100px_rgba(0,0,0,0.08)] overflow-hidden flex flex-col md:flex-row border border-slate-100 animate-fade-slide-up">
 
       {/* CARTE PRINCIPALE (Split View) */}
-      <div className="w-full max-w-[1400px] bg-white rounded-[2rem] shadow-xl overflow-hidden flex flex-col lg:flex-row min-h-[750px] border border-slate-100">
+      <div className="w-full max-w-[1400px] bg-white rounded-[2rem] shadow-xl overflow-hidden flex flex-col lg:flex-row border border-slate-100">
         
         {/* === PANNEAU GAUCHE : IMPORT & OUTILS (40%) === */}
-        <div className="w-full lg:w-[40%] flex flex-col border-r border-slate-100 p-8 lg:p-12 relative bg-white z-10">
+        <div className="w-full lg:w-[40%] flex flex-col border-r border-slate-100 p-8 lg:p-12 relative bg-white z-10 min-h-[750px]">
           
           {/* Header */}
           <div className="flex items-center gap-4 mb-10">
