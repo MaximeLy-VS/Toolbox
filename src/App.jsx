@@ -156,7 +156,10 @@ import AnnotationApp from './tools/AN_Annotation/AnnotationApp';
 /**
  * --- DASHBOARD PRINCIPAL ---
  */
-const Home = () => (
+const Home = () => {
+  const phrases = ["accessibilité numérique", "édition d'images"];
+
+  return (
   <div className="min-h-screen flex flex-col items-center justify-center p-6">
     <header className="mb-16 animate-in fade-in slide-in-from-bottom duration-700 text-center">
       <div className="inline-flex items-center gap-2 px-4 py-2 bg-indigo-50 text-indigo-600 rounded-full text-sm font-bold mb-6">
@@ -218,7 +221,7 @@ const Home = () => (
   </div>
     <footer><p className="mt-8 text-slate-400 text-sm">Maxime Lyon</p></footer>
   </div>
-);
+)};
 
 export default function App() {
   return (
