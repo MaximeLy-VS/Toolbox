@@ -157,7 +157,7 @@ import AnnotationApp from './tools/AN_Annotation/AnnotationApp';
  * --- DASHBOARD PRINCIPAL ---
  */
 const Home = () => {
-  const phrases = ["édition d'images", "accessibilité numérique", "édition d'images", "accessibilité numérique"];
+  const phrases = ["édition d'images", "accessibilité numérique"];
   const animationCSS = " @keyframes slide-vertical { 0%, 20% { transform: translateY(0); } 25%, 45% { transform: translateY(-33.33%); } 50%, 70% { transform: translateY(-66.66%); } 75%, 100% { transform: translateY(0); } } ";
 
   return (
