@@ -157,7 +157,7 @@ import AnnotationApp from './tools/AN_Annotation/AnnotationApp';
  * --- DASHBOARD PRINCIPAL ---
  */
 const Home = () => (
-  <div className="min-h-screen flex flex-col items-center justify-center text-left p-6">
+  <div className="min-h-screen flex flex-col items-center justify-center p-6">
     <header className="mb-16 animate-in fade-in slide-in-from-bottom duration-700 text-center">
       <div className="inline-flex items-center gap-2 px-4 py-2 bg-indigo-50 text-indigo-600 rounded-full text-sm font-bold mb-6">
         <Wrench size={16} /> <span>Toolbox</span>
@@ -167,7 +167,7 @@ const Home = () => (
     </header>
 
 
-      <h2 className="text-3xl font-black text-slate-600 my-4 tracking-tight">Outils d'analyse pour l'accessibilité numérique</h2>
+      <h2 className="text-3xl font-black text-slate-600 my-4 tracking-tight text-left">Outils d'analyse pour l'accessibilité numérique</h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 w-full max-w-6xl">
       {[
         { to: "/tools/AN_Image", title: "Assistant accessibilité des\u00A0images", desc: "Analyse et génération de titre, d'alternative textuelle et\u00A0description\u00A0détaillée.", icon: Brain, color: "bg-blue-600" },
@@ -184,7 +184,7 @@ const Home = () => (
         </Link>
       ))}
         </div>
-      <h2 className="text-3xl font-black text-slate-600 my-4 tracking-tight">Outils d'édition d'images</h2>
+      <h2 className="text-3xl font-black text-slate-600 my-4 tracking-tight text-left">Outils d'édition d'images</h2>
     <div className="grid grid-cols-1 md:grid-cols-3 gap-8 w-full max-w-6xl">
             {[
         { to: "/tools/Mockup_app", title: "Mock-up Studio", desc: "Convertisseur et générateur de\u00A0vignettes et\u00A0bannières.", icon: IconImage, color: "bg-sky-600" },
