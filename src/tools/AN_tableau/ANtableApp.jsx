@@ -213,11 +213,11 @@ Génère UNIQUEMENT un objet JSON valide avec cette structure précise :
                 </div>
               ) : (
                 <div onClick={() => fileInputRef.current.click()} className="flex-1 border-2 border-dashed border-slate-200 rounded-[2rem] flex flex-col items-center justify-center space-y-4 cursor-pointer hover:border-indigo-300 transition-colors">
-                  <div className="animate-fade-slide-up flex-1 p-8 text-center cursor-pointer hover:bg-white transition-all duration-300 ease-in-out flex flex-col items-center justify-center group">
+                  <div className="animate-fade-slide-up flex-1 p-8 text-center cursor-pointer transition-all duration-300 ease-in-out flex flex-col items-center justify-center group">
                     <div className="w-20 h-20 bg-white rounded-[1.5rem] shadow-sm border border-slate-50 flex items-center justify-center mb-5 group-hover:scale-105 transition-transform group-hover:shadow-lg mx-auto">
                       <UploadCloud className="text-indigo-600 mx-auto" size={32} />
                     </div>
-                      <p className="text-slate-800 font-extrabold text-lg">Déposez votre capture d'écran de tableau</p>
+                      <p className="text-slate-800 font-bold text-lg">Déposez une capture d'écran de tableau</p>
                       <p className="text-slate-400 text-xs mt-3 font-medium">PNG, JPG ou WEBP • Ctrl+V supporté</p>
                   </div>
                 </div>
