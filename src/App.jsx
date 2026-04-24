@@ -164,14 +164,14 @@ const Home = () => {
   <div className="min-h-screen flex flex-col items-center justify-center p-6">
 <style dangerouslySetInnerHTML={{ __html: animationCSS }} />
 
-      <header className="mt-20 mb-16 text-center w-full">
+      <header className="mt-20 mb-10 text-center w-full">
         <div className="inline-flex items-center gap-2 px-4 py-2 bg-indigo-50 text-indigo-600 rounded-full text-sm font-bold mb-6">
           <Wrench size={16} /> <span>Toolbox</span>
         </div>
 
         <h1 className="text-4xl md:text-5xl font-black text-slate-900 mb-4 tracking-tight flex flex-wrap justify-center items-middle items-center gap-x-2">
           <span>Mes outils</span></h1>
-        <h1 className="text-4xl md:text-5xl text-slate-900 mb-4 tracking-tight flex flex-wrap justify-center items-middle items-center gap-x-2">
+        <h1 className="text-4xl md:text-5xl font-black text-slate-900 mb-4 tracking-tight flex flex-wrap justify-center items-middle items-center gap-x-2">
           <span 
             className="inline-block overflow-hidden text-indigo-600 h-[1.2em]"
             style={{ verticalAlign: 'bottom' }}
