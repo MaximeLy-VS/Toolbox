@@ -156,67 +156,69 @@ import AnnotationApp from './tools/AN_Annotation/AnnotationApp';
 /**
  * --- DASHBOARD PRINCIPAL ---
  */
-const Home = () => {
-  const phrases = ["accessibilité numérique", "édition d'images"];
-
-  return (
-    // 1. On retire justify-center pour laisser la page couler naturellement
-    // 2. On change min-h-screen en h-full ou on garde min-h-screen mais sans le centrage vertical forcé
-    <div className="min-h-screen flex flex-col items-center p-6 bg-slate-50">
-      
-      {/* Header : On garde un margin-top au lieu du centrage vertical */}
-      <header className="mt-20 mb-16 animate-in fade-in slide-in-from-bottom duration-700 text-center w-full">
-        <div className="inline-flex items-center gap-2 px-4 py-2 bg-indigo-50 text-indigo-600 rounded-full text-sm font-bold mb-6">
-          <Wrench size={16} /> <span>Toolbox</span>
-        </div>
-
-        {/* H1 : On force le block sur mobile et le inline-flex uniquement sur grand écran */}
-        <h1 className="text-4xl md:text-5xl font-black text-slate-900 mb-4 tracking-tight">
-          Mes outils <br className="md:hidden" />
-          <span className="relative h-[1.2em] overflow-hidden inline-flex flex-col text-indigo-600 align-bottom">
-            <span className="animate-slide-vertical text-left">
+const Home = () => (
+  <div className="min-h-screen flex flex-col items-center justify-center p-6">
+    <header className="mb-16 animate-in fade-in slide-in-from-bottom duration-700 text-center">
+      <div className="inline-flex items-center gap-2 px-4 py-2 bg-indigo-50 text-indigo-600 rounded-full text-sm font-bold mb-6">
+        <Wrench size={16} /> <span>Toolbox</span>
+      </div>
+      <h1 className="text-5xl font-black text-slate-900 mb-4 tracking-tight flex flex-col md:flex-row items-center justify-center gap-x-3">
+          Mes outils
+          {/* Conteneur du carrousel */}
+          <span className="relative h-[1.2em] overflow-hidden inline-flex flex-col text-indigo-600">
+            <span className="animate-slide-vertical">
               {phrases.map((phrase, index) => (
                 <span key={index} className="block h-[1.2em]">
                   {phrase}
                 </span>
               ))}
+              {/* On répète la première phrase pour une boucle infinie fluide */}
               <span className="block h-[1.2em]">{phrases[0]}</span>
             </span>
           </span>
         </h1>
-        
-        <p className="text-slate-500 text-lg max-w-xl mx-auto leading-relaxed">
-          Une boite à outils pour faciliter la création de contenus accessibles suivant les directives RGAA.
-        </p>
-      </header>
+      <p className="text-slate-500 text-lg max-w-xl mx-auto leading-relaxed">Une boite à outils pour faciliter la création de contenus accessibles suivant les directives RGAA.</p>
+    </header>
 
-      {/* Conteneur des grilles : On s'assure qu'il prend toute la largeur */}
-      <main className="w-full max-w-6xl space-y-12">
-        <section>
-          <h2 className="text-2xl font-bold text-slate-600 mb-6 tracking-tight">
-            Outils d'analyse pour l'accessibilité numérique
-          </h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {/* ... Tes cartes ici ... */}
+    <div className="flex flex-col text-left">
+      <h2 className="text-3xl font-bold text-slate-600 my-4 tracking-tight text-left">Outils d'analyse pour l'accessibilité numérique</h2>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 w-full max-w-6xl">
+      {[
+        { to: "/tools/AN_Image", title: "Assistant accessibilité des\u00A0images", desc: "Analyse et génération de titre, d'alternative textuelle et\u00A0description\u00A0détaillée.", icon: Brain, color: "bg-blue-600" },
+        { to: "/tools/AN_tableau", title: "Assistant accessibilité des\u00A0tableaux", desc: "Mise en forme accessible des\u00A0tableaux.", icon: TableOK, color: "bg-indigo-600" },
+      ].map((tool, i) => (
+        <Link key={i} to={tool.to} className="group bg-white p-8 rounded-[2.5rem] shadow-xl shadow-indigo-500/5 border border-slate-100 hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 flex flex-col items-start text-left gap-4">
+          <div className={`p-4 rounded-2xl ${tool.color} text-white shadow-lg`}><tool.icon size={24} /></div>
+          <div>
+            <h3 className="text-xl font-bold text-slate-800 mb-1 flex items-center gap-2">
+              {tool.title} <ArrowRight size={18} className="opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all text-indigo-600" />
+            </h3>
+            <p className="text-slate-400 text-sm">{tool.desc}</p>
           </div>
-        </section>
-
-        <section>
-          <h2 className="text-2xl font-bold text-slate-600 mb-6 tracking-tight">
-            Outils d'édition d'images
-          </h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {/* ... Tes cartes ici ... */}
+        </Link>
+      ))}
+        </div>
+      <h2 className="text-3xl font-bold text-slate-600 my-4 tracking-tight text-left">Outils d'édition d'images</h2>
+    <div className="grid grid-cols-1 md:grid-cols-3 gap-8 w-full max-w-6xl">
+            {[
+        { to: "/tools/Mockup_app", title: "Mock-up Studio", desc: "Convertisseur et générateur de\u00A0vignettes et\u00A0bannières.", icon: IconImage, color: "bg-sky-600" },
+        { to: "/tools/AN_Annotation", title: "Éditeur de schémas", desc: "Ajoutez facilement des légendes à\u00A0vos\u00A0schémas\u00A0scientifiques ", icon: PenLine, color: "bg-cyan-600" }
+      ].map((tool, i) => (
+        <Link key={i} to={tool.to} className="group bg-white p-8 rounded-[2.5rem] shadow-xl shadow-indigo-500/5 border border-slate-100 hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 flex flex-col items-start text-left gap-4">
+          <div className={`p-4 rounded-2xl ${tool.color} text-white shadow-lg`}><tool.icon size={24} /></div>
+          <div>
+            <h3 className="text-xl font-bold text-slate-800 mb-1 flex items-center gap-2">
+              {tool.title} <ArrowRight size={18} className="opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all text-indigo-600" />
+            </h3>
+            <p className="text-slate-400 text-sm">{tool.desc}</p>
           </div>
-        </section>
-      </main>
-
-      <footer className="py-12">
-        <p className="text-slate-400 text-sm">Maxime Lyon</p>
-      </footer>
+        </Link>
+      ))}
     </div>
-  );
-};
+  </div>
+    <footer><p className="mt-8 text-slate-400 text-sm">Maxime Lyon</p></footer>
+  </div>
+);
 
 export default function App() {
   return (
