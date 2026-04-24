@@ -160,23 +160,42 @@ const Home = () => {
   const phrases = ["accessibilité numérique", "édition d'images"];
 
   return (
+    <style>{`
+        @keyframes slide-vertical {
+          0%, 20% { transform: translateY(0); }
+          25%, 45% { transform: translateY(-33.33%); }
+          50%, 70% { transform: translateY(-66.66%); }
+          75%, 100% { transform: translateY(0); }
+        }
+      `}</style>
   <div className="min-h-screen flex flex-col items-center justify-center p-6">
     <header className="mb-16 animate-in fade-in slide-in-from-bottom duration-700 text-center">
       <div className="inline-flex items-center gap-2 px-4 py-2 bg-indigo-50 text-indigo-600 rounded-full text-sm font-bold mb-6">
         <Wrench size={16} /> <span>Toolbox</span>
       </div>
-      <h1 className="text-5xl font-black text-slate-900 mb-4 tracking-tight flex flex-col md:flex-row items-center justify-center gap-x-3">
-          Mes outils
-          {/* Conteneur du carrousel */}
-          <span className="relative h-[1.2em] overflow-hidden inline-flex flex-col text-indigo-600">
-            <span className="animate-slide-vertical">
+     <h1 className="text-4xl md:text-5xl font-black text-slate-900 mb-4 tracking-tight flex flex-wrap justify-center gap-x-3">
+          <span>Mes outils</span>
+          
+          {/* Conteneur du carrousel avec styles sécurisés */}
+          <span 
+            className="inline-block overflow-hidden text-indigo-600"
+            style={{ height: '1.2em', verticalAlign: 'bottom' }}
+          >
+            <span 
+              className="flex flex-col"
+              style={{ 
+                animation: 'slide-vertical 6s cubic-bezier(0.83, 0, 0.17, 1) infinite' 
+              }}
+            >
               {phrases.map((phrase, index) => (
-                <span key={index} className="block h-[1.2em]">
+                <span key={index} className="whitespace-nowrap" style={{ lineHeight: '1.2em' }}>
                   {phrase}
                 </span>
               ))}
-              {/* On répète la première phrase pour une boucle infinie fluide */}
-              <span className="block h-[1.2em]">{phrases[0]}</span>
+              {/* Répétition pour la boucle */}
+              <span className="whitespace-nowrap" style={{ lineHeight: '1.2em' }}>
+                {phrases[0]}
+              </span>
             </span>
           </span>
         </h1>
