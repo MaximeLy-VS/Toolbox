@@ -132,9 +132,9 @@ export const CopyButton = ({ text, onClick, label = "Copier", primary = false })
 };
 
 const ToolWrapper = ({ children }) => (
-  <div className="min-h-screen p-4 md:p-8 animate-in fade-in duration-500">
-    <div className="max-w-7xl mx-auto">
-      <Link to="/" className="inline-flex items-center gap-2 text-slate-500 hover:text-indigo-600 font-medium mb-6 group transition-all">
+  <div className="min-h-screen flex flex-col p-4 md:p-8 animate-in fade-in duration-500">
+    <div className="max-w-7xl mx-auto w-full flex-1 flex flex-col min-h-0">
+      <Link to="/" className="inline-flex items-center shrink-0 gap-2 text-slate-500 hover:text-indigo-600 font-medium mb-6 group transition-all">
         <div className="p-2 bg-white rounded-xl shadow-sm group-hover:shadow-md transition-all">
           <ChevronLeft size={20} />
         </div>
@@ -142,7 +142,9 @@ const ToolWrapper = ({ children }) => (
       </Link>
       {children}
     </div>
-   <footer className="text-center"><p className="mt-8 text-slate-400 text-sm">Maxime Lyon</p></footer>
+   <footer className="text-center shrink-0">
+     <p className="mt-8 text-slate-400 text-sm">Maxime Lyon</p>
+   </footer>
   </div>
 );
 
