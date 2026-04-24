@@ -692,23 +692,30 @@ export default function AnnotationApp() {
                       onClick={() => handleStyleChange('white-bg')}
                       className={`flex-1 py-2 rounded-lg text-xs font-bold transition-all border ${currentLegendStyle === 'white-bg' ? 'bg-white shadow-sm border-slate-200 text-slate-800' : 'border-transparent text-slate-500 hover:bg-slate-200/50'}`}
                     >
-                      Fond Blanc
+                      Fond blanc
                     </button>
                     <button 
                       onClick={() => handleStyleChange('black-bg')}
                       className={`flex-1 py-2 rounded-lg text-xs font-bold transition-all border ${currentLegendStyle === 'black-bg' ? 'bg-slate-900 shadow-sm border-slate-900 text-white' : 'border-transparent text-slate-500 hover:bg-slate-200/50'}`}
                     >
-                      Fond Noir
+                      Fond noir
                     </button>
                     <button 
                       onClick={() => handleStyleChange('no-bg')}
                       className={`flex-1 py-2 rounded-lg text-xs font-bold transition-all border ${currentLegendStyle === 'no-bg' ? 'bg-white/50 shadow-sm border-dashed border-slate-300 text-slate-800' : 'border-transparent text-slate-500 hover:bg-slate-200/50'}`}
                     >
-                      Sans Fond
+                      Sans fond
                     </button>
                   </div>
                 )}
 
+                {/* Panneau paramètre (Visible si outil Curseur ou Ligne) */}
+                {(activeTool === 'cursor' || activeTool === 'line') && (
+                  <div className="bg-slate-50 p-1.5 rounded-xl border border-slate-200 flex gap-1 animate-in fade-in slide-in-from-top-2">
+                    <p>Panneau de paramètres contextuels des outils</p>
+                  </div>
+                )}
+                
                 {/* NOUVEAU: Sélecteur de style pour Rectangle (Zone) */}
                 {(activeTool === 'rectangle' || (selectedAnnoId && annotations.find(a => a.id === selectedAnnoId && a.type === 'rectangle'))) && (
                   <div className="bg-slate-50 p-3 rounded-xl border border-slate-200 animate-in fade-in slide-in-from-top-2 space-y-3">
