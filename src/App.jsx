@@ -157,7 +157,7 @@ import AnnotationApp from './tools/AN_Annotation/AnnotationApp';
  * --- DASHBOARD PRINCIPAL ---
  */
 const Home = () => {
-  const phrases = ["accessibilité numérique", "édition d'images"];
+  const phrases = ["édition d'images", "accessibilité numérique", "édition d'images"];
   const animationCSS = " @keyframes slide-vertical { 0%, 20% { transform: translateY(0); } 25%, 45% { transform: translateY(-33.33%); } 50%, 70% { transform: translateY(-66.66%); } 75%, 100% { transform: translateY(0); } } ";
 
   return (
@@ -178,7 +178,7 @@ const Home = () => {
           >
             <span 
               className="flex flex-col"
-              style={{ animation: 'slide-vertical 6s infinite' }}
+              style={{ animation: 'slide-vertical 15s infinite' }}
             >
               {phrases.map((p, i) => (
                 <span key={i} className="block whitespace-nowrap h-[1.2em]">{p}</span>
