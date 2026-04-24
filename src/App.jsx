@@ -205,8 +205,9 @@ const Home = () => {
         <div className="inline-flex gap-3">
           <div className={`inline-block p-4 rounded-2xl ${tool.color} text-white shadow-lg`}><tool.icon size={24} /></div>
             <h3 className="text-xl font-bold text-slate-800 mb-1 flex items-center tracking-tighter">
-              {tool.title} <ArrowRight size={18} className="opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all text-indigo-600" />
+              {tool.title}
             </h3>
+           <ArrowRight size={18} className="opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all text-indigo-600" />
         </div>
             <p className="text-slate-400 text-sm">{tool.desc}</p>
         </Link>
@@ -224,8 +225,8 @@ const Home = () => {
           <h3 className="text-xl font-bold text-slate-800 mb-1 flex items-center tracking-tighter">
               {tool.title}
             </h3>
-        </div>
            <ArrowRight size={18} className="opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all text-indigo-600" />
+        </div>
             <p className="text-slate-400 text-sm">{tool.desc}</p>
         </Link>
       ))}
