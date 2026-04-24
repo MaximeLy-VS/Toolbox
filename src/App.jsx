@@ -164,7 +164,7 @@ const Home = () => {
   <div className="min-h-screen flex flex-col items-center justify-center p-6">
 <style dangerouslySetInnerHTML={{ __html: animationCSS }} />
 
-      <header className="mt-15 mb-10 text-center w-full">
+      <header className="mt-18 mb-7 text-center w-full">
         <div className="inline-flex items-center gap-2 px-4 py-2 bg-indigo-50 text-indigo-600 rounded-full text-sm font-bold mb-6">
           <Wrench size={16} /> <span>Toolbox</span>
         </div>
