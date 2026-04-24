@@ -170,7 +170,7 @@ const Home = () => {
         </div>
 
         <h1 className="text-4xl md:text-5xl font-black text-slate-900 mb-4 tracking-tight flex flex-wrap justify-center items-center gap-x-2">
-          <span>Mes outils</span>
+          <span>Mes outils</span><br/>
           <span 
             className="inline-block overflow-hidden text-indigo-600 h-[1.2em]"
             style={{ verticalAlign: 'bottom' }}
