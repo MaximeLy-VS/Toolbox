@@ -158,41 +158,39 @@ import AnnotationApp from './tools/AN_Annotation/AnnotationApp';
  */
 const Home = () => {
   const phrases = ["accessibilité numérique", "édition d'images"];
+  const animationCSS = " @keyframes slide-vertical { 0%, 20% { transform: translateY(0); } 25%, 45% { transform: translateY(-33.33%); } 50%, 70% { transform: translateY(-66.66%); } 75%, 100% { transform: translateY(0); } } ";
 
   return (
   <div className="min-h-screen flex flex-col items-center justify-center p-6">
-    <header className="mb-16 animate-in fade-in slide-in-from-bottom duration-700 text-center">
-      <div className="inline-flex items-center gap-2 px-4 py-2 bg-indigo-50 text-indigo-600 rounded-full text-sm font-bold mb-6">
-        <Wrench size={16} /> <span>Toolbox</span>
-      </div>
-     <h1 className="text-4xl md:text-5xl font-black text-slate-900 mb-4 tracking-tight flex flex-wrap justify-center gap-x-3">
+<style dangerouslySetInnerHTML={{ __html: animationCSS }} />
+
+      <header className="mt-20 mb-16 text-center w-full">
+        <div className="inline-flex items-center gap-2 px-4 py-2 bg-indigo-50 text-indigo-600 rounded-full text-sm font-bold mb-6">
+          <Wrench size={16} /> <span>Toolbox</span>
+        </div>
+
+        <h1 className="text-4xl md:text-5xl font-black text-slate-900 mb-4 tracking-tight flex flex-wrap justify-center items-center gap-x-2">
           <span>Mes outils</span>
-          
-          {/* Conteneur du carrousel avec styles sécurisés */}
           <span 
-            className="inline-block overflow-hidden text-indigo-600"
-            style={{ height: '1.2em', verticalAlign: 'bottom' }}
+            className="inline-block overflow-hidden text-indigo-600 h-[1.2em]"
+            style={{ verticalAlign: 'bottom' }}
           >
             <span 
               className="flex flex-col"
-              style={{ 
-                animation: 'slide-vertical 6s cubic-bezier(0.83, 0, 0.17, 1) infinite' 
-              }}
+              style={{ animation: 'slide-vertical 6s infinite' }}
             >
-              {phrases.map((phrase, index) => (
-                <span key={index} className="whitespace-nowrap" style={{ lineHeight: '1.2em' }}>
-                  {phrase}
-                </span>
+              {phrases.map((p, i) => (
+                <span key={i} className="block whitespace-nowrap h-[1.2em]">{p}</span>
               ))}
-              {/* Répétition pour la boucle */}
-              <span className="whitespace-nowrap" style={{ lineHeight: '1.2em' }}>
-                {phrases[0]}
-              </span>
+              <span className="block whitespace-nowrap h-[1.2em]">{phrases[0]}</span>
             </span>
           </span>
         </h1>
-      <p className="text-slate-500 text-lg max-w-xl mx-auto leading-relaxed">Une boite à outils pour faciliter la création de contenus accessibles suivant les directives RGAA.</p>
-    </header>
+
+        <p className="text-slate-500 text-lg max-w-xl mx-auto leading-relaxed">
+          Une boite à outils pour faciliter la création de contenus accessibles suivant les directives RGAA.
+        </p>
+      </header>
 
     <div className="flex flex-col text-left">
       <h2 className="text-3xl font-bold text-slate-600 my-4 tracking-tight text-left">Outils d'analyse pour l'accessibilité numérique</h2>
@@ -232,14 +230,6 @@ const Home = () => {
   </div>
     <footer><p className="mt-8 text-slate-400 text-sm">Maxime Lyon</p></footer>
   </div>
-     <style>{'
-        @keyframes slide-vertical {
-          0%, 20% { transform: translateY(0); }
-          25%, 45% { transform: translateY(-33.33%); }
-          50%, 70% { transform: translateY(-66.66%); }
-          75%, 100% { transform: translateY(0); }
-          }
-        '}</style>
   </div>
 );
 };
