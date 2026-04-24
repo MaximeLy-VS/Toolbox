@@ -160,14 +160,6 @@ const Home = () => {
   const phrases = ["accessibilité numérique", "édition d'images"];
 
   return (
-    <style>{`
-        @keyframes slide-vertical {
-          0%, 20% { transform: translateY(0); }
-          25%, 45% { transform: translateY(-33.33%); }
-          50%, 70% { transform: translateY(-66.66%); }
-          75%, 100% { transform: translateY(0); }
-        }
-      `}</style>
   <div className="min-h-screen flex flex-col items-center justify-center p-6">
     <header className="mb-16 animate-in fade-in slide-in-from-bottom duration-700 text-center">
       <div className="inline-flex items-center gap-2 px-4 py-2 bg-indigo-50 text-indigo-600 rounded-full text-sm font-bold mb-6">
@@ -240,6 +232,14 @@ const Home = () => {
   </div>
     <footer><p className="mt-8 text-slate-400 text-sm">Maxime Lyon</p></footer>
   </div>
+  <style>{`
+        @keyframes slide-vertical {
+          0%, 20% { transform: translateY(0); }
+          25%, 45% { transform: translateY(-33.33%); }
+          50%, 70% { transform: translateY(-66.66%); }
+          75%, 100% { transform: translateY(0); }
+        }
+  `}</style>
 )};
 
 export default function App() {
