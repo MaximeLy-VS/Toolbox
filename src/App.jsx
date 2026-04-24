@@ -232,7 +232,7 @@ const Home = () => {
   </div>
     <footer><p className="mt-8 text-slate-400 text-sm">Maxime Lyon</p></footer>
   </div>
-  <style>{`
+     <style>{`
         @keyframes slide-vertical {
           0%, 20% { transform: translateY(0); }
           25%, 45% { transform: translateY(-33.33%); }
@@ -240,6 +240,7 @@ const Home = () => {
           75%, 100% { transform: translateY(0); }
         }
   `}</style>
+  </div>
 )};
 
 export default function App() {
