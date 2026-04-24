@@ -1,6 +1,7 @@
 import React, { useState, useCallback, useEffect, useRef } from 'react';
 import { HashRouter as Router, Routes, Route, Link } from 'react-router-dom';
 import backgroundImage from './assets/Background.jpg';
+import { Wrench } from "lucide-react";
 import { 
   Upload as IconUpload, 
   Image as IconImage, 
@@ -156,13 +157,29 @@ import AnnotationApp from './tools/AN_Annotation/AnnotationApp';
 /**
  * --- DASHBOARD PRINCIPAL ---
  */
-const Home = () => (
+const Home = () => {
+  const phrases = ["accessibilité numérique", "édition d'images"];
+  return (
   <div className="min-h-screen flex flex-col items-center justify-center p-6">
     <header className="mb-16 animate-in fade-in slide-in-from-bottom duration-700 text-center">
       <div className="inline-flex items-center gap-2 px-4 py-2 bg-indigo-50 text-indigo-600 rounded-full text-sm font-bold mb-6">
         <Wrench size={16} /> <span>Toolbox</span>
       </div>
-      <h1 className="text-5xl font-black text-slate-900 mb-4 tracking-tight">Mes outils <span className="text-indigo-600">accessibilité numérique</span></h1>
+      <h1 className="text-5xl font-black text-slate-900 mb-4 tracking-tight flex flex-col md:flex-row items-center justify-center gap-x-3">
+          Mes outils
+          {/* Conteneur du carrousel */}
+          <span className="relative h-[1.2em] overflow-hidden inline-flex flex-col text-indigo-600">
+            <span className="animate-slide-vertical">
+              {phrases.map((phrase, index) => (
+                <span key={index} className="block h-[1.2em]">
+                  {phrase}
+                </span>
+              ))}
+              {/* On répète la première phrase pour une boucle infinie fluide */}
+              <span className="block h-[1.2em]">{phrases[0]}</span>
+            </span>
+          </span>
+        </h1>
       <p className="text-slate-500 text-lg max-w-xl mx-auto leading-relaxed">Une boite à outils pour faciliter la création de contenus accessibles suivant les directives RGAA.</p>
     </header>
 
@@ -204,7 +221,7 @@ const Home = () => (
   </div>
     <footer><p className="mt-8 text-slate-400 text-sm">Maxime Lyon</p></footer>
   </div>
-);
+)};
 
 export default function App() {
   return (
