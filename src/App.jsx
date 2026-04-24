@@ -202,11 +202,12 @@ const Home = () => {
         { to: "/", title: "À venir", desc: "D'autres outils pour l'accessibilité numérique à déveloper.", icon: IconLoader, color: "bg-cyan-800" },
       ].map((tool, i) => (
         <Link key={i} to={tool.to} className="group bg-white p-6 rounded-[2rem] shadow-xl shadow-indigo-500/5 border border-slate-100 hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 flex flex-col items-start text-left gap-4">
-          <div className={`p-4 rounded-2xl ${tool.color} text-white shadow-lg`}><tool.icon size={24} />
+        <div>
+          <div className={`p-4 rounded-2xl ${tool.color} text-white shadow-lg`}><tool.icon size={24} /></div>
             <h3 className="text-xl font-bold text-slate-800 mb-1 flex items-center gap-2">
               {tool.title} <ArrowRight size={18} className="opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all text-indigo-600" />
-            </h3>        
-          </div>
+            </h3>
+        </div>
             <p className="text-slate-400 text-sm">{tool.desc}</p>
         </Link>
       ))}
@@ -218,11 +219,12 @@ const Home = () => {
         { to: "/tools/AN_Annotation", title: "Éditeur de schémas", desc: "Ajoutez facilement des légendes à\u00A0vos\u00A0schémas\u00A0scientifiques ", icon: PenLine, color: "bg-cyan-600" }
       ].map((tool, i) => (
         <Link key={i} to={tool.to} className="group bg-white  p-6 rounded-[2rem] shadow-xl shadow-indigo-500/5 border border-slate-100 hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 flex flex-col items-start text-left gap-4">
-          <div className={`p-4 rounded-2xl ${tool.color} text-white shadow-lg`}><tool.icon size={24} />
+        <div>
+          <div className={`p-4 rounded-2xl ${tool.color} text-white shadow-lg`}><tool.icon size={24} /></div>
             <h3 className="text-xl font-bold text-slate-800 mb-1 flex items-center gap-2">
               {tool.title} <ArrowRight size={18} className="opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all text-indigo-600" />
             </h3>
-            </div>
+        </div>
             <p className="text-slate-400 text-sm">{tool.desc}</p>
         </Link>
       ))}
