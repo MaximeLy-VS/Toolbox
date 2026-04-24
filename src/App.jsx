@@ -167,7 +167,7 @@ const Home = () => (
     </header>
 
 
-      <h2 className="text-4xl font-black text-slate-700 mx-4 tracking-tight">Outils d'analyse pour l'accessibilité numérique</h2>
+      <h2 className="text-4xl font-black text-slate-700 my-4 tracking-tight">Outils d'analyse pour l'accessibilité numérique</h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 w-full max-w-6xl">
       {[
         { to: "/tools/AN_Image", title: "Assistant accessibilité des\u00A0images", desc: "Analyse et génération de titre, d'alternative textuelle et\u00A0description\u00A0détaillée.", icon: Brain, color: "bg-blue-600" },
@@ -184,7 +184,7 @@ const Home = () => (
         </Link>
       ))}
         </div>
-      <h2 className="text-4xl font-black text-slate-700 mx-4 tracking-tight">Outils d'édition d'images</h2>
+      <h2 className="text-4xl font-black text-slate-700 my-4 tracking-tight">Outils d'édition d'images</h2>
     <div className="grid grid-cols-1 md:grid-cols-3 gap-8 w-full max-w-6xl">
             {[
         { to: "/tools/Mockup_app", title: "Mock-up Studio", desc: "Convertisseur et générateur de\u00A0vignettes et\u00A0bannières.", icon: IconImage, color: "bg-sky-600" },
