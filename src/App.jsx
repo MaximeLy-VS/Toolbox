@@ -1,7 +1,6 @@
 import React, { useState, useCallback, useEffect, useRef } from 'react';
 import { HashRouter as Router, Routes, Route, Link } from 'react-router-dom';
 import backgroundImage from './assets/Background.jpg';
-import { Wrench } from "lucide-react";
 import { 
   Upload as IconUpload, 
   Image as IconImage, 
