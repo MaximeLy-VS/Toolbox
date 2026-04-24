@@ -230,7 +230,6 @@ const Home = () => {
   </div>
     <footer><p className="mt-8 text-slate-400 text-sm">Maxime Lyon</p></footer>
   </div>
-  </div>
 );
 };
 
