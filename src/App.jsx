@@ -191,13 +191,7 @@ const Home = () => (
 export default function App() {
   return (
     <Router>
-      <div className="relative min-h-screen font-sans antialiased text-slate-900 bg-[#fbfcfd]" style={{ backgroundImage: `url(${backgroundImage})` }}>
-        <div className="fixed inset-0 z-0 pointer-events-none">
-          <div className="absolute top-0 left-0 w-full h-full bg-white/60 backdrop-blur-[2px]" />
-          <div className="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] bg-blue-100/40 blur-[120px] rounded-full" />
-          <div className="absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] bg-indigo-100/40 blur-[120px] rounded-full" />
-        </div>
-        
+      <div className="relative min-h-screen font-sans antialiased text-slate-900 bg-[#fbfcfd]" style={{ backgroundImage: `url(${backgroundImage})` }}>       
         <main className="relative z-10">
           <Routes>
             <Route path="/" element={<Home />} />
