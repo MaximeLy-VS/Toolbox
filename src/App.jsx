@@ -166,7 +166,7 @@ const Home = () => (
       <p className="text-slate-500 text-lg max-w-xl mx-auto leading-relaxed">Une boite à outils pour faciliter la création de contenus accessibles suivant les directives RGAA.</p>
     </header>
 
-
+    <div className="flex flex-col text-left">
       <h2 className="text-3xl font-black text-slate-600 my-4 tracking-tight text-left">Outils d'analyse pour l'accessibilité numérique</h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 w-full max-w-6xl">
       {[
@@ -201,6 +201,7 @@ const Home = () => (
         </Link>
       ))}
     </div>
+  </div>
     <footer><p className="mt-8 text-slate-400 text-sm">Maxime Lyon</p></footer>
   </div>
 );
