@@ -711,8 +711,8 @@ export default function AnnotationApp() {
 
                 {/* Panneau paramètre (Visible si outil Curseur ou Ligne) */}
                 {(activeTool === 'cursor' || activeTool === 'line') && (
-                  <div className="bg-slate-50 p-1.5 rounded-xl border border-slate-200 flex gap-1 animate-in fade-in slide-in-from-top-2">
-                    <p>Panneau de paramètres contextuels des outils</p>
+                  <div className="bg-slate-50 p-1.5 rounded-xl border border-slate-200 taxt-align-center flex gap-1 animate-in fade-in slide-in-from-top-2">
+                    <p className="text-slate-400 text-sm mx-auto italic">Panneau de paramètres contextuels des outils</p>
                   </div>
                 )}
                 
