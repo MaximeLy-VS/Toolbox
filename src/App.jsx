@@ -152,6 +152,7 @@ import ANimageApp from './tools/AN_Image/ANimageApp';
 import ANtableApp from './tools/AN_tableau/ANtableApp';
 import MockupApp from './tools/Mockup_app/MockupApp';
 import AnnotationApp from './tools/AN_Annotation/AnnotationApp';
+import MoodleQuizApp from './tools/Quiz_app/QuizApp';
 
 /**
  * --- DASHBOARD PRINCIPAL ---
@@ -248,6 +249,7 @@ export default function App() {
             <Route path="/tools/AN_tableau" element={<ToolWrapper><ANtableApp /></ToolWrapper>} />
             <Route path="/tools/Mockup_app" element={<ToolWrapper><MockupApp /></ToolWrapper>} />
             <Route path="/tools/AN_Annotation" element={<ToolWrapper><AnnotationApp /></ToolWrapper>} />
+            <Route path="/tools/Quiz_app" element={<ToolWrapper><MoodleQuizApp /></ToolWrapper>} />
           </Routes>
         </main>
       </div>
