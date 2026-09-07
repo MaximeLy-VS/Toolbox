@@ -214,6 +214,7 @@ const Home = () => {
         </Link>
       ))}
         </div>
+      
       <h2 className="text-3xl font-bold text-slate-600 my-4 tracking-tight text-left">Outils d'édition d'images</h2>
     <div className="grid grid-cols-1 md:grid-cols-3 gap-8 w-full max-w-6xl">
             {[
@@ -232,7 +233,7 @@ const Home = () => {
         </Link>
       ))}
     </div>
-  </div>
+      
     <h2 className="text-3xl font-bold text-slate-600 my-4 tracking-tight text-left">Outils de préparation moodle</h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 w-full max-w-6xl">
             {[
