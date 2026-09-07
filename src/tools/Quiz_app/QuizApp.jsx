@@ -512,8 +512,10 @@ export default function MoodleQuizApp() {
             <div className="space-y-2 pt-2">
               <div className="flex justify-between items-center">
                 <label className="text-xs font-black text-slate-500 uppercase tracking-widest">Gabarit Word Rempli</label>
-                <button onClick={DownloadGabarit} className="text-xs font-bold text-blue-600 hover:text-blue-800 flex items-center gap-1 bg-blue-50 px-2 py-1 rounded-md transition-colors">
-                <Plus size={14} /> Gabarit vierge
+                <button className="text-xs font-bold text-blue-600 hover:text-blue-800 flex items-center gap-1 bg-blue-50 px-2 py-1 rounded-md transition-colors" size={14}>
+                  <a href={`${process.env.PUBLIC_URL}/tools/Quiz_app/DA-WB_Gabarit.docx`} download="DA-WB_Gabarit.docx">
+                  Gabarit vierge
+                  </a>
                 </button>
               </div>
               <input type="file" ref={fileInputRef} className="hidden" accept=".docx" onChange={(e) => setFile(e.target.files[0])} />
