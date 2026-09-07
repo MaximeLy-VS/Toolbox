@@ -430,7 +430,7 @@ export default function MoodleQuizApp() {
   };
 
   return (
-      
+      <div>
         {/* PARTIE GAUCHE : Configuration & Import */}
         <div className="lg:w-[45%] p-8 flex flex-col border-r border-slate-100 bg-white overflow-y-auto max-h-[90vh]">
           <header className="mb-8">
@@ -572,5 +572,6 @@ export default function MoodleQuizApp() {
             </div>
           )}
         </div>
+   </div>
   );
 }
