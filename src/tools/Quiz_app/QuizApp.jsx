@@ -13,7 +13,7 @@ const loadJSZip = async () => {
   });
 };
 
-export default function MoodleQuizGenerator() {
+export default function MoodleQuizApp() {
   const [file, setFile] = useState(null);
   const [quizId, setQuizId] = useState("MonQuiz");
   const [descriptions, setDescriptions] = useState(["<div class=\"FondCouleur1 p-3\">\n  <strong>Mission 1</strong>\n</div>"]);
