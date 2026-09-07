@@ -12,7 +12,7 @@ const loadJSZip = async () => {
     document.head.appendChild(script);
   });
 };
-export default function MoodleQuizGenerator() {
+export default function MoodleQuizApp() {
   const [file, setFile] = useState(null);
   const [quizId, setQuizId] = useState("MonQuiz");
   const [descriptions, setDescriptions] = useState(["<div class=\"FondCouleur1 p-3\">\n  <strong>Mission 1</strong>\n</div>"]);
@@ -90,13 +90,6 @@ export default function MoodleQuizGenerator() {
     return str;
   };
 
-  const cleanCellText = (str) => {
-    if (!str) return "";
-    let cleaned = str.trim();
-    // Application des règles typographiques sur chaque cellule extraite
-    return applyGrepRules(cleaned);
-  };
-
   const copyToClipboard = (text) => {
     if (navigator.clipboard && window.isSecureContext) {
       navigator.clipboard.writeText(text).then(() => {
@@ -165,6 +158,81 @@ export default function MoodleQuizGenerator() {
         throw new Error("Aucun tableau trouvé dans le document.");
       }
 
+      // 1. Extracteur Brut (Pour lire les mots-clés comme "Code", ou les "x" des cases)
+      const getRawCellText = (cellNode) => {
+        if (!cellNode) return "";
+        const textNodes = cellNode.getElementsByTagName("w:t");
+        let str = "";
+        for (let t = 0; t < textNodes.length; t++) {
+          str += textNodes[t].textContent;
+        }
+        return str;
+      };
+
+      // 2. Extracteur Enrichi (Pour le contenu : Sauts de ligne, Listes UL/LI, et GREP)
+      const extractAndCleanCell = (cellNode) => {
+        if (!cellNode) return "";
+        let htmlContent = "";
+        let inList = false;
+
+        const paragraphs = cellNode.getElementsByTagName("w:p");
+        for (let p = 0; p < paragraphs.length; p++) {
+          const pNode = paragraphs[p];
+          
+          // Détection d'un élément de liste Word
+          const numPr = pNode.getElementsByTagName("w:numPr");
+          const isListItem = numPr.length > 0;
+
+          // Extraction du texte et des retours à la ligne manuels (Shift+Entrée)
+          let pText = "";
+          const runs = pNode.getElementsByTagName("w:r");
+          for (let r = 0; r < runs.length; r++) {
+            const run = runs[r];
+            for (let c = 0; c < run.childNodes.length; c++) {
+              const child = run.childNodes[c];
+              if (child.nodeName === "w:t") {
+                pText += child.textContent;
+              } else if (child.nodeName === "w:br") {
+                pText += "\n";
+              }
+            }
+          }
+
+          let trimmedText = pText.trim();
+          // Ignorer les paragraphes 100% vides (sans texte et sans saut de ligne manuel)
+          if (!trimmedText && !pText.includes("\n")) continue; 
+
+          // Application du GREP sur le texte pur AVANT d'ajouter les balises HTML (sécurité)
+          let cleanedText = applyGrepRules(trimmedText).replace(/\n/g, "<br>");
+
+          if (isListItem) {
+            if (!inList) {
+              // Ajout d'un <br> si la liste est précédée par du texte
+              if (htmlContent !== "") htmlContent += "<br>"; 
+              htmlContent += `<ul class="Pucecned18">\n`;
+              inList = true;
+            }
+            htmlContent += `  <li>${cleanedText}</li>\n`;
+          } else {
+            if (inList) {
+              htmlContent += `</ul>\n`;
+              inList = false;
+            }
+            // S'il y a déjà du contenu, on sépare ce nouveau paragraphe par un <br>
+            if (htmlContent !== "") {
+              htmlContent += "<br>";
+            }
+            htmlContent += cleanedText;
+          }
+        }
+
+        if (inList) {
+          htmlContent += `</ul>`;
+        }
+
+        return htmlContent;
+      };
+
       let generatedXml = `<?xml version="1.0" encoding="UTF-8"?>\n<quiz>\n`;
       
       // Catégorie racine (Nommée avec l'Identifiant)
@@ -186,20 +254,9 @@ export default function MoodleQuizGenerator() {
         
         if (rows.length < 6) continue; // Pas un tableau de question
 
-        // Extraction des textes bruts de chaque cellule via helper
-        const getCellText = (cellNode) => {
-          if (!cellNode) return "";
-          const textNodes = cellNode.getElementsByTagName("w:t");
-          let str = "";
-          for (let t = 0; t < textNodes.length; t++) {
-            str += textNodes[t].textContent;
-          }
-          return str;
-        };
-
         // On vérifie que c'est un tableau de question (Mot "Code" ligne 1, col 1)
         const cell1_1 = rows[0].getElementsByTagName("w:tc")[0];
-        if (!getCellText(cell1_1).toLowerCase().includes("code")) continue;
+        if (!getRawCellText(cell1_1).toLowerCase().includes("code")) continue;
 
         const qName = `${quizId}_Q${String(questionCounter).padStart(3, '0')}`;
         
@@ -207,19 +264,19 @@ export default function MoodleQuizGenerator() {
         const row2Cells = rows[1].getElementsByTagName("w:tc");
         let qPoint = "1";
         if (row2Cells.length >= 4) {
-           qPoint = getCellText(row2Cells[3]).trim() || "1";
+           qPoint = getRawCellText(row2Cells[3]).trim() || "1";
         }
 
         // Énoncé (Ligne 4, col 2 -> index 1)
         const row4Cells = rows[3].getElementsByTagName("w:tc");
         let qText = "";
-        if (row4Cells.length >= 2) qText = cleanCellText(getCellText(row4Cells[1]));
+        if (row4Cells.length >= 2) qText = extractAndCleanCell(row4Cells[1]);
 
         // Feedback (Dernière ligne)
         const lastRowCells = rows[rows.length - 1].getElementsByTagName("w:tc");
         let gFeedback = "";
-        if (lastRowCells.length >= 3) gFeedback = cleanCellText(getCellText(lastRowCells[2]));
-        else if (lastRowCells.length >= 2) gFeedback = cleanCellText(getCellText(lastRowCells[1]));
+        if (lastRowCells.length >= 3) gFeedback = extractAndCleanCell(lastRowCells[2]);
+        else if (lastRowCells.length >= 2) gFeedback = extractAndCleanCell(lastRowCells[1]);
 
         let rowData = [];
         let nbBonnesReponses = 0;
@@ -231,8 +288,8 @@ export default function MoodleQuizGenerator() {
           if (cells.length < 2) continue;
 
           const cellNode = cells[0]; // Cellule de la case à cocher
-          const rawCellText = getCellText(cellNode);
-          const answerText = cleanCellText(getCellText(cells[1]));
+          const rawCellText = getRawCellText(cellNode);
+          const answerText = extractAndCleanCell(cells[1]);
 
           let isChecked = false;
           
