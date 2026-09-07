@@ -430,9 +430,7 @@ export default function MoodleQuizApp() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 font-sans text-slate-800 p-8 flex justify-center">
-      <div className="w-full max-w-7xl bg-white rounded-[2rem] shadow-xl overflow-hidden flex flex-col lg:flex-row border border-slate-200">
-        
+      
         {/* PARTIE GAUCHE : Configuration & Import */}
         <div className="lg:w-[45%] p-8 flex flex-col border-r border-slate-100 bg-white overflow-y-auto max-h-[90vh]">
           <header className="mb-8">
@@ -574,8 +572,5 @@ export default function MoodleQuizApp() {
             </div>
           )}
         </div>
-
-      </div>
-    </div>
   );
 }
