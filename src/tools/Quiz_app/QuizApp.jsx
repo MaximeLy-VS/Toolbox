@@ -430,7 +430,22 @@ export default function MoodleQuizApp() {
   };
 
   return (
-      <div>
+   <div>
+      <style>{`
+        @keyframes fadeSlideUp {
+          from { opacity: 0; transform: translateY(15px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fade-slide-up {
+          animation: fadeSlideUp 0.5s ease-in-out forwards;
+        }
+        .animate-fade-slide-up-delayed {
+          animation: fadeSlideUp 0.5s ease-in-out 0.15s forwards;
+          opacity: 0;
+        }
+      `}</style>
+
+      <div className="w-full max-w-7xl bg-white rounded-[2rem] shadow-[0_30px_100px_rgba(0,0,0,0.08)] overflow-hidden flex flex-col md:flex-row border border-slate-100 animate-fade-slide-up">
         {/* PARTIE GAUCHE : Configuration & Import */}
         <div className="lg:w-[45%] p-8 flex flex-col border-r border-slate-100 bg-white overflow-y-auto max-h-[90vh]">
           <header className="mb-8">
@@ -572,6 +587,7 @@ export default function MoodleQuizApp() {
             </div>
           )}
         </div>
+   </div>
    </div>
   );
 }
