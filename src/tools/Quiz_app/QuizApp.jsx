@@ -478,10 +478,8 @@ export default function MoodleQuizApp() {
             <div className="space-y-3">
               <div className="flex justify-between items-center">
                 <label className="text-xs font-black text-slate-500 uppercase tracking-widest">Consignes / Missions</label>
-                <button className="text-xs font-bold text-blue-600 hover:text-blue-800 flex items-center gap-1 bg-blue-50 px-2 py-1 rounded-md transition-colors">
-                  <a href={`${process.env.PUBLIC_URL}/tools/Quiz_app/DA-WB_Gabarit.docx`} download="DA-WB_Gabarit.docx" size={14}>
-                    Gabarit vierge
-                  </a>
+                <button onClick={addDescription} className="text-xs font-bold text-blue-600 hover:text-blue-800 flex items-center gap-1 bg-blue-50 px-2 py-1 rounded-md transition-colors">
+                  <Plus size={14} /> Ajouter
                 </button>
               </div>
               
