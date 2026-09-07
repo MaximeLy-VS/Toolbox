@@ -233,6 +233,24 @@ const Home = () => {
       ))}
     </div>
   </div>
+    <h2 className="text-3xl font-bold text-slate-600 my-4 tracking-tight text-left">Outils de préparation moodle</h2>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 w-full max-w-6xl">
+            {[
+        { to: "/tools/Quiz_app", title: "Générarteur de XML quiz moodle", desc: "Convertisseur et générateur de\u00A0vignettes et\u00A0bannières.", icon: IconTable, color: "bg-pink-600" },
+      ].map((tool, i) => (
+        <Link key={i} to={tool.to} className="group bg-white  p-6 rounded-[2rem] shadow-xl shadow-indigo-500/5 border border-slate-100 hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 flex flex-col items-start text-left gap-4">
+        <div className="inline-flex gap-3 items-center">
+          <div className={`p-4 inline-block rounded-2xl ${tool.color} text-white shadow-lg`}><tool.icon size={24} /></div>
+          <h3 className="text-xl font-bold text-slate-800 mb-1 flex items-center tracking-tighter">
+              {tool.title}
+            </h3>
+           <ArrowRight size={24} className="opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all text-indigo-600" />
+        </div>
+            <p className="text-slate-400 text-sm">{tool.desc}</p>
+        </Link>
+      ))}
+    </div>
+  </div>
     <footer><p className="mt-8 text-slate-400 text-sm">Maxime Lyon</p></footer>
   </div>
 );
