@@ -402,7 +402,7 @@ export default function MoodleQuizApp() {
 
       generatedXml += `</quiz>`;
       setResultXml(generatedXml);
-      setAuditMessages(localAudits.length > 0 ? localAudits : ["Audit OK : Toutes les questions ont été générées avec succès (pondérations appliquées)."]);
+      setAuditMessages(localAudits.length > 0 ? localAudits : ["Audit OK : Toutes les questions (${questionCounter} quetsions ont été générées avec succès (pondérations appliquées)."]);
 
     } catch (err) {
       console.error(err);
