@@ -289,24 +289,56 @@ export default function MoodleQuizApp() {
           feedbackStartIndex = rows.length - 1;
         }
 
-        // 2. EXTRACTION DU FEEDBACK
-        let gFeedback = "";
+// 2. EXTRACTION DU FEEDBACK (Auto-détection du mode)
+        let feedbackContents = [];
+        
         for (let r = feedbackStartIndex; r < rows.length; r++) {
           const cells = rows[r].getElementsByTagName("w:tc");
+          let label = "";
           let cellText = "";
           
           if (cells.length >= 3) {
+            label = getRawCellText(cells[1]).toLowerCase(); // Lit "Pour réponse correcte..."
             cellText = extractAndCleanCell(cells[2]);
           } else if (cells.length >= 2) {
+            label = getRawCellText(cells[0]).toLowerCase();
             cellText = extractAndCleanCell(cells[1]);
           } else if (cells.length === 1) {
             cellText = extractAndCleanCell(cells[0]);
           }
           
           if (cellText) {
-            if (gFeedback !== "") gFeedback += "<br><br>";
-            gFeedback += cellText;
+            feedbackContents.push({ label, content: cellText });
           }
+        }
+
+        let fGeneral = "";
+        let fCorrect = "Votre réponse est correcte.";
+        let fPartial = "Votre réponse est partiellement correcte.";
+        let fIncorrect = "Votre réponse est incorrecte.";
+
+        if (feedbackContents.length === 1) {
+          // Mode 1 : Feedback fusionné ou un seul champ rempli
+          fGeneral = feedbackContents[0].content;
+        } else if (feedbackContents.length > 1) {
+          // Mode 2 : Feedbacks différenciés
+          fGeneral = feedbackContents[0].content; // Le 1er devient le général comme demandé
+          
+          feedbackContents.forEach((fb, idx) => {
+            // Détection par mot-clé (robuste)
+            if (fb.label.includes("partiel")) {
+              fPartial = fb.content;
+            } else if (fb.label.includes("incorrect") || fb.label.includes("faux")) {
+              fIncorrect = fb.content;
+            } else if (fb.label.includes("correct") || fb.label.includes("vrai")) {
+              fCorrect = fb.content;
+            } else {
+              // Détection par l'ordre si l'auteur a effacé les mots-clés
+              if (idx === 0) fCorrect = fb.content;
+              if (idx === 1) fPartial = fb.content;
+              if (idx === 2) fIncorrect = fb.content;
+            }
+          });
         }
 
         let rowData = [];
@@ -378,12 +410,12 @@ export default function MoodleQuizApp() {
             generatedXml += `  <question type="truefalse">\n`;
             generatedXml += `    <name><text>${escapeXML(qName)}</text></name>\n`;
             generatedXml += `    <questiontext format="html"><text><![CDATA[<p>${qText}</p>]]></text></questiontext>\n`;
-            generatedXml += `    <generalfeedback format="html"><text><![CDATA[<p>${gFeedback}</p>]]></text></generalfeedback>\n`;
+            generatedXml += `    <generalfeedback format="html"><text><![CDATA[<p>${fGeneral}</p>]]></text></generalfeedback>\n`;
             generatedXml += `    <defaultgrade>${qPoint}</defaultgrade>\n`;
             generatedXml += `    <penalty>1.0000000</penalty>\n`;
             generatedXml += `    <hidden>0</hidden>\n`;
-            generatedXml += `    <answer fraction="${scoreTrue}" format="moodle_auto_format">\n      <text>true</text>\n      <feedback format="html"><text></text></feedback>\n    </answer>\n`;
-            generatedXml += `    <answer fraction="${scoreFalse}" format="moodle_auto_format">\n      <text>false</text>\n      <feedback format="html"><text></text></feedback>\n    </answer>\n`;
+            generatedXml += `    <answer fraction="${scoreTrue}" format="moodle_auto_format">\n      <text>true</text>\n      <feedback format="html"><text><![CDATA[<p>${scoreTrue === "100" ? fCorrect : fIncorrect}</p>]]></text></feedback>\n    </answer>\n`;
+            generatedXml += `    <answer fraction="${scoreFalse}" format="moodle_auto_format">\n      <text>false</text>\n      <feedback format="html"><text><![CDATA[<p>${scoreFalse === "100" ? fCorrect : fIncorrect}</p>]]></text></feedback>\n    </answer>\n`;
             generatedXml += `  </question>\n\n`;
             questionCounter++;
 
@@ -404,16 +436,16 @@ export default function MoodleQuizApp() {
             generatedXml += `  <question type="multichoice">\n`;
             generatedXml += `    <name><text>${escapeXML(qName)}</text></name>\n`;
             generatedXml += `    <questiontext format="html"><text><![CDATA[<p>${qText}</p>]]></text></questiontext>\n`;
-            generatedXml += `    <generalfeedback format="html"><text><![CDATA[<p>${gFeedback}</p>]]></text></generalfeedback>\n`;
+            generatedXml += `    <generalfeedback format="html"><text><![CDATA[<p>${fGeneral}</p>]]></text></generalfeedback>\n`;
             generatedXml += `    <defaultgrade>${qPoint}</defaultgrade>\n`;
             generatedXml += `    <penalty>0.3333333</penalty>\n`;
             generatedXml += `    <hidden>0</hidden>\n`;
             generatedXml += `    <single>${qType === "QCU" ? "true" : "false"}</single>\n`;
             generatedXml += `    <shuffleanswers>true</shuffleanswers>\n`;
             generatedXml += `    <answernumbering>none</answernumbering>\n`;
-            generatedXml += `    <correctfeedback format="html"><text>Votre réponse est correcte.</text></correctfeedback>\n`;
-            generatedXml += `    <partiallycorrectfeedback format="html"><text>Votre réponse est partiellement correcte.</text></partiallycorrectfeedback>\n`;
-            generatedXml += `    <incorrectfeedback format="html"><text>Votre réponse est incorrecte.</text></incorrectfeedback>\n`;
+            generatedXml += `    <correctfeedback format="html"><text><![CDATA[<p>${fCorrect}</p>]]></text></correctfeedback>\n`;
+            generatedXml += `    <partiallycorrectfeedback format="html"><text><![CDATA[<p>${fPartial}</p>]]></text></partiallycorrectfeedback>\n`;
+            generatedXml += `    <incorrectfeedback format="html"><text><![CDATA[<p>${fIncorrect}</p>]]></text></incorrectfeedback>\n`;
             generatedXml += `    <shownumcorrect/>\n`;
 
             rowData.forEach(r => {
