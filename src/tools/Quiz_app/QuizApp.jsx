@@ -252,7 +252,20 @@ export default function MoodleQuizApp() {
         const row2Cells = rows[1].getElementsByTagName("w:tc");
         let qPoint = "1";
         if (row2Cells.length >= 4) {
-           qPoint = getRawCellText(row2Cells[3]).trim() || "1";
+           let extractedPoint = getRawCellText(row2Cells[3]).trim();
+           
+           // On remplace la virgule par un point au cas où (ex: "1,5" -> "1.5")
+           extractedPoint = extractedPoint.replace(',', '.');
+           
+           if (extractedPoint !== "") {
+               // On vérifie si la conversion en nombre échoue
+               if (isNaN(Number(extractedPoint))) {
+                   localAudits.push(`Question ${qName} : La note "${extractedPoint}" n'est pas un chiffre valide. Remplacée par défaut par "1".`);
+                   qPoint = "1";
+               } else {
+                   qPoint = extractedPoint;
+               }
+           }
         }
 
         const row4Cells = rows[3].getElementsByTagName("w:tc");
