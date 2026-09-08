@@ -16,7 +16,7 @@ const loadJSZip = async () => {
 export default function MoodleQuizApp() {
   const [file, setFile] = useState(null);
   const [quizId, setQuizId] = useState("X–XXX–DA–WB–XX–26");
-  const [descriptions, setDescriptions] = useState(["<div class=\"FondCouleur1 p-3\">\n  <strong>Mission 1</strong>\n</div>"]);
+  const [descriptions, setDescriptions] = useState(["<div class=\"FondCouleur1 p-3\">\n  <strong>Séance 1 – Titre de la séance</strong>\n</div>"]);
   const [loading, setLoading] = useState(false);
   const [resultXml, setResultXml] = useState("");
   const [error, setError] = useState(null);
@@ -478,7 +478,7 @@ export default function MoodleQuizApp() {
         {/* Consignes dynamiques */}
             <div className="space-y-3">
               <div className="flex justify-between items-center">
-                <label className="text-xs font-black text-slate-500 uppercase tracking-widest">Consignes / Missions</label>
+                <label className="text-xs font-black text-slate-500 uppercase tracking-widest">Consignes / Missions / Titres</label>
                 <button onClick={addDescription} className="text-xs font-bold text-blue-600 hover:text-blue-800 flex items-center gap-1 bg-blue-50 px-2 py-1 rounded-md transition-colors">
                   <Plus size={14} /> Ajouter
                 </button>
