@@ -13,10 +13,6 @@ const loadJSZip = async () => {
     document.head.appendChild(script);
   });
 };
-
-// IMPORTANT : Assurez-vous d'utiliser le bon chemin vers votre gabarit
-import gabaritWord from './DA-WB_Gabarit.docx?url';
-
 export default function MoodleQuizApp() {
   const [file, setFile] = useState(null);
   const [quizId, setQuizId] = useState("MonQuiz");
