@@ -283,8 +283,53 @@ export default function MoodleQuizApp() {
         let nbBonnesReponses = 0;
         let isTF = false;
 
-        // Boucle sur les réponses (Ligne 6 jusqu'à la fin moins feedback)
-        for (let r = 5; r < rows.length - 1; r++) {
+// --- 1. DÉTECTION DYNAMIQUE DE LA ZONE FEEDBACK ---
+        // On cherche sur quelle ligne commence le bloc Feedback (même s'il a été défusionné)
+        let feedbackStartIndex = -1;
+        for (let r = rows.length - 1; r >= 5; r--) {
+          const cells = rows[r].getElementsByTagName("w:tc");
+          if (cells.length > 0) {
+            const firstCellText = getRawCellText(cells[0]).toLowerCase();
+            if (firstCellText.includes("feedback")) {
+              feedbackStartIndex = r;
+              break;
+            }
+          }
+        }
+        
+        // Si le mot "Feedback" a été supprimé par l'auteur, on suppose que c'est la dernière ligne
+        if (feedbackStartIndex === -1) {
+          feedbackStartIndex = rows.length - 1;
+        }
+
+        // --- 2. EXTRACTION DU FEEDBACK (Même si éclaté sur plusieurs lignes) ---
+        let gFeedback = "";
+        for (let r = feedbackStartIndex; r < rows.length; r++) {
+          const cells = rows[r].getElementsByTagName("w:tc");
+          let cellText = "";
+          
+          // Gère les cas où la ligne contient 3 colonnes (Feedback | Explication | Texte) ou 2 colonnes
+          if (cells.length >= 3) {
+            cellText = extractAndCleanCell(cells[2]);
+          } else if (cells.length >= 2) {
+            cellText = extractAndCleanCell(cells[1]);
+          } else if (cells.length === 1) {
+            cellText = extractAndCleanCell(cells[0]); // Rare : si la ligne est totalement fusionnée
+          }
+          
+          if (cellText) {
+            if (gFeedback !== "") gFeedback += "<br><br>"; // Sépare les paragraphes reconstitués
+            gFeedback += cellText;
+          }
+        }
+
+        let rowData = [];
+        let nbBonnesReponses = 0;
+        let isTF = false;
+
+        // --- 3. LECTURE DES PROPOSITIONS ---
+        // On s'arrête exactement là où le feedback commence !
+        for (let r = 5; r < feedbackStartIndex; r++) {
           const cells = rows[r].getElementsByTagName("w:tc");
           if (cells.length < 2) continue;
 
@@ -294,7 +339,7 @@ export default function MoodleQuizApp() {
 
           let isChecked = false;
           
-          // 1. Anciens FormFields (Cases à cocher Word classiques - Lecture de w:checked et w:default)
+          // 1. Anciens FormFields (Cases à cocher Word classiques)
           const checkBoxes = cellNode.getElementsByTagName("w:checkBox");
           if (checkBoxes.length > 0) {
             const checkedTag = checkBoxes[0].getElementsByTagName("w:checked")[0];
@@ -323,6 +368,9 @@ export default function MoodleQuizApp() {
                   isChecked = true;
               }
           }
+
+          // Si la ligne est totalement vide, on l'ignore (utile pour les lignes vides insérées par erreur)
+          if (!answerText && !isChecked) continue;
 
           if (isChecked) nbBonnesReponses++;
           if (answerText.toLowerCase().includes("vrai") || answerText.toLowerCase().includes("faux")) isTF = true;
