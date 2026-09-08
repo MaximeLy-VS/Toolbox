@@ -346,12 +346,19 @@ export default function MoodleQuizApp() {
         let isTF = false;
 
         // 3. LECTURE DES PROPOSITIONS
-        for (let r = 5; r < feedbackStartIndex; r++) {
+        // Garde-fou 1 : On commence à l'index 6 (la 7ème ligne, soit la 1ère vraie réponse)
+        for (let r = 6; r < feedbackStartIndex; r++) {
           const cells = rows[r].getElementsByTagName("w:tc");
           if (cells.length < 2) continue;
 
           const cellNode = cells[0];
           const rawCellText = getRawCellText(cellNode);
+
+          // Garde-fou 2 : Si le tableau a été altéré et qu'on tombe quand même sur l'en-tête "Propositions :"
+          if (rawCellText.toLowerCase().includes("propositions")) {
+              continue; // On ignore cette ligne et on passe à la suivante
+          }
+
           const answerText = extractAndCleanCell(cells[1]);
 
           let isChecked = false;
