@@ -1,6 +1,6 @@
 import React, { useState, useRef } from 'react';
 import { UploadCloud, FileText, Check, AlertCircle, Copy, Download, Trash2, Plus, FileCode2 } from 'lucide-react';
-import gabaritWord from './Quiz_app/DA-WB_Gabarit.docx';
+import gabaritWord from './DA-WB_Gabarit.docx?url';
 
 // Chargement asynchrone de JSZip depuis un CDN pour garantir la compatibilité sans npm install
 const loadJSZip = async () => {
