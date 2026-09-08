@@ -13,6 +13,7 @@ const loadJSZip = async () => {
     document.head.appendChild(script);
   });
 };
+
 export default function MoodleQuizApp() {
   const [file, setFile] = useState(null);
   const [quizId, setQuizId] = useState("X–XXX–DA–WB–XX–26");
@@ -182,12 +183,46 @@ export default function MoodleQuizApp() {
 
           let pText = "";
           const runs = pNode.getElementsByTagName("w:r");
+          
           for (let r = 0; r < runs.length; r++) {
             const run = runs[r];
+            // --- DÉTECTION DU FORMATAGE (Gras, Italique, Indice, Exposant) ---
+            let isBold = false;
+            let isItalic = false;
+            let isSub = false;
+            let isSup = false;
+
+            const rPr = run.getElementsByTagName("w:rPr")[0];
+            if (rPr) {
+              // Gras (<w:b/>)
+              const b = rPr.getElementsByTagName("w:b")[0];
+              if (b && b.getAttribute("w:val") !== "0" && b.getAttribute("w:val") !== "false") isBold = true;
+              
+              // Italique (<w:i/>)
+              const i = rPr.getElementsByTagName("w:i")[0];
+              if (i && i.getAttribute("w:val") !== "0" && i.getAttribute("w:val") !== "false") isItalic = true;
+              
+              // Indice / Exposant (<w:vertAlign w:val="subscript" />)
+              const vertAlign = rPr.getElementsByTagName("w:vertAlign")[0];
+              if (vertAlign) {
+                const val = vertAlign.getAttribute("w:val");
+                if (val === "subscript") isSub = true;
+                if (val === "superscript") isSup = true;
+              }
+            }
+
             for (let c = 0; c < run.childNodes.length; c++) {
               const child = run.childNodes[c];
               if (child.nodeName === "w:t") {
-                pText += child.textContent;
+                let text = child.textContent;
+                
+                // Application des balises HTML autour du texte brut
+                if (isBold) text = `<b>${text}</b>`;
+                if (isItalic) text = `<i>${text}</i>`;
+                if (isSub) text = `<sub>${text}</sub>`;
+                if (isSup) text = `<sup>${text}</sup>`; // (J'ai utilisé <sup> qui est le standard HTML valide au lieu de <exp>)
+                
+                pText += text;
               } else if (child.nodeName === "w:br") {
                 pText += "\n";
               }
