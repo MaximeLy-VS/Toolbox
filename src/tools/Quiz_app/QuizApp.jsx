@@ -268,6 +268,49 @@ export default function MoodleQuizApp() {
            }
         }
 
+        // Extraction sécurisée de la note (defaultgrade)
+        // ... (votre code existant pour qPoint) ...
+
+        // DÉTECTION DU MÉLANGE DES PROPOSITIONS (Ligne 3, dernière colonne)
+        let shuffleAnswers = false; // Par défaut à "Non"
+        if (rows.length >= 3) {
+            const row3Cells = rows[2].getElementsByTagName("w:tc");
+            if (row3Cells.length >= 2) {
+                // On cible la dernière cellule de la ligne 3
+                const shuffleCell = row3Cells[row3Cells.length - 1];
+                const rawShuffleText = getRawCellText(shuffleCell).toLowerCase();
+                
+                let isOuiChecked = false;
+                
+                // 1. Lecture des cases natives (On teste la première case, qui correspond au "Oui")
+                const checkBoxes = shuffleCell.getElementsByTagName("w:checkBox");
+                const modernCheckBoxes = shuffleCell.getElementsByTagName("w14:checked");
+                
+                if (checkBoxes.length >= 1) {
+                    const cb = checkBoxes[0];
+                    const checkedTag = cb.getElementsByTagName("w:checked")[0] || cb.getElementsByTagName("w:default")[0];
+                    if (checkedTag) {
+                        const val = checkedTag.getAttribute("w:val");
+                        if (val === null || val === "1" || val === "true") isOuiChecked = true;
+                    }
+                } else if (modernCheckBoxes.length >= 1) {
+                    const val = modernCheckBoxes[0].getAttribute("w14:val");
+                    if (val === null || val === "1" || val === "true") isOuiChecked = true;
+                }
+                
+                // 2. Fallback texte manuel
+                if (!isOuiChecked) {
+                    // On réduit les espaces multiples pour faciliter la détection
+                    const cleanText = rawShuffleText.replace(/\s+/g, ' ');
+                    if (cleanText.includes("x oui") || cleanText.includes("[x] oui") || cleanText.includes("☑ oui") || cleanText.includes("☒ oui")) {
+                        isOuiChecked = true;
+                    }
+                }
+                
+                shuffleAnswers = isOuiChecked;
+            }
+        }
+
         const row4Cells = rows[3].getElementsByTagName("w:tc");
         let qText = "";
         if (row4Cells.length >= 2) qText = extractAndCleanCell(row4Cells[1]);
@@ -448,7 +491,7 @@ export default function MoodleQuizApp() {
             generatedXml += `    <penalty>0.3333333</penalty>\n`;
             generatedXml += `    <hidden>0</hidden>\n`;
             generatedXml += `    <single>${qType === "QCU" ? "true" : "false"}</single>\n`;
-            generatedXml += `    <shuffleanswers>true</shuffleanswers>\n`;
+            generatedXml += `    <shuffleanswers>${shuffleAnswers ? "true" : "false"}</shuffleanswers>\n`;
             generatedXml += `    <answernumbering>none</answernumbering>\n`;
             generatedXml += `    <correctfeedback format="html"><text><![CDATA[<p>${fCorrect}</p>]]></text></correctfeedback>\n`;
             generatedXml += `    <partiallycorrectfeedback format="html"><text><![CDATA[<p>${fPartial}</p>]]></text></partiallycorrectfeedback>\n`;
