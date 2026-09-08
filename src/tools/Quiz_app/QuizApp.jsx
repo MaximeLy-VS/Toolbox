@@ -1,5 +1,6 @@
 import React, { useState, useRef } from 'react';
 import { UploadCloud, FileText, Check, AlertCircle, Copy, Download, Trash2, Plus, FileCode2 } from 'lucide-react';
+import gabaritWord from '../../tools/Quiz_app/DA-WB_Gabarit.docx';
 
 // Chargement asynchrone de JSZip depuis un CDN pour garantir la compatibilité sans npm install
 const loadJSZip = async () => {
@@ -511,7 +512,7 @@ export default function MoodleQuizApp() {
               <div className="flex justify-between items-center">
                 <label className="text-xs font-black text-slate-500 uppercase tracking-widest">Gabarit Word Rempli</label>
                 <button className="text-xs font-bold text-blue-600 hover:text-blue-800 flex items-center gap-1 bg-blue-50 px-2 py-1 rounded-md transition-colors" size={14}>
-                  <Download size={14}/><a href={`${import.meta.env.BASE_URL}tools/Quiz_app/DA-WB_Gabarit.docx`} download="DA-WB_Gabarit.docx">
+                  <Download size={14}/><a href={gabaritWord} download="DA-WB_Gabarit.docx">
                   Gabarit vierge
                   </a>
                 </button>
