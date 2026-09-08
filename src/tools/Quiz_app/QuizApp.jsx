@@ -13,10 +13,14 @@ const loadJSZip = async () => {
     document.head.appendChild(script);
   });
 };
+
+// IMPORTANT : Assurez-vous d'utiliser le bon chemin vers votre gabarit
+import gabaritWord from './DA-WB_Gabarit.docx?url';
+
 export default function MoodleQuizApp() {
   const [file, setFile] = useState(null);
-  const [quizId, setQuizId] = useState("X–XXX–DA–WB–XX–26");
-  const [descriptions, setDescriptions] = useState(["<div class=\"FondCouleur1 p-3\">\n  <strong>Séance 1 – Titre de la séance</strong>\n</div>"]);
+  const [quizId, setQuizId] = useState("MonQuiz");
+  const [descriptions, setDescriptions] = useState(["<div class=\"FondCouleur1 p-3\">\n  <strong>Mission 1</strong>\n</div>"]);
   const [loading, setLoading] = useState(false);
   const [resultXml, setResultXml] = useState("");
   const [error, setError] = useState(null);
@@ -37,23 +41,22 @@ export default function MoodleQuizApp() {
     let str = text;
     
     // 1. Transformer temporairement les entités &nbsp; existantes en vrais espaces insécables Unicode
-    // Cela empêche le regex de confondre le point-virgule de &nbsp; avec une ponctuation.
     str = str.replace(/&nbsp;/g, '\u00A0');
 
-    // Définition de toutes les règles (issues de votre fichier Ruleset.js)
+    // Définition de toutes les règles
     const rules = [
-      { find: /\s*\u00A0\s*/g, replace: '\u00A0' }, // Auto-nettoyage NBSP
-      { find: /(?<!\u00A0)([^\s\u00A0])\s*([:?!%€»]|(?<!\u00A0);)/g, replace: "$1\u00A0$2" }, // Ponctuation Avant
-      { find: /(«)\s*(?!\u00A0)([^\s\u00A0])/g, replace: "$1\u00A0$2" }, // Ponctuation après guillemet
-      { find: /([:?!€»]|(?<!\u00A0);)(?!\u00A0)([^\s\u00A0\.,\)])/g, replace: "$1 $2" }, // Espace après ponctuation
-      { find: /"([^">]+)"/g, replace: "«\u00A0$1\u00A0»" }, // Guillemets anglais
-      { find: /\.\.\./g, replace: ", etc." }, // Points de suspension
-      { find: /\s+-\s+/g, replace: " – " }, // Tiret incise
-      { find: /(\d)(?:\s|\u00A0)*[hH](?:\s|\u00A0)*(\d)/g, replace: "$1\u00A0h\u00A0$2" }, // Heures Format
-      { find: /(\d)(?:\s|\u00A0)*([hH]|[mM]|[mM][iI][nN]|[mM][iI][nN][uU][tT][eE][sS]?|[hH][eE][uU][rR][eE][sS]?)\b/g, replace: "$1\u00A0$2" }, // Heures Mots
-      { find: /(\d)(?:\s|\u00A0)*(er)\b/g, replace: "$1<sup>er</sup>\u00A0" }, // Exposant er
-      { find: /(\d)(?:\s|\u00A0)*(ème|eme|e)\b/g, replace: "$1<sup>e</sup>\u00A0" }, // Exposant ème
-      { find: /(\d)(?:\s|\u00A0)*[jJ]\b/g, replace: "$1\u00A0J" }, // Unités J
+      { find: /\s*\u00A0\s*/g, replace: '\u00A0' },
+      { find: /(?<!\u00A0)([^\s\u00A0])\s*([:?!%€»]|(?<!\u00A0);)/g, replace: "$1\u00A0$2" },
+      { find: /(«)\s*(?!\u00A0)([^\s\u00A0])/g, replace: "$1\u00A0$2" },
+      { find: /([:?!€»]|(?<!\u00A0);)(?!\u00A0)([^\s\u00A0\.,\)])/g, replace: "$1 $2" },
+      { find: /"([^">]+)"/g, replace: "«\u00A0$1\u00A0»" },
+      { find: /\.\.\./g, replace: ", etc." },
+      { find: /\s+-\s+/g, replace: " – " },
+      { find: /(\d)(?:\s|\u00A0)*[hH](?:\s|\u00A0)*(\d)/g, replace: "$1\u00A0h\u00A0$2" },
+      { find: /(\d)(?:\s|\u00A0)*([hH]|[mM]|[mM][iI][nN]|[mM][iI][nN][uU][tT][eE][sS]?|[hH][eE][uU][rR][eE][sS]?)\b/g, replace: "$1\u00A0$2" },
+      { find: /(\d)(?:\s|\u00A0)*(er)\b/g, replace: "$1<sup>er</sup>\u00A0" },
+      { find: /(\d)(?:\s|\u00A0)*(ème|eme|e)\b/g, replace: "$1<sup>e</sup>\u00A0" },
+      { find: /(\d)(?:\s|\u00A0)*[jJ]\b/g, replace: "$1\u00A0J" },
       { find: /(\d)(?:\s|\u00A0)*[kK][jJ]\b/g, replace: "$1\u00A0kJ" },
       { find: /(\d)(?:\s|\u00A0)*[cC][aA][lL]\b/g, replace: "$1\u00A0cal" },
       { find: /(\d)(?:\s|\u00A0)*[kK][cC][aA][lL]\b/g, replace: "$1\u00A0kcal" },
@@ -159,7 +162,6 @@ export default function MoodleQuizApp() {
         throw new Error("Aucun tableau trouvé dans le document.");
       }
 
-      // 1. Extracteur Brut (Pour lire les mots-clés comme "Code", ou les "x" des cases)
       const getRawCellText = (cellNode) => {
         if (!cellNode) return "";
         const textNodes = cellNode.getElementsByTagName("w:t");
@@ -170,7 +172,6 @@ export default function MoodleQuizApp() {
         return str;
       };
 
-      // 2. Extracteur Enrichi (Pour le contenu : Sauts de ligne, Listes UL/LI, et GREP)
       const extractAndCleanCell = (cellNode) => {
         if (!cellNode) return "";
         let htmlContent = "";
@@ -180,11 +181,9 @@ export default function MoodleQuizApp() {
         for (let p = 0; p < paragraphs.length; p++) {
           const pNode = paragraphs[p];
           
-          // Détection d'un élément de liste Word
           const numPr = pNode.getElementsByTagName("w:numPr");
           const isListItem = numPr.length > 0;
 
-          // Extraction du texte et des retours à la ligne manuels (Shift+Entrée)
           let pText = "";
           const runs = pNode.getElementsByTagName("w:r");
           for (let r = 0; r < runs.length; r++) {
@@ -200,15 +199,12 @@ export default function MoodleQuizApp() {
           }
 
           let trimmedText = pText.trim();
-          // Ignorer les paragraphes 100% vides (sans texte et sans saut de ligne manuel)
           if (!trimmedText && !pText.includes("\n")) continue; 
 
-          // Application du GREP sur le texte pur AVANT d'ajouter les balises HTML (sécurité)
           let cleanedText = applyGrepRules(trimmedText).replace(/\n/g, "<br>");
 
           if (isListItem) {
             if (!inList) {
-              // Ajout d'un <br> si la liste est précédée par du texte
               if (htmlContent !== "") htmlContent += "<br>"; 
               htmlContent += `<ul class="Pucecned18">\n`;
               inList = true;
@@ -219,7 +215,6 @@ export default function MoodleQuizApp() {
               htmlContent += `</ul>\n`;
               inList = false;
             }
-            // S'il y a déjà du contenu, on sépare ce nouveau paragraphe par un <br>
             if (htmlContent !== "") {
               htmlContent += "<br>";
             }
@@ -236,10 +231,8 @@ export default function MoodleQuizApp() {
 
       let generatedXml = `<?xml version="1.0" encoding="UTF-8"?>\n<quiz>\n`;
       
-      // Catégorie racine (Nommée avec l'Identifiant)
       generatedXml += `  <question type="category">\n    <category>\n      <text>${escapeXML(quizId)}</text>\n    </category>\n    <info format="html"><text></text></info>\n    <idnumber></idnumber>\n  </question>\n\n`;
 
-      // Génération dynamique des Descriptions (Consignes)
       descriptions.forEach((desc, index) => {
         if(desc.trim() === "") return;
         const descId = `${quizId}_DES${String(index + 1).padStart(2, '0')}`;
@@ -253,38 +246,24 @@ export default function MoodleQuizApp() {
         const table = tables[i];
         const rows = table.getElementsByTagName("w:tr");
         
-        if (rows.length < 6) continue; // Pas un tableau de question
+        if (rows.length < 6) continue; 
 
-        // On vérifie que c'est un tableau de question (Mot "Code" ligne 1, col 1)
         const cell1_1 = rows[0].getElementsByTagName("w:tc")[0];
         if (!getRawCellText(cell1_1).toLowerCase().includes("code")) continue;
 
         const qName = `${quizId}_Q${String(questionCounter).padStart(3, '0')}`;
         
-        // Point (Ligne 2, col 4 en VBA -> index 3 en JS)
         const row2Cells = rows[1].getElementsByTagName("w:tc");
         let qPoint = "1";
         if (row2Cells.length >= 4) {
            qPoint = getRawCellText(row2Cells[3]).trim() || "1";
         }
 
-        // Énoncé (Ligne 4, col 2 -> index 1)
         const row4Cells = rows[3].getElementsByTagName("w:tc");
         let qText = "";
         if (row4Cells.length >= 2) qText = extractAndCleanCell(row4Cells[1]);
 
-        // Feedback (Dernière ligne)
-        const lastRowCells = rows[rows.length - 1].getElementsByTagName("w:tc");
-        let gFeedback = "";
-        if (lastRowCells.length >= 3) gFeedback = extractAndCleanCell(lastRowCells[2]);
-        else if (lastRowCells.length >= 2) gFeedback = extractAndCleanCell(lastRowCells[1]);
-
-        let rowData = [];
-        let nbBonnesReponses = 0;
-        let isTF = false;
-
-// --- 1. DÉTECTION DYNAMIQUE DE LA ZONE FEEDBACK ---
-        // On cherche sur quelle ligne commence le bloc Feedback (même s'il a été défusionné)
+        // 1. DÉTECTION DYNAMIQUE DE LA ZONE FEEDBACK
         let feedbackStartIndex = -1;
         for (let r = rows.length - 1; r >= 5; r--) {
           const cells = rows[r].getElementsByTagName("w:tc");
@@ -297,28 +276,26 @@ export default function MoodleQuizApp() {
           }
         }
         
-        // Si le mot "Feedback" a été supprimé par l'auteur, on suppose que c'est la dernière ligne
         if (feedbackStartIndex === -1) {
           feedbackStartIndex = rows.length - 1;
         }
 
-        // --- 2. EXTRACTION DU FEEDBACK (Même si éclaté sur plusieurs lignes) ---
+        // 2. EXTRACTION DU FEEDBACK
         let gFeedback = "";
         for (let r = feedbackStartIndex; r < rows.length; r++) {
           const cells = rows[r].getElementsByTagName("w:tc");
           let cellText = "";
           
-          // Gère les cas où la ligne contient 3 colonnes (Feedback | Explication | Texte) ou 2 colonnes
           if (cells.length >= 3) {
             cellText = extractAndCleanCell(cells[2]);
           } else if (cells.length >= 2) {
             cellText = extractAndCleanCell(cells[1]);
           } else if (cells.length === 1) {
-            cellText = extractAndCleanCell(cells[0]); // Rare : si la ligne est totalement fusionnée
+            cellText = extractAndCleanCell(cells[0]);
           }
           
           if (cellText) {
-            if (gFeedback !== "") gFeedback += "<br><br>"; // Sépare les paragraphes reconstitués
+            if (gFeedback !== "") gFeedback += "<br><br>";
             gFeedback += cellText;
           }
         }
@@ -327,19 +304,17 @@ export default function MoodleQuizApp() {
         let nbBonnesReponses = 0;
         let isTF = false;
 
-        // --- 3. LECTURE DES PROPOSITIONS ---
-        // On s'arrête exactement là où le feedback commence !
+        // 3. LECTURE DES PROPOSITIONS
         for (let r = 5; r < feedbackStartIndex; r++) {
           const cells = rows[r].getElementsByTagName("w:tc");
           if (cells.length < 2) continue;
 
-          const cellNode = cells[0]; // Cellule de la case à cocher
+          const cellNode = cells[0];
           const rawCellText = getRawCellText(cellNode);
           const answerText = extractAndCleanCell(cells[1]);
 
           let isChecked = false;
           
-          // 1. Anciens FormFields (Cases à cocher Word classiques)
           const checkBoxes = cellNode.getElementsByTagName("w:checkBox");
           if (checkBoxes.length > 0) {
             const checkedTag = checkBoxes[0].getElementsByTagName("w:checked")[0];
@@ -354,14 +329,12 @@ export default function MoodleQuizApp() {
             }
           }
           
-          // 2. Nouveaux Content Controls
           const modernCheckBoxes = cellNode.getElementsByTagName("w14:checked");
           if (modernCheckBoxes.length > 0) {
             const val = modernCheckBoxes[0].getAttribute("w14:val");
             if (val === null || val === "1" || val === "true") isChecked = true;
           }
 
-          // 3. Fallback texte manuel
           if (!isChecked) {
               const lowText = rawCellText.toLowerCase().trim();
               if (lowText === "x" || lowText === "[x]" || rawCellText.includes("☑") || rawCellText.includes("☒")) {
@@ -369,7 +342,6 @@ export default function MoodleQuizApp() {
               }
           }
 
-          // Si la ligne est totalement vide, on l'ignore (utile pour les lignes vides insérées par erreur)
           if (!answerText && !isChecked) continue;
 
           if (isChecked) nbBonnesReponses++;
@@ -511,7 +483,7 @@ export default function MoodleQuizApp() {
 
           <div className="space-y-6">
             
-        {/* ID Quiz */}
+            {/* ID Quiz */}
             <div className="space-y-2">
               <label className="text-xs font-black text-slate-500 uppercase tracking-widest">Identifiant du Quiz (Racine)</label>
               <input 
@@ -523,10 +495,10 @@ export default function MoodleQuizApp() {
               />
             </div>
 
-        {/* Consignes dynamiques */}
+            {/* Consignes dynamiques */}
             <div className="space-y-3">
               <div className="flex justify-between items-center">
-                <label className="text-xs font-black text-slate-500 uppercase tracking-widest">Consignes / Missions / Titres</label>
+                <label className="text-xs font-black text-slate-500 uppercase tracking-widest">Consignes / Missions</label>
                 <button onClick={addDescription} className="text-xs font-bold text-blue-600 hover:text-blue-800 flex items-center gap-1 bg-blue-50 px-2 py-1 rounded-md transition-colors">
                   <Plus size={14} /> Ajouter
                 </button>
@@ -555,7 +527,7 @@ export default function MoodleQuizApp() {
               </div>
             </div>
 
-        {/* Upload Zone */}
+            {/* Upload Zone */}
             <div className="space-y-2 pt-2">
               <div className="flex justify-between items-center">
                 <label className="text-xs font-black text-slate-500 uppercase tracking-widest">Gabarit Word Rempli</label>
@@ -580,7 +552,7 @@ export default function MoodleQuizApp() {
               </div>
             </div>
 
-        {/* Bouton Générer */}
+            {/* Bouton Générer */}
             <button
               onClick={processFile}
               disabled={loading || !file}
@@ -598,7 +570,7 @@ export default function MoodleQuizApp() {
           </div>
         </div>
 
-    {/* PARTIE DROITE : Résultats */}
+        {/* PARTIE DROITE : Résultats */}
         <div className="lg:w-[55%] p-8 bg-[#f8fafc] flex flex-col overflow-y-auto max-h-[90vh]">
           {resultXml ? (
             <div className="h-full flex flex-col space-y-4 animate-fade-in">
