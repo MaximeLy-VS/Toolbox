@@ -249,41 +249,7 @@ export default function MoodleQuizApp() {
       let questionCounter = 1;
       let localAudits = [];
 
-      for (let i = 0; i < tables.length; i++) {
-        const table = tables[i];
-        const rows = table.getElementsByTagName("w:tr");
-        
-        if (rows.length < 6) continue; // Pas un tableau de question
-
-        // On vérifie que c'est un tableau de question (Mot "Code" ligne 1, col 1)
-        const cell1_1 = rows[0].getElementsByTagName("w:tc")[0];
-        if (!getRawCellText(cell1_1).toLowerCase().includes("code")) continue;
-
-        const qName = `${quizId}_Q${String(questionCounter).padStart(3, '0')}`;
-        
-        // Point (Ligne 2, col 4 en VBA -> index 3 en JS)
-        const row2Cells = rows[1].getElementsByTagName("w:tc");
-        let qPoint = "1";
-        if (row2Cells.length >= 4) {
-           qPoint = getRawCellText(row2Cells[3]).trim() || "1";
-        }
-
-        // Énoncé (Ligne 4, col 2 -> index 1)
-        const row4Cells = rows[3].getElementsByTagName("w:tc");
-        let qText = "";
-        if (row4Cells.length >= 2) qText = extractAndCleanCell(row4Cells[1]);
-
-        // Feedback (Dernière ligne)
-        const lastRowCells = rows[rows.length - 1].getElementsByTagName("w:tc");
-        let gFeedback = "";
-        if (lastRowCells.length >= 3) gFeedback = extractAndCleanCell(lastRowCells[2]);
-        else if (lastRowCells.length >= 2) gFeedback = extractAndCleanCell(lastRowCells[1]);
-
-        let rowData = [];
-        let nbBonnesReponses = 0;
-        let isTF = false;
-
-// --- 1. DÉTECTION DYNAMIQUE DE LA ZONE FEEDBACK ---
+      // --- 1. DÉTECTION DYNAMIQUE DE LA ZONE FEEDBACK ---
         // On cherche sur quelle ligne commence le bloc Feedback (même s'il a été défusionné)
         let feedbackStartIndex = -1;
         for (let r = rows.length - 1; r >= 5; r--) {
@@ -376,76 +342,6 @@ export default function MoodleQuizApp() {
           if (answerText.toLowerCase().includes("vrai") || answerText.toLowerCase().includes("faux")) isTF = true;
 
           rowData.push({ text: answerText, isChecked: isChecked });
-        }
-
-        if (nbBonnesReponses === 0) {
-           localAudits.push(`Question ${qName} ignorée (Aucune bonne réponse cochée détectée).`);
-           continue;
-        }
-
-        let qType = isTF ? "TF" : (nbBonnesReponses > 1 ? "QCM" : "QCU");
-
-        if (qType === "TF") {
-            let scoreTrue = "0", scoreFalse = "0";
-            rowData.forEach(r => {
-                if (r.isChecked) {
-                    if (r.text.toLowerCase().includes("vrai")) scoreTrue = "100";
-                    else if (r.text.toLowerCase().includes("faux")) scoreFalse = "100";
-                }
-            });
-
-            generatedXml += `  <question type="truefalse">\n`;
-            generatedXml += `    <name><text>${escapeXML(qName)}</text></name>\n`;
-            generatedXml += `    <questiontext format="html"><text><![CDATA[<p>${qText}</p>]]></text></questiontext>\n`;
-            generatedXml += `    <generalfeedback format="html"><text><![CDATA[<p>${gFeedback}</p>]]></text></generalfeedback>\n`;
-            generatedXml += `    <defaultgrade>${qPoint}</defaultgrade>\n`;
-            generatedXml += `    <penalty>1.0000000</penalty>\n`;
-            generatedXml += `    <hidden>0</hidden>\n`;
-            generatedXml += `    <answer fraction="${scoreTrue}" format="moodle_auto_format">\n      <text>true</text>\n      <feedback format="html"><text></text></feedback>\n    </answer>\n`;
-            generatedXml += `    <answer fraction="${scoreFalse}" format="moodle_auto_format">\n      <text>false</text>\n      <feedback format="html"><text></text></feedback>\n    </answer>\n`;
-            generatedXml += `  </question>\n\n`;
-            questionCounter++;
-
-        } else {
-            let scorePositif = "100";
-            let scoreNegatif = "0";
-
-            if (qType === "QCM") {
-                scoreNegatif = "-12.5";
-                if (nbBonnesReponses === 2) scorePositif = "50";
-                else if (nbBonnesReponses === 3) scorePositif = "33.33333";
-                else if (nbBonnesReponses === 4) scorePositif = "25";
-                else if (nbBonnesReponses === 5) scorePositif = "20";
-                else if (nbBonnesReponses === 6) scorePositif = "16.66667";
-                else if (nbBonnesReponses > 0) scorePositif = (100 / nbBonnesReponses).toFixed(5).replace(".00000", "");
-            }
-
-            generatedXml += `  <question type="multichoice">\n`;
-            generatedXml += `    <name><text>${escapeXML(qName)}</text></name>\n`;
-            generatedXml += `    <questiontext format="html"><text><![CDATA[<p>${qText}</p>]]></text></questiontext>\n`;
-            generatedXml += `    <generalfeedback format="html"><text><![CDATA[<p>${gFeedback}</p>]]></text></generalfeedback>\n`;
-            generatedXml += `    <defaultgrade>${qPoint}</defaultgrade>\n`;
-            generatedXml += `    <penalty>0.3333333</penalty>\n`;
-            generatedXml += `    <hidden>0</hidden>\n`;
-            generatedXml += `    <single>${qType === "QCU" ? "true" : "false"}</single>\n`;
-            generatedXml += `    <shuffleanswers>true</shuffleanswers>\n`;
-            generatedXml += `    <answernumbering>none</answernumbering>\n`;
-            generatedXml += `    <correctfeedback format="html"><text>Votre réponse est correcte.</text></correctfeedback>\n`;
-            generatedXml += `    <partiallycorrectfeedback format="html"><text>Votre réponse est partiellement correcte.</text></partiallycorrectfeedback>\n`;
-            generatedXml += `    <incorrectfeedback format="html"><text>Votre réponse est incorrecte.</text></incorrectfeedback>\n`;
-            generatedXml += `    <shownumcorrect/>\n`;
-
-            rowData.forEach(r => {
-                if (r.text.length > 0) {
-                    const fraction = r.isChecked ? scorePositif : scoreNegatif;
-                    generatedXml += `    <answer fraction="${fraction}" format="html">\n`;
-                    generatedXml += `      <text><![CDATA[<p>${r.text}</p>]]></text>\n`;
-                    generatedXml += `      <feedback format="html"><text></text></feedback>\n`;
-                    generatedXml += `    </answer>\n`;
-                }
-            });
-            generatedXml += `  </question>\n\n`;
-            questionCounter++;
         }
       }
 
