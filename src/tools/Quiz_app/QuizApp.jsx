@@ -462,7 +462,7 @@ export default function MoodleQuizApp() {
 
           <div className="space-y-6">
             
-            {/* ID Quiz */}
+        {/* ID Quiz */}
             <div className="space-y-2">
               <label className="text-xs font-black text-slate-500 uppercase tracking-widest">Identifiant du Quiz (Racine)</label>
               <input 
@@ -474,7 +474,7 @@ export default function MoodleQuizApp() {
               />
             </div>
 
-            {/* Consignes dynamiques */}
+        {/* Consignes dynamiques */}
             <div className="space-y-3">
               <div className="flex justify-between items-center">
                 <label className="text-xs font-black text-slate-500 uppercase tracking-widest">Consignes / Missions</label>
@@ -506,7 +506,7 @@ export default function MoodleQuizApp() {
               </div>
             </div>
 
-            {/* Upload Zone */}
+        {/* Upload Zone */}
             <div className="space-y-2 pt-2">
               <div className="flex justify-between items-center">
                 <label className="text-xs font-black text-slate-500 uppercase tracking-widest">Gabarit Word Rempli</label>
@@ -531,7 +531,7 @@ export default function MoodleQuizApp() {
               </div>
             </div>
 
-            {/* Bouton Générer */}
+        {/* Bouton Générer */}
             <button
               onClick={processFile}
               disabled={loading || !file}
@@ -549,7 +549,7 @@ export default function MoodleQuizApp() {
           </div>
         </div>
 
-        {/* PARTIE DROITE : Résultats */}
+    {/* PARTIE DROITE : Résultats */}
         <div className="lg:w-[55%] p-8 bg-[#f8fafc] flex flex-col overflow-y-auto max-h-[90vh]">
           {resultXml ? (
             <div className="h-full flex flex-col space-y-4 animate-fade-in">
