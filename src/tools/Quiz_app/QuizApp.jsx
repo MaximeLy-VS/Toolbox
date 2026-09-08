@@ -268,9 +268,6 @@ export default function MoodleQuizApp() {
            }
         }
 
-        // Extraction sécurisée de la note (defaultgrade)
-        // ... (votre code existant pour qPoint) ...
-
         // DÉTECTION DU MÉLANGE DES PROPOSITIONS (Ligne 3, dernière colonne)
         let shuffleAnswers = false; // Par défaut à "Non"
         if (rows.length >= 3) {
@@ -280,27 +277,32 @@ export default function MoodleQuizApp() {
                 const shuffleCell = row3Cells[row3Cells.length - 1];
                 const rawShuffleText = getRawCellText(shuffleCell).toLowerCase();
                 
-                let isOuiChecked = false;
+            let isOuiChecked = false;
                 
-                // 1. Lecture des cases natives (On teste la première case, qui correspond au "Oui")
-                const checkBoxes = shuffleCell.getElementsByTagName("w:checkBox");
-                const modernCheckBoxes = shuffleCell.getElementsByTagName("w14:checked");
+                // 1. On cible les conteneurs des cases à cocher (et pas directement l'état coché)
+                const legacyCheckBoxes = shuffleCell.getElementsByTagName("w:checkBox");
+                const modernCheckBoxes = shuffleCell.getElementsByTagName("w14:checkbox");
                 
-                if (checkBoxes.length >= 1) {
-                    const cb = checkBoxes[0];
-                    const checkedTag = cb.getElementsByTagName("w:checked")[0] || cb.getElementsByTagName("w:default")[0];
+                if (legacyCheckBoxes.length >= 1) {
+                    // On analyse UNIQUEMENT la première case (le "Oui")
+                    const cbOui = legacyCheckBoxes[0];
+                    const checkedTag = cbOui.getElementsByTagName("w:checked")[0] || cbOui.getElementsByTagName("w:default")[0];
                     if (checkedTag) {
                         const val = checkedTag.getAttribute("w:val");
                         if (val === null || val === "1" || val === "true") isOuiChecked = true;
                     }
                 } else if (modernCheckBoxes.length >= 1) {
-                    const val = modernCheckBoxes[0].getAttribute("w14:val");
-                    if (val === null || val === "1" || val === "true") isOuiChecked = true;
+                    // Pareil pour les cases modernes : on isole la première case
+                    const cbOui = modernCheckBoxes[0];
+                    const checkedTag = cbOui.getElementsByTagName("w14:checked")[0];
+                    if (checkedTag) {
+                        const val = checkedTag.getAttribute("w14:val");
+                        if (val === null || val === "1" || val === "true") isOuiChecked = true;
+                    }
                 }
                 
                 // 2. Fallback texte manuel
                 if (!isOuiChecked) {
-                    // On réduit les espaces multiples pour faciliter la détection
                     const cleanText = rawShuffleText.replace(/\s+/g, ' ');
                     if (cleanText.includes("x oui") || cleanText.includes("[x] oui") || cleanText.includes("☑ oui") || cleanText.includes("☒ oui")) {
                         isOuiChecked = true;
