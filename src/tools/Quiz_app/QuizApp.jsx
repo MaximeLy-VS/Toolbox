@@ -56,6 +56,8 @@ export default function MoodleQuizApp() {
       { find: /(\d)(?:\s|\u00A0)*([hH]|[mM]|[mM][iI][nN]|[mM][iI][nN][uU][tT][eE][sS]?|[hH][eE][uU][rR][eE][sS]?)\b/g, replace: "$1\u00A0$2" },
       { find: /(\d)(?:\s|\u00A0)*(er)\b/g, replace: "$1<sup>er</sup>\u00A0" },
       { find: /(\d)(?:\s|\u00A0)*(ème|eme|e)\b/g, replace: "$1<sup>e</sup>\u00A0" },
+      { find: /(\d)(?:\s|\u00A0)*(°C)\b/g, replace: "$1\u00A0°C" },
+      { find: /(\d)(?:\s|\u00A0)*(%)\b/g, replace: "$1\u00A0%" },
       { find: /(\d)(?:\s|\u00A0)*[jJ]\b/g, replace: "$1\u00A0J" },
       { find: /(\d)(?:\s|\u00A0)*[kK][jJ]\b/g, replace: "$1\u00A0kJ" },
       { find: /(\d)(?:\s|\u00A0)*[cC][aA][lL]\b/g, replace: "$1\u00A0cal" },
