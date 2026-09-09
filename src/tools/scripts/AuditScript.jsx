@@ -60,7 +60,7 @@ export default function AuditEditorialApp() {
         <div className="lg:w-[40%] p-8 flex flex-col border-r border-slate-100 bg-white animate-fade-slide-up">
           <header className="mb-8 animate-fade-slide-up">
             <div className="flex items-center gap-4 mb-2">
-              <div className="p-3 bg-indigo-600 rounded-xl shadow-lg shadow-indigo-200">
+              <div className="p-3 bg-pink-300 rounded-xl shadow-lg shadow-indigo-200">
                 <ShieldCheck className="text-white" size={24} />
               </div>
               <div className="flex flex-col">
@@ -73,15 +73,41 @@ export default function AuditEditorialApp() {
             </p>
           </header>
 
-          <div className="flex-1 flex flex-col relative justify-center space-y-6">
-             <div className="p-6 bg-slate-50 border-2 border-dashed border-slate-200 rounded-[2rem] text-center">
-                <div className="w-16 h-16 bg-white rounded-2xl shadow-sm border border-slate-50 flex items-center justify-center mb-4 mx-auto">
-                    <IconWrench className="text-indigo-600" size={28} />
+            {/* --- ILLUSTRATION DES FONCTIONNALITÉS (Étiquettes animées) --- */}
+            <div className="flex-1 flex flex-col justify-center space-y-4 my-6">
+              <div className="p-6 bg-slate-50 border-2 border-dashed border-slate-200 rounded-[2rem] flex flex-col items-center">
+                <p className="text-slate-400 text-[10px] font-black uppercase tracking-[0.15em] mb-4">
+                  Outils inclus dans le panneau
+                </p>
+                
+                {/* Conteneur des étiquettes en ligne */}
+                <div className="flex flex-wrap justify-center gap-2.5">
+                  <span className="flex items-center gap-1.5 px-3 py-2 bg-[#28a745] text-white text-[11px] font-bold rounded-lg shadow-sm transition-all duration-300 hover:-translate-y-1 hover:scale-105 hover:shadow-md cursor-default select-none">
+                    📋 Copier &nbsp;
+                  </span>
+                  
+                  <span className="flex items-center gap-1.5 px-3 py-2 bg-[#007bff] text-white text-[11px] font-bold rounded-lg shadow-sm transition-all duration-300 hover:-translate-y-1 hover:scale-105 hover:shadow-md cursor-default select-none">
+                    🔬 Auditer la page
+                  </span>
+                  
+                  <span className="flex items-center gap-1.5 px-3 py-2 bg-[#6f42c1] text-white text-[11px] font-bold rounded-lg shadow-sm transition-all duration-300 hover:-translate-y-1 hover:scale-105 hover:shadow-md cursor-default select-none">
+                    🏷️ Afficher les Hn
+                  </span>
+                  
+                  <span className="flex items-center gap-1.5 px-3 py-2 bg-[#17a2b8] text-white text-[11px] font-bold rounded-lg shadow-sm transition-all duration-300 hover:-translate-y-1 hover:scale-105 hover:shadow-md cursor-default select-none">
+                    🔗 Vérifier liens
+                  </span>
+                  
+                  <span className="flex items-center gap-1.5 px-3 py-2 bg-[#fd7e14] text-white text-[11px] font-bold rounded-lg shadow-sm transition-all duration-300 hover:-translate-y-1 hover:scale-105 hover:shadow-md cursor-default select-none">
+                    📁 Vérifier fichiers
+                  </span>
+                  
+                  <span className="flex items-center gap-1.5 px-3 py-2 bg-[#e040aa] text-white text-[11px] font-bold rounded-lg shadow-sm transition-all duration-300 hover:-translate-y-1 hover:scale-105 hover:shadow-md cursor-default select-none">
+                    📦 Vérifier SCORM
+                  </span>
                 </div>
-                <h3 className="text-slate-800 font-bold mb-2">Audit en temps réel</h3>
-                <p className="text-slate-500 text-xs">Affiche un panneau flottant discret avec vos outils d'analyse directement sur votre environnement de travail (pre-prod/prod).</p>
-             </div>
-          </div>
+              </div>
+            </div>
 
           <button
             onClick={() => window.open('https://gist.github.com/MaximeLy-VS/f292a92275ef4542dec6372880bd7cc3/raw/audit-editorial.user.js', '_blank')}
