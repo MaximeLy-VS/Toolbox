@@ -155,7 +155,43 @@ export default function AuditEditorialApp() {
               {/* Accordéon 3 : Installation */}
               <AccordionItem id="installation" title="Comment l'installer ?" icon={IconSettings}>
                 <ol className="list-decimal space-y-3 pl-4 marker:text-indigo-600 marker:font-bold">
-                  <li>Installez l'extension <strong>Tampermonkey</strong> sur votre navigateur (Chrome, Firefox ou Edge).</li>
+                  <li>Installez l'extension <strong>Tampermonkey</strong> sur votre navigateur (Chrome, Firefox ou Edge).
+                    <div className="mt-auto pt-6 animate-fade-slide-up">
+                        <div className="flex flex-wrap justify-center gap-2 mb-6">
+                          <a 
+                            href="https://www.tampermonkey.net/index.php?browser=chrome" 
+                            target="_blank" 
+                            rel="noreferrer" 
+                            className="px-3 py-1.5 bg-slate-100 hover:bg-indigo-50 hover:text-indigo-600 text-slate-600 text-xs font-bold rounded-lg transition-colors border border-transparent hover:border-indigo-100"
+                          >
+                            Chrome
+                          </a>
+                          <a 
+                            href="https://www.tampermonkey.net/index.php?browser=edge" 
+                            target="_blank" 
+                            rel="noreferrer" 
+                            className="px-3 py-1.5 bg-slate-100 hover:bg-indigo-50 hover:text-indigo-600 text-slate-600 text-xs font-bold rounded-lg transition-colors border border-transparent hover:border-indigo-100"
+                          >
+                            Edge
+                          </a>
+                          <a 
+                            href="https://www.tampermonkey.net/index.php?browser=firefox" 
+                            target="_blank" 
+                            rel="noreferrer" 
+                            className="px-3 py-1.5 bg-slate-100 hover:bg-indigo-50 hover:text-indigo-600 text-slate-600 text-xs font-bold rounded-lg transition-colors border border-transparent hover:border-indigo-100"
+                          >
+                            Firefox
+                          </a>
+                          <a 
+                            href="https://www.tampermonkey.net/index.php?browser=safari" 
+                            target="_blank" 
+                            rel="noreferrer" 
+                            className="px-3 py-1.5 bg-slate-100 hover:bg-indigo-50 hover:text-indigo-600 text-slate-600 text-xs font-bold rounded-lg transition-colors border border-transparent hover:border-indigo-100"
+                          >
+                            Safari
+                          </a>
+                        </div>
+                  </li>
                   <li>Cliquez sur le bouton "Installer le script" ci-contre. Tampermonkey s'ouvrira automatiquement.</li>
                   <li>Cliquez sur <strong>Installer</strong> dans l'onglet Tampermonkey.</li>
                   <li>Rendez-vous sur une page de cours Moodle : un bouton apparaîtra en bas à droite pour ouvrir le panneau d'audit.</li>
