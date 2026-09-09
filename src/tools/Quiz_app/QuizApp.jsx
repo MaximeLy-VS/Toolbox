@@ -253,7 +253,13 @@ export default function MoodleQuizApp() {
     window.URL.revokeObjectURL(url);
   };
 
-  const processFile = async () => {
+const processFile = async () => {
+    // --- NOUVELLE SÉCURITÉ : Vérification de l'ID du Quiz ---
+    if (!quizId || quizId.trim() === "" || quizId === "X–XXX–DA–WB–XX–26") {
+      setError("Action bloquée : Veuillez impérativement renseigner un Identifiant de Quiz valide (différent de la valeur par défaut).");
+      return;
+    }
+    
     if (!file) {
       setError("Veuillez sélectionner un fichier gabarit Word (.docx).");
       return;
@@ -660,10 +666,8 @@ export default function MoodleQuizApp() {
     setDescriptions(newDesc);
   };
 
-  const removeDescription = (index) => {
-    if (descriptions.length > 1) {
-      setDescriptions(descriptions.filter((_, i) => i !== index));
-    }
+const removeDescription = (index) => {
+    setDescriptions(descriptions.filter((_, i) => i !== index));
   };
 
   return (
@@ -743,9 +747,11 @@ export default function MoodleQuizApp() {
 
           <div className="space-y-6">
             
-            {/* ID Quiz */}
+          {/* ID Quiz */}
             <div className="space-y-2">
-              <label className="text-xs font-black text-slate-500 uppercase tracking-widest">Identifiant du Quiz (Racine)</label>
+              <label className="text-xs font-black text-slate-500 uppercase tracking-widest">
+                Identifiant du Quiz (Racine) <span className="text-red-500">*</span>
+              </label>
               <input 
                 type="text" 
                 value={quizId} 
@@ -777,11 +783,9 @@ export default function MoodleQuizApp() {
                       className="w-full p-4 pt-5 bg-slate-50 border border-slate-200 rounded-xl text-sm font-mono text-slate-600 focus:outline-none focus:border-blue-400 transition-all resize-y"
                       placeholder={`Texte HTML pour la consigne ${index + 1}...`}
                     />
-                    {descriptions.length > 1 && (
-                      <button onClick={() => removeDescription(index)} className="absolute top-4 right-3 text-slate-300 hover:text-red-500 transition-colors opacity-0 group-hover:opacity-100">
-                        <Trash2 size={16} />
-                      </button>
-                    )}
+                    <button onClick={() => removeDescription(index)} className="absolute top-4 right-3 text-slate-300 hover:text-red-500 transition-colors opacity-0 group-hover:opacity-100">
+                      <Trash2 size={16} />
+                    </button>
                   </div>
                 ))}
               </div>
