@@ -79,7 +79,7 @@ export default function AuditEditorialApp() {
                     <IconWrench className="text-indigo-600" size={28} />
                 </div>
                 <h3 className="text-slate-800 font-bold mb-2">Audit en temps réel</h3>
-                <p className="text-slate-500 text-xs">Affiche un panneau flottant discret avec vos outils d'analyse directement sur votre environnement de travail (pre-prod/prod)[cite: 1].</p>
+                <p className="text-slate-500 text-xs">Affiche un panneau flottant discret avec vos outils d'analyse directement sur votre environnement de travail (pre-prod/prod).</p>
              </div>
           </div>
 
@@ -111,27 +111,28 @@ export default function AuditEditorialApp() {
                   <li>Installez l'extension <strong>Tampermonkey</strong> sur votre navigateur (Chrome, Firefox ou Edge).</li>
                   <li>Cliquez sur le bouton "Installer le script" ci-contre. Tampermonkey s'ouvrira automatiquement.</li>
                   <li>Cliquez sur <strong>Installer</strong> dans l'onglet Tampermonkey.</li>
-                  <li>Rendez-vous sur une page de cours Moodle : un bouton apparaîtra en bas à droite pour ouvrir le panneau d'audit[cite: 1].</li>
+                  <li>Rendez-vous sur une page de cours Moodle : un bouton apparaîtra en bas à droite pour ouvrir le panneau d'audit.</li>
                 </ol>
               </AccordionItem>
 
               {/* Accordéon 2 : Usages & Fonctionnement Typo */}
               <AccordionItem id="typo" title="Analyse Éditoriale & Typographique" icon={IconList}>
-                <p className="mb-2">Le script surligne visuellement les erreurs directement dans le texte de la page. Passez votre souris sur un surlignage pour voir le correctif suggéré[cite: 1].</p>
+                <p className="mb-2">Le script surligne visuellement les erreurs directement dans le texte de la page. Passez votre souris sur un surlignage pour voir le correctif suggéré.</p>
                 <ul className="list-disc space-y-2 pl-4 text-slate-500 marker:text-slate-300">
-                  <li><strong>Espaces & Ponctuation :</strong> Détection des espaces insécables manquantes (avant :, ?, !)[cite: 1].</li>
-                  <li><strong>Unités de mesure :</strong> Contrôle de la syntaxe conforme (kg, MHz, kWh, etc.)[cite: 1].</li>
-                  <li><strong>Outil Hn :</strong> Affiche des badges (H1, H2, H3...) directement sur les titres pour contrôler la structure sémantique[cite: 1].</li>
+                  <li><strong>Outil de recherche multiple :</strong> permet de rechercher plusieurs termes simultanément sur une page et de les mettre en évidence.</li>
+                  <li><strong>Espaces & Ponctuation :</strong> détection des espaces insécables manquantes (avant :, ?, !).</li>
+                  <li><strong>Unités de mesure :</strong> contrôle de la syntaxe conforme (kg, MHz, kWh, etc.).</li>
+                  <li><strong>Outil Hn :</strong> affiche des badges (H1, H2, H3...) directement sur les titres pour contrôler la structure sémantique.</li>
                 </ul>
               </AccordionItem>
 
               {/* Accordéon 3 : Liens, Fichiers et SCORM */}
               <AccordionItem id="tech" title="Vérification technique (Liens, Fichiers, SCORM)" icon={Info}>
-                 <p className="mb-2">Des boutons dédiés permettent de lancer des audits ciblés sur les médias de la page :</p>
+                 <p className="mb-2">Des boutons dédiés permettent de lancer des audits ciblés sur les médias de la page.</p>
                  <ul className="list-disc space-y-2 pl-4 text-slate-500 marker:text-slate-300">
-                  <li><strong>Liens :</strong> Surligne les liens orphelins (vides) ou les liens externes qui ne respectent pas l'accessibilité[cite: 1].</li>
-                  <li><strong>Fichiers :</strong> Repère les fichiers corrompus, les doublons, et les discordances de nommage entre le lien et le fichier hébergé[cite: 1].</li>
-                  <li><strong>SCORM :</strong> Analyse l'intégrité des paquets SCORM (cassés, temporaires, doublons) et compare les titres internes avec l'intitulé du cours[cite: 1].</li>
+                  <li><strong>Liens :</strong> surligne les liens orphelins (vides) ou les liens externes qui ne respectent pas l'accessibilité.</li>
+                  <li><strong>Fichiers :</strong> repère les fichiers corrompus, les doublons, et les discordances de nommage entre le lien et le fichier hébergé.</li>
+                  <li><strong>SCORM :</strong> analyse l'intégrité des paquets SCORM (cassés, temporaires, doublons) et compare les titres internes avec l'intitulé du cours.</li>
                 </ul>
               </AccordionItem>
 
