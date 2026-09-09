@@ -82,27 +82,27 @@ export default function AuditEditorialApp() {
                 
                 {/* Conteneur des étiquettes en ligne */}
                 <div className="flex flex-wrap justify-center gap-2.5">
-                  <span className="flex items-center gap-1.5 px-3 py-2 bg-[#28a745] text-white text-[11px] font-bold rounded-lg shadow-sm transition-all duration-300 hover:-translate-y-1 hover:scale-105 hover:shadow-md cursor-default select-none">
+                  <span title="Copier le code html de l'espace insécable" className="flex items-center gap-1.5 px-3 py-2 bg-[#28a745] text-white text-[11px] font-bold rounded-lg shadow-sm transition-all duration-300 hover:-translate-y-1 hover:scale-105 hover:shadow-md cursor-default select-none">
                     📋 Copier &amp;nbsp;
                   </span>
                   
-                  <span className="flex items-center gap-1.5 px-3 py-2 bg-[#007bff] text-white text-[11px] font-bold rounded-lg shadow-sm transition-all duration-300 hover:-translate-y-1 hover:scale-105 hover:shadow-md cursor-default select-none">
+                  <span title="Audit typographique de la page" className="flex items-center gap-1.5 px-3 py-2 bg-[#007bff] text-white text-[11px] font-bold rounded-lg shadow-sm transition-all duration-300 hover:-translate-y-1 hover:scale-105 hover:shadow-md cursor-default select-none">
                     🔬 Auditer la page
                   </span>
                   
-                  <span className="flex items-center gap-1.5 px-3 py-2 bg-[#6f42c1] text-white text-[11px] font-bold rounded-lg shadow-sm transition-all duration-300 hover:-translate-y-1 hover:scale-105 hover:shadow-md cursor-default select-none">
+                  <span title="Afficher les niveaux de titres d'une page" className="flex items-center gap-1.5 px-3 py-2 bg-[#6f42c1] text-white text-[11px] font-bold rounded-lg shadow-sm transition-all duration-300 hover:-translate-y-1 hover:scale-105 hover:shadow-md cursor-default select-none">
                     🏷️ Afficher les Hn
                   </span>
                   
-                  <span className="flex items-center gap-1.5 px-3 py-2 bg-[#17a2b8] text-white text-[11px] font-bold rounded-lg shadow-sm transition-all duration-300 hover:-translate-y-1 hover:scale-105 hover:shadow-md cursor-default select-none">
+                  <span title="Vérifier les liens (doublons, liens morts, erreurs d'accesibilité)" className="flex items-center gap-1.5 px-3 py-2 bg-[#17a2b8] text-white text-[11px] font-bold rounded-lg shadow-sm transition-all duration-300 hover:-translate-y-1 hover:scale-105 hover:shadow-md cursor-default select-none">
                     🔗 Vérifier liens
                   </span>
                   
-                  <span className="flex items-center gap-1.5 px-3 py-2 bg-[#fd7e14] text-white text-[11px] font-bold rounded-lg shadow-sm transition-all duration-300 hover:-translate-y-1 hover:scale-105 hover:shadow-md cursor-default select-none">
+                  <span title="Vérifier les fichiers (doublons, concordance des titres, fichiers corrompus ou vides)" className="flex items-center gap-1.5 px-3 py-2 bg-[#fd7e14] text-white text-[11px] font-bold rounded-lg shadow-sm transition-all duration-300 hover:-translate-y-1 hover:scale-105 hover:shadow-md cursor-default select-none">
                     📁 Vérifier fichiers
                   </span>
                   
-                  <span className="flex items-center gap-1.5 px-3 py-2 bg-[#e040aa] text-white text-[11px] font-bold rounded-lg shadow-sm transition-all duration-300 hover:-translate-y-1 hover:scale-105 hover:shadow-md cursor-default select-none">
+                  <span title="Vérifier les SCORM (fichiers corrompus, concordance des titres, incompatibilités)" className="flex items-center gap-1.5 px-3 py-2 bg-[#e040aa] text-white text-[11px] font-bold rounded-lg shadow-sm transition-all duration-300 hover:-translate-y-1 hover:scale-105 hover:shadow-md cursor-default select-none">
                     📦 Vérifier SCORM
                   </span>
                 </div>
