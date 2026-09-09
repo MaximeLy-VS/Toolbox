@@ -83,7 +83,7 @@ export default function AuditEditorialApp() {
                 {/* Conteneur des étiquettes en ligne */}
                 <div className="flex flex-wrap justify-center gap-2.5">
                   <span className="flex items-center gap-1.5 px-3 py-2 bg-[#28a745] text-white text-[11px] font-bold rounded-lg shadow-sm transition-all duration-300 hover:-translate-y-1 hover:scale-105 hover:shadow-md cursor-default select-none">
-                    📋 Copier &nbsp;
+                    📋 Copier &amp;nbsp;
                   </span>
                   
                   <span className="flex items-center gap-1.5 px-3 py-2 bg-[#007bff] text-white text-[11px] font-bold rounded-lg shadow-sm transition-all duration-300 hover:-translate-y-1 hover:scale-105 hover:shadow-md cursor-default select-none">
