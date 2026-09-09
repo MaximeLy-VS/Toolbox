@@ -74,7 +74,7 @@ export default function AttoCustomApp() {
           </header>
 
           {/* --- ILLUSTRATION DES FONCTIONNALITÉS (Étiquettes animées) --- */}
-          <div className="flex-1 flex flex-col justify-center space-y-4 my-6">
+          <div className="flex-1 flex flex-col space-y-4 my-6">
             <div className="p-6 bg-slate-50 border-2 border-dashed border-slate-200 rounded-[2rem] flex flex-col items-center">
               <p className="text-slate-400 text-[10px] font-black uppercase tracking-[0.15em] mb-4">
                 Outils injectés dans la barre
@@ -122,7 +122,7 @@ export default function AttoCustomApp() {
             <div className="pt-2">
 
               {/* Accordéon 1 : Typographie */}
-              <AccordionItem id="typo" title="✨ Nettoyage Typographique" icon={IconWand}>
+              <AccordionItem id="typo" title="Nettoyage Typographique ✨" icon={IconWand}>
                 <p className="mb-2">Le bouton magique applique un lot de règles strictes sur le texte</p>
                 <ul className="list-disc space-y-2 pl-4 text-slate-500 marker:text-slate-300">
                   <li><strong>Espaces insécables :</strong> ajout automatique avant les ponctuations doubles (?:!;»€%) et sécurisation des entités existantes.</li>
@@ -133,7 +133,7 @@ export default function AttoCustomApp() {
               </AccordionItem>
 
               {/* Accordéon 2 : Modèles HTML */}
-              <AccordionItem id="templates" title="▨ Modèles HTML & Slots perso" icon={IconLayout}>
+              <AccordionItem id="templates" title="Modèles HTML chartés & Slots perso ▨" icon={IconLayout}>
                  <p className="mb-2">Un menu déroulant vous permet d'insérer des blocs HTML courant et pré-chartés directement dans l'éditeur</p>
                  <ul className="list-disc space-y-2 pl-4 text-slate-500 marker:text-slate-300">
                   <li><strong>Structures :</strong> tableaux, encadrés couleurs, grilles 2 ou 3 colonnes, accordéons.</li>
@@ -143,7 +143,7 @@ export default function AttoCustomApp() {
               </AccordionItem>
               
               {/* Accordéon 3 : Editeur extensible */}
-              <AccordionItem id="expand" title="⬍ Confort d'édition (Auto-resize)" icon={IconMaximize}>
+              <AccordionItem id="expand" title="Confort d'édition (Auto-resize) ⬍" icon={IconMaximize}>
                  <p className="mb-2">Fini les barres de défilement minuscules !</p>
                  <p className="text-slate-500">
                   Un clic sur le bouton "⬍" agrandit dynamiquement la zone de texte pour s'adapter à la longueur de votre contenu en désactivant les limites de hauteur de l'éditeur Moodle que vous soyez sur l'éditeur visuel classique ou sur l'éditeur de code source.
