@@ -74,7 +74,7 @@ export default function AuditEditorialApp() {
           </header>
 
             {/* --- ILLUSTRATION DES FONCTIONNALITÉS (Étiquettes animées) --- */}
-            <div className="flex-1 flex flex-col justify-center space-y-4 my-6">
+            <div className="flex-1 flex flex-col space-y-4 my-6">
               <div className="p-6 bg-slate-50 border-2 border-dashed border-slate-200 rounded-[2rem] flex flex-col items-center">
                 <p className="text-slate-400 text-[10px] font-black uppercase tracking-[0.15em] mb-4">
                   Outils inclus dans le panneau
