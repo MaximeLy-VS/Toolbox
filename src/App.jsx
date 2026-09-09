@@ -159,8 +159,8 @@ import MoodleQuizApp from './tools/Quiz_app/QuizApp';
  * --- DASHBOARD PRINCIPAL ---
  */
 const Home = () => {
-  const phrases = ["édition d'images", "accessibilité numérique"];
-  const animationCSS = " @keyframes slide-vertical { 0%, 20% { transform: translateY(0); } 25%, 45% { transform: translateY(-33.33%); } 50%, 70% { transform: translateY(-66.66%); } 75%, 100% { transform: translateY(0); } } ";
+  const phrases = ["édition d'images", "accessibilité numérique", "moodle"];
+  const animationCSS = " @keyframes slide-vertical { 0%, 20% { transform: translateY(0); } 25%, 45% { transform: translateY(-25%); } 50%, 70% { transform: translateY(-50%); } 75%, 100% { transform: translateY(-75%); } } ";
 
   return (
   <div className="min-h-screen flex flex-col items-center justify-center p-6">
