@@ -524,7 +524,6 @@ export default function MoodleQuizApp() {
             }
           }
           
-          const modernCheckBoxes = cellNode.getElementsByTagName("w14:checked");
           if (modernCheckBoxes.length > 0) {
             const val = modernCheckBoxes[0].getAttribute("w14:val");
             if (val === null || val === "1" || val === "true") isChecked = true;
@@ -726,7 +725,7 @@ export default function MoodleQuizApp() {
                 value={quizId} 
                 onChange={(e) => setQuizId(e.target.value)}
                 className="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl font-bold text-slate-700 focus:outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-100 transition-all"
-                placeholder="Ex: UE01_Chap2"
+                placeholder="Ex: 3-0421-DA-WB-06-26"
               />
             </div>
 
