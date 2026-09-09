@@ -220,7 +220,8 @@ const Home = () => {
     <div className="grid grid-cols-1 md:grid-cols-3 gap-8 w-full max-w-6xl">
             {[
         { to: "/tools/Mockup_app", title: "Mock-up Studio", desc: "Convertisseur et générateur de\u00A0vignettes et\u00A0bannières.", icon: IconImage, color: "bg-sky-600" },
-        { to: "/tools/AN_Annotation", title: "Éditeur de schémas", desc: "Ajoutez facilement des légendes à\u00A0vos\u00A0schémas\u00A0scientifiques ", icon: PenLine, color: "bg-cyan-600" }
+        /*{ to: "/tools/AN_Annotation", title: "Éditeur de schémas", desc: "Ajoutez facilement des légendes à\u00A0vos\u00A0schémas\u00A0scientifiques ", icon: PenLine, color: "bg-cyan-600" },*/
+        { to: "/", title: "À venir", desc: "D'autres outils pour l'édition sont à déveloper.", icon: IconLoader, color: "bg-cyan-800" }
       ].map((tool, i) => (
         <Link key={i} to={tool.to} className="group bg-white  p-6 rounded-[2rem] shadow-xl shadow-indigo-500/5 border border-slate-100 hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 flex flex-col items-start text-left gap-4">
         <div className="inline-flex gap-3 items-center">
