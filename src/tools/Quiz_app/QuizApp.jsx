@@ -697,7 +697,7 @@ export default function MoodleQuizApp() {
               <div className="space-y-4">
                 {scanErrors.map((errItem, index) => (
                   <div key={index} className="bg-slate-50 border border-slate-200 rounded-xl p-4">
-                    <h3 className="text-sm font-black text-slate-800 mb-2">{errItem.questionIndex}</h3>
+                    <h3 className="text-sm font-black text-slate-800 mb-2">Tableau de question {errItem.questionIndex}</h3>
                     <ul className="space-y-2">
                       {errItem.errors.map((msg, i) => (
                         <li key={i} className="text-xs text-red-600 flex items-start gap-2">
@@ -716,7 +716,7 @@ export default function MoodleQuizApp() {
                 onClick={() => setIsModalOpen(false)}
                 className="px-6 py-2.5 bg-slate-800 hover:bg-slate-900 text-white text-sm font-bold rounded-xl shadow-md transition-colors"
               >
-                Compris, je vais corriger mon fichier
+                Confirmer et fermer
               </button>
             </div>
           </div>
