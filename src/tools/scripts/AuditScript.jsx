@@ -102,7 +102,7 @@ export default function AuditEditorialApp() {
                     📁 Vérifier fichiers
                   </span>
                   
-                  <span title="Vérifier les SCORM (fichiers corrompus, concordance des titres, incompatibilités)" className="flex items-center gap-1.5 px-3 py-2 bg-[#e040aa] text-white text-[11px] font-bold rounded-lg shadow-sm transition-all duration-300 hover:-translate-y-1 hover:scale-105 hover:shadow-md cursor-default select-none">
+                  <span title="Vérifier les SCORM (fichiers corrompus, vides, concordance des titres, incompatibilités)" className="flex items-center gap-1.5 px-3 py-2 bg-[#e040aa] text-white text-[11px] font-bold rounded-lg shadow-sm transition-all duration-300 hover:-translate-y-1 hover:scale-105 hover:shadow-md cursor-default select-none">
                     📦 Vérifier SCORM
                   </span>
                 </div>
