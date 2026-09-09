@@ -60,7 +60,7 @@ export default function AttoCustomApp() {
         <div className="lg:w-[40%] p-8 flex flex-col border-r border-slate-100 bg-white animate-fade-slide-up">
           <header className="mb-8 animate-fade-slide-up">
             <div className="flex items-center gap-4 mb-2">
-              <div className="p-3 bg-indigo-600 rounded-xl shadow-lg shadow-indigo-200">
+              <div className="p-3 bg-pink-200 rounded-xl shadow-lg shadow-indigo-200">
                 <IconPen className="text-white" size={24} />
               </div>
               <div className="flex flex-col">
