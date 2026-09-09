@@ -10,6 +10,7 @@ import {
 } from 'lucide-react';
 
 export default function AuditEditorialApp() {
+  // Gestion de l'état des accordéons pour une UI épurée
   const [activeAccordion, setActiveAccordion] = useState('installation');
 
   const toggleAccordion = (id) => {
@@ -95,7 +96,7 @@ export default function AuditEditorialApp() {
         <div className="lg:w-[60%] p-8 bg-[#f8fafc] flex flex-col overflow-y-auto">
           <div className="space-y-6 animate-fade-slide-up h-full pb-10">
          
-            {/* En-tête des résultats */}
+            {/* En-tête */}
             <div className="flex items-center justify-between pb-4 border-b border-slate-200">
               <span className="px-3 py-1 rounded-md text-[10px] font-black tracking-widest uppercase border bg-indigo-100 text-indigo-700 border-indigo-200">
                 Documentation
@@ -103,18 +104,8 @@ export default function AuditEditorialApp() {
             </div>
 
             <div className="pt-2">
-              
-              {/* Accordéon 1 : Installation */}
-              <AccordionItem id="installation" title="Comment l'installer ?" icon={IconSettings}>
-                <ol className="list-decimal space-y-3 pl-4 marker:text-indigo-600 marker:font-bold">
-                  <li>Installez l'extension <strong>Tampermonkey</strong> sur votre navigateur (Chrome, Firefox ou Edge).</li>
-                  <li>Cliquez sur le bouton "Installer le script" ci-contre. Tampermonkey s'ouvrira automatiquement.</li>
-                  <li>Cliquez sur <strong>Installer</strong> dans l'onglet Tampermonkey.</li>
-                  <li>Rendez-vous sur une page de cours Moodle : un bouton apparaîtra en bas à droite pour ouvrir le panneau d'audit.</li>
-                </ol>
-              </AccordionItem>
 
-              {/* Accordéon 2 : Usages & Fonctionnement Typo */}
+              {/* Accordéon 1 : Usages & Fonctionnement Typo */}
               <AccordionItem id="typo" title="Analyse Éditoriale & Typographique" icon={IconList}>
                 <p className="mb-2">Le script surligne visuellement les erreurs directement dans le texte de la page. Passez votre souris sur un surlignage pour voir le correctif suggéré.</p>
                 <ul className="list-disc space-y-2 pl-4 text-slate-500 marker:text-slate-300">
@@ -125,7 +116,7 @@ export default function AuditEditorialApp() {
                 </ul>
               </AccordionItem>
 
-              {/* Accordéon 3 : Liens, Fichiers et SCORM */}
+              {/* Accordéon 2 : Liens, Fichiers et SCORM */}
               <AccordionItem id="tech" title="Vérification technique (Liens, Fichiers, SCORM)" icon={Info}>
                  <p className="mb-2">Des boutons dédiés permettent de lancer des audits ciblés sur les médias de la page.</p>
                  <ul className="list-disc space-y-2 pl-4 text-slate-500 marker:text-slate-300">
@@ -133,6 +124,16 @@ export default function AuditEditorialApp() {
                   <li><strong>Fichiers :</strong> repère les fichiers corrompus, les doublons, et les discordances de nommage entre le lien et le fichier hébergé.</li>
                   <li><strong>SCORM :</strong> analyse l'intégrité des paquets SCORM (cassés, temporaires, doublons) et compare les titres internes avec l'intitulé du cours.</li>
                 </ul>
+              </AccordionItem>
+
+              {/* Accordéon 3 : Installation */}
+              <AccordionItem id="installation" title="Comment l'installer ?" icon={IconSettings}>
+                <ol className="list-decimal space-y-3 pl-4 marker:text-indigo-600 marker:font-bold">
+                  <li>Installez l'extension <strong>Tampermonkey</strong> sur votre navigateur (Chrome, Firefox ou Edge).</li>
+                  <li>Cliquez sur le bouton "Installer le script" ci-contre. Tampermonkey s'ouvrira automatiquement.</li>
+                  <li>Cliquez sur <strong>Installer</strong> dans l'onglet Tampermonkey.</li>
+                  <li>Rendez-vous sur une page de cours Moodle : un bouton apparaîtra en bas à droite pour ouvrir le panneau d'audit.</li>
+                </ol>
               </AccordionItem>
 
             </div>
