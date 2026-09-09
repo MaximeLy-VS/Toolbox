@@ -155,7 +155,7 @@ import ANtableApp from './tools/AN_tableau/ANtableApp';
 import MockupApp from './tools/Mockup_app/MockupApp';
 import AnnotationApp from './tools/AN_Annotation/AnnotationApp';
 import MoodleQuizApp from './tools/Quiz_app/QuizApp';
-import AuditEditorialApp from './tools/scripts/AuditEditorialApp';
+import AuditEditorialApp from './tools/scripts/AuditScript';
 
 /**
  * --- DASHBOARD PRINCIPAL ---
