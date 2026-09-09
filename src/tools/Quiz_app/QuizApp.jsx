@@ -140,10 +140,33 @@ export default function MoodleQuizApp() {
         questionCount++;
         let tableErrors = [];
 
-        // Vérification 1 : Structure globale (Au moins En-tête + 1 prop + Feedback = 8 lignes min)
-        if (rows.length < 8) {
-          tableErrors.push("Structure cassée : Le tableau manque de lignes essentielles.");
-        } else {
+// --- VÉRIFICATION 1 : Intégrité stricte de l'en-tête (Header) ---
+        // On vérifie que chaque ligne clé est bien à sa place exacte pour éviter tout décalage
+        const expectedHeaders = [
+          { index: 0, keyword: "code", label: "Ligne 1 (Code)" },
+          { index: 2, keyword: "réponse correcte", label: "Ligne 3 (Réponse correcte)" },
+          { index: 3, keyword: "énoncé", label: "Ligne 4 (Énoncé)" },
+          { index: 5, keyword: "propositions", label: "Ligne 6 (Propositions)" }
+        ];
+
+        let headerShifted = false;
+
+        for (let h of expectedHeaders) {
+          if (rows.length > h.index) {
+            const firstCell = rows[h.index].getElementsByTagName("w:tc")[0];
+            const cellText = getRawCellText(firstCell).toLowerCase();
+            if (!cellText.includes(h.keyword)) {
+              tableErrors.push(`Structure altérée : La ${h.label} est manquante ou a été décalée.`);
+              headerShifted = true;
+            }
+          } else {
+            tableErrors.push(`Structure altérée : La ${h.label} est introuvable (Tableau trop court).`);
+            headerShifted = true;
+          }
+        }
+
+        // Si l'en-tête n'est pas décalé, on peut faire les autres vérifications
+        if (!headerShifted) {
           // Vérification 2 : Détection de la zone Feedback
           let feedbackStartIndex = -1;
           for (let r = rows.length - 1; r >= 5; r--) {
