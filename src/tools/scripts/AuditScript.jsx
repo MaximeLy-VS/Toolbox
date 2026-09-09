@@ -10,7 +10,6 @@ import {
 } from 'lucide-react';
 
 export default function AuditEditorialApp() {
-  // Gestion de l'état des accordéons pour une UI épurée
   const [activeAccordion, setActiveAccordion] = useState('installation');
 
   const toggleAccordion = (id) => {
@@ -84,7 +83,7 @@ export default function AuditEditorialApp() {
           </div>
 
           <button
-            onClick={() => window.open('LIEN_VERS_LE_FICHIER_RAW_USERJS', '_blank')}
+            onClick={() => window.open('https://gist.github.com/MaximeLy-VS/f292a92275ef4542dec6372880bd7cc3/raw/audit-editorial.user.js', '_blank')}
             className="mt-6 w-full py-4 bg-indigo-900 hover:bg-indigo-800 text-white font-black rounded-xl shadow-xl transition-all flex items-center justify-center gap-3 text-xs uppercase tracking-widest shrink-0 animate-fade-slide-up"
           >
             <IconDownload size={18} />
