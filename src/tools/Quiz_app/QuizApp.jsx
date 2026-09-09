@@ -1,5 +1,5 @@
 import React, { useState, useRef } from 'react';
-import { UploadCloud, FileText, Check, AlertCircle, Copy, Download, Trash2, Plus, FileCode2 } from 'lucide-react';
+import { UploadCloud, FileText, Check, AlertCircle, Copy, Download, Trash2, Plus, FileCode2, Loader2, X } from 'lucide-react';
 import gabaritWord from './DA-WB_Gabarit.docx?url';
 
 // Chargement asynchrone de JSZip depuis un CDN pour garantir la compatibilité sans npm install
@@ -18,6 +18,9 @@ export default function MoodleQuizApp() {
   const [file, setFile] = useState(null);
   const [quizId, setQuizId] = useState("X–XXX–DA–WB–XX–26");
   const [descriptions, setDescriptions] = useState(["<div class=\"FondCouleur1 p-3\">\n  <strong>Séance 1&nbsp;– Titre de la séance&nbsp;1</strong>\n</div>"]);
+  const [scanStatus, setScanStatus] = useState('idle'); // 'idle' | 'scanning' | 'success' | 'error'
+  const [scanErrors, setScanErrors] = useState([]);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [resultXml, setResultXml] = useState("");
   const [error, setError] = useState(null);
@@ -87,17 +90,111 @@ export default function MoodleQuizApp() {
 
     // 2. Reconvertir le vrai espace insécable \u00A0 en entité HTML &nbsp; pour Moodle
     str = str.replace(/\u00A0/g, '&nbsp;');
-    
+        return str;
+  };
+
+  const getRawCellText = (cellNode) => {
+    if (!cellNode) return "";
+    const textNodes = cellNode.getElementsByTagName("w:t");
+    let str = "";
+    for (let t = 0; t < textNodes.length; t++) {
+      str += textNodes[t].textContent;
+    }
     return str;
+  };
+  // --- Pré-scan d'intégrité ---
+  const handleFileScan = async (selectedFile) => {
+    if (!selectedFile) return;
+    
+    setScanStatus('scanning');
+    setScanErrors([]);
+    setFile(null); // On reset le fichier valide
+    setResultXml("");
+
+    try {
+      const JSZip = await loadJSZip();
+      const zip = new JSZip();
+      const loadedZip = await zip.loadAsync(selectedFile);
+      const docXmlFile = loadedZip.file("word/document.xml");
+      
+      if (!docXmlFile) {
+        throw new Error("Impossible de lire le fichier. Est-ce bien un format .docx valide ?");
+      }
+      
+      const xmlString = await docXmlFile.async("text");
+      const parser = new DOMParser();
+      const xmlDoc = parser.parseFromString(xmlString, "text/xml");
+      const tables = xmlDoc.getElementsByTagName("w:tbl");
+      
+      let detectedErrors = [];
+      let questionCount = 0;
+
+      for (let i = 0; i < tables.length; i++) {
+        const table = tables[i];
+        const rows = table.getElementsByTagName("w:tr");
+        if (rows.length === 0) continue; 
+        
+        const cell1_1 = rows[0].getElementsByTagName("w:tc")[0];
+        if (!cell1_1 || !getRawCellText(cell1_1).toLowerCase().includes("code")) continue;
+
+        questionCount++;
+        let tableErrors = [];
+
+        // Vérification 1 : Structure globale (Au moins En-tête + 1 prop + Feedback = 8 lignes min)
+        if (rows.length < 8) {
+          tableErrors.push("Structure cassée : Le tableau manque de lignes essentielles.");
+        } else {
+          // Vérification 2 : Détection de la zone Feedback
+          let feedbackStartIndex = -1;
+          for (let r = rows.length - 1; r >= 5; r--) {
+            const cells = rows[r].getElementsByTagName("w:tc");
+            if (cells.length > 0 && getRawCellText(cells[0]).toLowerCase().includes("feedback")) {
+              feedbackStartIndex = r;
+              break;
+            }
+          }
+
+          if (feedbackStartIndex === -1) {
+            tableErrors.push("Zone 'Feedback' introuvable. Le mot-clé a été effacé ou la ligne a été fusionnée incorrectement.");
+          } else {
+            // Vérification 3 : Le nombre de propositions (entre l'index 6 et le début du feedback)
+            const nbPropositions = feedbackStartIndex - 6;
+            if (nbPropositions < 2) {
+              tableErrors.push(`Propositions insuffisantes : Seulement ${nbPropositions > 0 ? nbPropositions : 0} trouvée(s). Minimum 2 requises.`);
+            }
+          }
+        }
+
+        if (tableErrors.length > 0) {
+          detectedErrors.push({ questionIndex: questionCount, errors: tableErrors });
+        }
+      }
+
+      if (questionCount === 0) {
+        detectedErrors.push({ questionIndex: "Document entier", errors: ["Aucun tableau de question détecté (Mot 'Code' introuvable)."] });
+      }
+
+      if (detectedErrors.length > 0) {
+        setScanErrors(detectedErrors);
+        setScanStatus('error');
+        setIsModalOpen(true);
+      } else {
+        setScanStatus('success');
+        setFile(selectedFile); // Le fichier est sain, on l'autorise pour la génération
+      }
+
+    } catch (err) {
+      setScanErrors([{ questionIndex: "Fichier", errors: [err.message] }]);
+      setScanStatus('error');
+      setIsModalOpen(true);
+    }
   };
 
   const copyToClipboard = (text) => {
     if (navigator.clipboard && window.isSecureContext) {
       navigator.clipboard.writeText(text).then(() => {
         alert("XML copié dans le presse-papier !");
-      }).catch((err) => {
-        fallbackCopyTextToClipboard(text);
-      });
+      }).catch(() => fallbackCopyTextToClipboard(text));
     } else {
       fallbackCopyTextToClipboard(text);
     }
@@ -143,31 +240,12 @@ export default function MoodleQuizApp() {
     try {
       const JSZip = await loadJSZip();
       const zip = new JSZip();
-      const loadedZip = await zip.loadAsync(file);
-      
-      const docXmlFile = loadedZip.file("word/document.xml");
-      if (!docXmlFile) {
-        throw new Error("Fichier document.xml introuvable. Est-ce bien un format .docx valide ?");
-      }
-      
+      const loadedZip = await zip.loadAsync(file);  
+      const docXmlFile = loadedZip.file("word/document.xml"); 
       const xmlString = await docXmlFile.async("text");
       const parser = new DOMParser();
       const xmlDoc = parser.parseFromString(xmlString, "text/xml");
-      
       const tables = xmlDoc.getElementsByTagName("w:tbl");
-      if (tables.length === 0) {
-        throw new Error("Aucun tableau trouvé dans le document.");
-      }
-
-      const getRawCellText = (cellNode) => {
-        if (!cellNode) return "";
-        const textNodes = cellNode.getElementsByTagName("w:t");
-        let str = "";
-        for (let t = 0; t < textNodes.length; t++) {
-          str += textNodes[t].textContent;
-        }
-        return str;
-      };
 
       const extractAndCleanCell = (cellNode) => {
         if (!cellNode) return "";
@@ -177,13 +255,11 @@ export default function MoodleQuizApp() {
         const paragraphs = cellNode.getElementsByTagName("w:p");
         for (let p = 0; p < paragraphs.length; p++) {
           const pNode = paragraphs[p];
-          
           const numPr = pNode.getElementsByTagName("w:numPr");
           const isListItem = numPr.length > 0;
-
           let pText = "";
           const runs = pNode.getElementsByTagName("w:r");
-          
+
           for (let r = 0; r < runs.length; r++) {
             const run = runs[r];
             // --- DÉTECTION DU FORMATAGE (Gras, Italique, Indice, Exposant) ---
@@ -356,12 +432,9 @@ export default function MoodleQuizApp() {
         let feedbackStartIndex = -1;
         for (let r = rows.length - 1; r >= 5; r--) {
           const cells = rows[r].getElementsByTagName("w:tc");
-          if (cells.length > 0) {
-            const firstCellText = getRawCellText(cells[0]).toLowerCase();
-            if (firstCellText.includes("feedback")) {
-              feedbackStartIndex = r;
-              break;
-            }
+          if (cells.length > 0 && getRawCellText(cells[0]).toLowerCase().includes("feedback")) {
+            feedbackStartIndex = r;
+            break;
           }
         }
         
@@ -430,24 +503,21 @@ export default function MoodleQuizApp() {
         for (let r = 6; r < feedbackStartIndex; r++) {
           const cells = rows[r].getElementsByTagName("w:tc");
           if (cells.length < 2) continue;
-
           const cellNode = cells[0];
           const rawCellText = getRawCellText(cellNode);
-
           // Garde-fou 2 : Si le tableau a été altéré et qu'on tombe quand même sur l'en-tête "Propositions :"
           if (rawCellText.toLowerCase().includes("propositions")) {
               continue; // On ignore cette ligne et on passe à la suivante
           }
 
           const answerText = extractAndCleanCell(cells[1]);
-
           let isChecked = false;
           
           const checkBoxes = cellNode.getElementsByTagName("w:checkBox");
+          const modernCheckBoxes = cellNode.getElementsByTagName("w14:checked");
           if (checkBoxes.length > 0) {
             const checkedTag = checkBoxes[0].getElementsByTagName("w:checked")[0];
-            const defaultTag = checkBoxes[0].getElementsByTagName("w:default")[0];
-            
+            const defaultTag = checkBoxes[0].getElementsByTagName("w:default")[0];            
             if (checkedTag) {
               const val = checkedTag.getAttribute("w:val");
               if (val === null || val === "1" || val === "true") isChecked = true;
@@ -555,16 +625,13 @@ export default function MoodleQuizApp() {
 
     } catch (err) {
       console.error(err);
-      setError(err.message || "Erreur critique lors de l'analyse du fichier.");
+      setError("Erreur critique lors de l'analyse du fichier.");
     } finally {
       setLoading(false);
     }
   };
 
-  const addDescription = () => {
-    setDescriptions([...descriptions, ""]);
-  };
-
+  const addDescription = () => setDescriptions([...descriptions, ""]);
   const updateDescription = (index, value) => {
     const newDesc = [...descriptions];
     newDesc[index] = value;
@@ -573,8 +640,7 @@ export default function MoodleQuizApp() {
 
   const removeDescription = (index) => {
     if (descriptions.length > 1) {
-      const newDesc = descriptions.filter((_, i) => i !== index);
-      setDescriptions(newDesc);
+      setDescriptions(descriptions.filter((_, i) => i !== index));
     }
   };
 
@@ -585,14 +651,58 @@ export default function MoodleQuizApp() {
           from { opacity: 0; transform: translateY(15px); }
           to { opacity: 1; transform: translateY(0); }
         }
-        .animate-fade-slide-up {
-          animation: fadeSlideUp 0.5s ease-in-out forwards;
-        }
-        .animate-fade-slide-up-delayed {
-          animation: fadeSlideUp 0.5s ease-in-out 0.15s forwards;
-          opacity: 0;
-        }
+        .animate-fade-slide-up { animation: fadeSlideUp 0.5s ease-in-out forwards; }
       `}</style>
+      
+      {/* --- MODALE D'ERREUR D'INTÉGRITÉ --- */}
+      {isModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-fade-slide-up">
+          <div className="bg-white rounded-[2rem] shadow-2xl max-w-lg w-full overflow-hidden flex flex-col max-h-[85vh]">
+            <div className="p-6 border-b border-slate-100 flex items-center justify-between bg-red-50">
+              <div className="flex items-center gap-3">
+                <div className="p-2 bg-red-100 rounded-full">
+                  <AlertCircle className="text-red-600" size={24} />
+                </div>
+                <h2 className="text-lg font-black text-red-900">Échec de l'analyse du gabarit</h2>
+              </div>
+              <button onClick={() => setIsModalOpen(false)} className="text-red-400 hover:text-red-600 transition-colors">
+                <X size={24} />
+              </button>
+            </div>
+            
+            <div className="p-6 overflow-y-auto space-y-4">
+              <p className="text-sm font-medium text-slate-600">
+                Votre fichier ne respecte pas la structure du gabarit attendu. Le traitement a été bloqué pour éviter de générer un XML corrompu. Veuillez corriger ces erreurs dans votre document Word :
+              </p>
+              
+              <div className="space-y-4">
+                {scanErrors.map((errItem, index) => (
+                  <div key={index} className="bg-slate-50 border border-slate-200 rounded-xl p-4">
+                    <h3 className="text-sm font-black text-slate-800 mb-2">{errItem.questionIndex}</h3>
+                    <ul className="space-y-2">
+                      {errItem.errors.map((msg, i) => (
+                        <li key={i} className="text-xs text-red-600 flex items-start gap-2">
+                          <span className="mt-0.5">•</span>
+                          <span>{msg}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                ))}
+              </div>
+            </div>
+            
+            <div className="p-6 border-t border-slate-100 bg-slate-50 flex justify-end">
+              <button 
+                onClick={() => setIsModalOpen(false)}
+                className="px-6 py-2.5 bg-slate-800 hover:bg-slate-900 text-white text-sm font-bold rounded-xl shadow-md transition-colors"
+              >
+                Compris, je vais corriger mon fichier
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       <div className="w-full max-w-7xl bg-white rounded-[2rem] shadow-[0_30px_100px_rgba(0,0,0,0.08)] overflow-hidden flex flex-col md:flex-row border border-slate-100 animate-fade-slide-up">
         {/* PARTIE GAUCHE : Configuration & Import */}
@@ -665,26 +775,54 @@ export default function MoodleQuizApp() {
                   </a>
                 </button>
               </div>
-              <input type="file" ref={fileInputRef} className="hidden" accept=".docx" onChange={(e) => setFile(e.target.files[0])} />
+
+              <input type="file" ref={fileInputRef} className="hidden" accept=".docx" onChange={(e) => handleFileScan(e.target.files[0])} />
+
               <div 
-                onClick={() => fileInputRef.current.click()} 
-                className={`w-full p-8 border-2 border-dashed rounded-[1.5rem] flex flex-col items-center justify-center cursor-pointer transition-all duration-300 ${file ? 'border-emerald-400 bg-emerald-50' : 'border-slate-200 bg-slate-50 hover:border-blue-300'}`}
+                onClick={() => scanStatus !== 'scanning' && fileInputRef.current.click()} 
+                className={`w-full p-8 border-2 border-dashed rounded-[1.5rem] flex flex-col items-center justify-center cursor-pointer transition-all duration-300 
+                  ${scanStatus === 'success' ? 'border-emerald-400 bg-emerald-50' : ''}
+                  ${scanStatus === 'error' ? 'border-red-400 bg-red-50' : ''}
+                  ${scanStatus === 'idle' || scanStatus === 'scanning' ? 'border-slate-200 bg-slate-50 hover:border-blue-300' : ''}
+                `}
               >
-                <div className={`w-14 h-14 rounded-2xl shadow-sm border flex items-center justify-center mb-4 transition-transform ${file ? 'bg-emerald-500 border-emerald-600 text-white scale-110' : 'bg-white border-slate-100 text-blue-600'}`}>
-                  {file ? <Check size={28} /> : <UploadCloud size={28} />}
+                <div className={`w-14 h-14 rounded-2xl shadow-sm border flex items-center justify-center mb-4 transition-transform 
+                  ${scanStatus === 'success' ? 'bg-emerald-500 border-emerald-600 text-white scale-110' : ''}
+                  ${scanStatus === 'error' ? 'bg-red-500 border-red-600 text-white scale-110' : ''}
+                  ${scanStatus === 'scanning' ? 'bg-blue-500 border-blue-600 text-white' : ''}
+                  ${scanStatus === 'idle' ? 'bg-white border-slate-100 text-blue-600' : ''}
+                `}>
+                  {scanStatus === 'idle' && <UploadCloud size={28} />}
+                  {scanStatus === 'scanning' && <Loader2 size={28} className="animate-spin" />}
+                  {scanStatus === 'success' && <Check size={28} />}
+                  {scanStatus === 'error' && <AlertCircle size={28} />}
                 </div>
-                <p className={`font-bold text-sm ${file ? 'text-emerald-700' : 'text-slate-700'}`}>
-                  {file ? file.name : "Cliquez pour importer le .docx"}
+
+                <p className={`font-bold text-sm text-center
+                  ${scanStatus === 'success' ? 'text-emerald-700' : ''}
+                  ${scanStatus === 'error' ? 'text-red-700' : ''}
+                  ${scanStatus === 'idle' || scanStatus === 'scanning' ? 'text-slate-700' : ''}
+                `}>
+                  {scanStatus === 'idle' && "Cliquez pour importer le .docx"}
+                  {scanStatus === 'scanning' && "Analyse de l'intégrité en cours..."}
+                  {scanStatus === 'success' && `Fichier validé : ${file?.name}`}
+                  {scanStatus === 'error' && "Des erreurs de gabarit ont été détectées."}
                 </p>
-                {!file && <p className="text-slate-400 text-xs mt-2 font-medium">Seul le format Word moderne (.docx) est supporté</p>}
+
+                {scanStatus === 'error' && (
+                  <button onClick={(e) => { e.stopPropagation(); setIsModalOpen(true); }} className="mt-3 text-xs font-bold text-red-600 underline">
+                    Voir le rapport détaillé
+                  </button>
+                )}
+                {scanStatus === 'idle' && <p className="text-slate-400 text-xs mt-2 font-medium">Seul le format Word moderne (.docx) est supporté</p>}
               </div>
             </div>
 
             {/* Bouton Générer */}
             <button
               onClick={processFile}
-              disabled={loading || !file}
-              className={`w-full py-4 text-white font-black rounded-xl shadow-xl transition-all flex items-center justify-center gap-3 text-sm uppercase tracking-widest ${loading || !file ? 'bg-slate-300 cursor-not-allowed shadow-none' : 'bg-slate-800 hover:bg-slate-900 shadow-slate-200'}`}
+              disabled={loading || !file || scanStatus !== 'success'}
+              className={`w-full py-4 text-white font-black rounded-xl shadow-xl transition-all flex items-center justify-center gap-3 text-sm uppercase tracking-widest ${loading || !file || scanStatus !== 'success' ? 'bg-slate-300 cursor-not-allowed shadow-none' : 'bg-slate-800 hover:bg-slate-900 shadow-slate-200'}`}
             >
               {loading ? "Traitement en cours..." : "Générer l'export Moodle"}
             </button>
