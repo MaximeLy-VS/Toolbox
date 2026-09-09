@@ -515,14 +515,11 @@ export default function MoodleQuizApp() {
           
           const checkBoxes = cellNode.getElementsByTagName("w:checkBox");
           const modernCheckBoxes = cellNode.getElementsByTagName("w14:checked");
+          
           if (checkBoxes.length > 0) {
-            const checkedTag = checkBoxes[0].getElementsByTagName("w:checked")[0];
-            const defaultTag = checkBoxes[0].getElementsByTagName("w:default")[0];            
+            const checkedTag = checkBoxes[0].getElementsByTagName("w:checked")[0] || checkBoxes[0].getElementsByTagName("w:default")[0];
             if (checkedTag) {
               const val = checkedTag.getAttribute("w:val");
-              if (val === null || val === "1" || val === "true") isChecked = true;
-            } else if (defaultTag) {
-              const val = defaultTag.getAttribute("w:val");
               if (val === null || val === "1" || val === "true") isChecked = true;
             }
           }
