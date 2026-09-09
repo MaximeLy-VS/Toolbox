@@ -189,6 +189,7 @@ export default function AttoCustomApp() {
                             Safari
                           </a>
                         </div>
+                      </div>
                     </li>
                   <li>Cliquez sur le bouton "Installer le script" ci-contre.</li>
                   <li>Cliquez sur <strong>Installer</strong> dans l'onglet Tampermonkey qui vient de s'ouvrir.</li>
