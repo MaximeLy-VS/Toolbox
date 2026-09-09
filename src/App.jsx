@@ -23,6 +23,7 @@ import {
   Zap,
   FileText as IconText,
   FileCode2,
+  ShieldCheck,
 } from 'lucide-react';
 
 /**
@@ -154,6 +155,7 @@ import ANtableApp from './tools/AN_tableau/ANtableApp';
 import MockupApp from './tools/Mockup_app/MockupApp';
 import AnnotationApp from './tools/AN_Annotation/AnnotationApp';
 import MoodleQuizApp from './tools/Quiz_app/QuizApp';
+import AuditEditorialApp from './tools/scripts/AuditEditorialApp';
 
 /**
  * --- DASHBOARD PRINCIPAL ---
@@ -220,6 +222,7 @@ const Home = () => {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 w-full max-w-6xl">
             {[
         { to: "/tools/Quiz_app", title: "Générarteur de XML quiz moodle", desc: "Convertisseur de gabarit en .xml à importer sur moodle", icon: FileCode2, color: "bg-pink-600" },
+        { to: "/tools/AuditScript", title: "Outil d'audit moodle", desc: "Panneau d'outils d'audits  pour moodme", icon: FileCode2, color: "bg-pink-300" },
       ].map((tool, i) => (
         <Link key={i} to={tool.to} className="group bg-white  p-6 rounded-[2rem] shadow-xl shadow-indigo-500/5 border border-slate-100 hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 flex flex-col items-start text-left gap-4">
         <div className="inline-flex gap-3 items-center">
@@ -271,6 +274,7 @@ export default function App() {
             <Route path="/tools/Mockup_app" element={<ToolWrapper><MockupApp /></ToolWrapper>} />
             <Route path="/tools/AN_Annotation" element={<ToolWrapper><AnnotationApp /></ToolWrapper>} />
             <Route path="/tools/Quiz_app" element={<ToolWrapper><MoodleQuizApp /></ToolWrapper>} />
+            <Route path="/tools/AuditScript" element={<ToolWrapper><AuditEditorialApp /></ToolWrapper>} />
           </Routes>
         </main>
       </div>
