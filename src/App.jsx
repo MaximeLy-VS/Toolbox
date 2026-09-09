@@ -223,7 +223,7 @@ const Home = () => {
     <h2 className="text-3xl font-bold text-slate-600 my-4 tracking-tight text-left">Outils de préparation moodle</h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 w-full max-w-6xl">
             {[
-        { to: "/tools/Quiz_app", title: "Générarteur de XML quiz moodle", desc: "Convertisseur de gabarit en .xml à importer sur moodle", icon: FileCode2, color: "bg-pink-600" },
+        { to: "/tools/Quiz_app", title: "Générateur de XML quiz moodle", desc: "Convertisseur de gabarit en .xml à importer sur moodle", icon: FileCode2, color: "bg-pink-600" },
         { to: "/tools/AuditScript", title: "Outil d'audit moodle", desc: "Panneau d'outils d'audits  pour moodle : audit typographique, vérification des liens, fichiers et SCORM", icon: ShieldCheck, color: "bg-pink-300" },
         { to: "/tools/AttoCustomApp", title: "Outil d'édition moodle", desc: "Nouveaux outils : nettoyage typographique auto, modèles HTML et redimensionnement de l'éditeur.", icon: IconPen, color: "bg-pink-200" },
       ].map((tool, i) => (
