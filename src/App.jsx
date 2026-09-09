@@ -243,7 +243,7 @@ const Home = () => {
     <h2 className="text-3xl font-bold text-slate-600 my-4 tracking-tight text-left">Outils d'édition d'images</h2>
     <div className="grid grid-cols-1 md:grid-cols-3 gap-8 w-full max-w-6xl">
             {[
-        { to: "/tools/Mockup_app", title: "Mock-up Studio", desc: "Convertisseur et générateur de\u00A0vignettes et\u00A0bannières.", icon: IconImage, color: "bg-sky-600" },
+        { to: "/tools/Mockup_app", title: "Mock-up Studio", desc: "Convertisseur et généateur de\u00A0vignettes et\u00A0bannières.", icon: IconImage, color: "bg-sky-600" },
         /*{ to: "/tools/AN_Annotation", title: "Éditeur de schémas", desc: "Ajoutez facilement des légendes à\u00A0vos\u00A0schémas\u00A0scientifiques ", icon: PenLine, color: "bg-cyan-600" },*/
         { to: "/", title: "À venir", desc: "D'autres outils pour l'édition sont à déveloper.", icon: IconLoader, color: "bg-cyan-800" }
       ].map((tool, i) => (
