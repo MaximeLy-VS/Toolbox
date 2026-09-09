@@ -155,7 +155,7 @@ export default function AttoCustomApp() {
                 <ol className="list-decimal space-y-3 pl-4 marker:text-indigo-600 marker:font-bold">
                   <li>Installez l'extension <strong>Tampermonkey</strong> sur votre navigateur (Chrome, Firefox ou Edge).
                     <div className="mt-auto pt-6 animate-fade-slide-up">
-                        <div className="flex flex-wrap justify-center gap-2 mb-6">
+                        <div className="flex flex-wrap gap-5 mb-6">
                           <a 
                             href="https://www.tampermonkey.net/index.php?browser=chrome" 
                             target="_blank" 
