@@ -191,6 +191,7 @@ export default function AuditEditorialApp() {
                             Safari
                           </a>
                         </div>
+                      </div>
                   </li>
                   <li>Cliquez sur le bouton "Installer le script" ci-contre. Tampermonkey s'ouvrira automatiquement.</li>
                   <li>Cliquez sur <strong>Installer</strong> dans l'onglet Tampermonkey.</li>
