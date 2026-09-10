@@ -156,8 +156,8 @@ export default function AuditEditorialApp() {
               <AccordionItem id="installation" title="Comment l'installer ?" icon={IconSettings}>
                 <ol className="list-decimal space-y-3 pl-4 marker:text-indigo-600 marker:font-bold">
                   <li>Installez l'extension <strong>Tampermonkey</strong> sur votre navigateur (Chrome, Firefox ou Edge).
-                    <div className="mt-auto animate-fade-slide-up">
-                        <div className="flex flex-wrap gap-5 mb-6">
+                    <div className="mt-auto pt-2 animate-fade-slide-up">
+                        <div className="flex flex-wrap gap-5 mb-2">
                           <a 
                             href="https://www.tampermonkey.net/index.php?browser=chrome" 
                             target="_blank" 
