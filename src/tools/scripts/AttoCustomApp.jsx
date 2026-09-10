@@ -291,6 +291,12 @@ export default function AttoCustomApp() {
                   title='Insérer un modèle HTML'
                 >
                   <option value=''>▨</option>
+                  <option value='<div>Titre de la liste :<ul class="Pucecned18"><li>Point 1</li><li>Point 2</li></ul></div><p><br></p>'>
+                    ⏺︎ Liste à puces 1
+                  </option>
+                  <option value='<div>Titre de la liste :<ul class="Puce2cned18"><li>Point 1</li><li>Point 2</li></ul></div><p><br></p>'>
+                    ⏺︎ Liste à puces 2
+                  </option>
                   <option value='<div class="FondCouleur1 my-2 p-3"><p>Votre texte ici...</p></div><p><br></p>'>
                     ⏹ Encadré plein 1
                   </option>
@@ -303,13 +309,7 @@ export default function AttoCustomApp() {
                   <option value='<div class="CadreCouleur1 my-2 p-3"><p>Votre texte ici...</p></div><p><br></p>'>
                     ☐ Encadré vide
                   </option>
-                  <option value='<div>Titre de la liste :<ul class="Pucecned18"><li>Point 1</li><li>Point 2</li></ul></div><p><br></p>'>
-                    ⏺︎ Liste à puces
-                  </option>
-                  <option value='<div>Titre de la liste :<ul class="Puce2cned18"><li>Point 1</li><li>Point 2</li></ul></div><p><br></p>'>
-                    ⏺︎ Liste à puces 2
-                  </option>
-                  <option>Etc.</option>
+                  <option value=''>Etc. (Accordéon, bloc)</option>
                 </select>
 
                 <div className='w-px h-5 bg-slate-300 mx-1'></div>
