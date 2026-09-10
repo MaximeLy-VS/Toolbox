@@ -389,7 +389,7 @@ const toggleSource = () => {
 
           <button
             onClick={() =>
-              window.open('LIEN_VERS_LE_FICHIER_RAW_USERJS', '_blank')
+              window.open('https://gist.github.com/MaximeLy-VS/8a838be0ca64137e4396664ecb2d511b/raw/ResizeATTO.user.js', '_blank')
             }
             className='mt-6 w-full py-4 bg-indigo-900 hover:bg-indigo-800 text-white font-black rounded-xl shadow-xl transition-all flex items-center justify-center gap-3 text-xs uppercase tracking-widest shrink-0 animate-fade-slide-up'
           >
