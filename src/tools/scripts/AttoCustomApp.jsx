@@ -101,6 +101,9 @@ export default function AttoCustomApp() {
   const editorRef = useRef(null);
   const [isExpanded, setIsExpanded] = useState(false);
   const [typoSuccess, setTypoSuccess] = useState(false);
+  // NOUVEAU : États pour le code source
+  const [showSource, setShowSource] = useState(false);
+  const [sourceCode, setSourceCode] = useState('');
 
   // Texte par défaut truffé d'erreurs typographiques et assez long pour l'overflow
   const defaultEditorHTML = `
@@ -127,24 +130,21 @@ export default function AttoCustomApp() {
     setActiveAccordion(activeAccordion === id ? null : id);
   };
 
-  const handleReset = () => {
+const handleReset = () => {
     if (editorRef.current) editorRef.current.innerHTML = defaultEditorHTML;
     setIsExpanded(false);
     setTypoSuccess(false);
+    setShowSource(false);
   };
 
   const handleResize = () => {
     setIsExpanded(true);
   };
 
-  const handleTypo = () => {
-    if (!editorRef.current) return;
-
-    // Appel à la fonction robuste d'origine pour éviter les accumulations d'espaces
-    editorRef.current.innerHTML = appliquerTypographieSecurisee(
-      editorRef.current.innerHTML
-    );
-
+const handleTypo = () => {
+    if (!editorRef.current || showSource) return; 
+    
+    editorRef.current.innerHTML = appliquerTypographieSecurisee(editorRef.current.innerHTML);
     setTypoSuccess(true);
     setTimeout(() => setTypoSuccess(false), 2000);
   };
@@ -158,6 +158,21 @@ export default function AttoCustomApp() {
     }
     e.target.value = '';
   };
+
+const toggleSource = () => {
+  if (!showSource) {
+    // Passage en mode HTML : on convertit l'unicode en &nbsp;
+    let html = editorRef.current.innerHTML;
+    html = html.replace(/\u00A0/g, '&nbsp;'); 
+    setSourceCode(html);
+  } else {
+    // Retour en mode Visuel : on réinjecte le texte modifié dans la div
+    if (editorRef.current) {
+      editorRef.current.innerHTML = sourceCode;
+    }
+  }
+  setShowSource(!showSource);
+};
 
   const AccordionItem = ({ id, title, icon: Icon, children }) => {
     const isActive = activeAccordion === id;
@@ -273,7 +288,7 @@ export default function AttoCustomApp() {
           <div className='flex-1 flex flex-col my-2'>
             <div className='flex items-center justify-between mb-2 px-1'>
               <span className='text-slate-400 text-[10px] font-black uppercase tracking-[0.1em]'>
-                Testez l'outil ci-dessous
+                Testez les nouveaux outils ajoutés
               </span>
               <button
                 onClick={handleReset}
@@ -344,18 +359,31 @@ export default function AttoCustomApp() {
                 >
                   ⬍
                 </button>
+                <button 
+                  onClick={toggleSource}
+                  title="Basculer en code HTML"
+                  className={`p-1.5 text-sm rounded border transition-colors duration-300 font-mono font-bold ${showSource ? 'bg-[#d4edda] border-[#28a745] text-[#155724]' : 'hover:bg-[#e2e2e2] border-transparent text-slate-600'}`}
+                >
+                  &lt;/&gt;
+                </button>
+              </div>
+              {/* L'éditeur visuel (toujours présent, masqué si showSource est true) */}
+              <div 
+                ref={editorRef}
+                contentEditable="true"
+                suppressContentEditableWarning={true}
+                className={`mock-editor-content p-3 text-sm text-slate-700 outline-none transition-all duration-300 ease-in-out ${isExpanded ? 'h-auto min-h-[140px]' : 'h-[140px] overflow-y-auto'} ${showSource ? 'hidden' : 'block'}`}
+              >
               </div>
 
-              <div
-                ref={editorRef}
-                contentEditable='true'
-                suppressContentEditableWarning={true}
-                className={`mock-editor-content p-3 text-sm text-slate-700 outline-none transition-all duration-300 ease-in-out ${
-                  isExpanded
-                    ? 'h-auto min-h-[140px]'
-                    : 'h-[140px] overflow-y-auto'
-                }`}
-              ></div>
+              {/* L'éditeur code source (affiché uniquement si showSource est true) */}
+              {showSource && (
+                <textarea
+                  value={sourceCode}
+                  onChange={(e) => setSourceCode(e.target.value)}
+                  className={`w-full p-3 text-sm font-mono text-slate-700 outline-none resize-none bg-slate-50 transition-all duration-300 ease-in-out ${isExpanded ? 'h-[300px]' : 'h-[140px]'}`}
+                />
+              )}
             </div>
           </div>
 
