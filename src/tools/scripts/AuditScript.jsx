@@ -6,7 +6,8 @@ import {
   ListChecks as IconList, 
   Wrench as IconWrench,
   ChevronDown,
-  Info
+  Info,
+  ScanEye
 } from 'lucide-react';
 
 export default function AuditEditorialApp() {
@@ -105,6 +106,9 @@ export default function AuditEditorialApp() {
                   <span title="Vérifier les SCORM (fichiers corrompus, vides, concordance des titres, incompatibilités)" className="flex items-center gap-1.5 px-3 py-2 bg-[#e040aa] text-white text-[11px] font-bold rounded-lg shadow-sm transition-all duration-300 hover:-translate-y-1 hover:scale-105 hover:shadow-md cursor-default select-none">
                     📦 Vérifier SCORM
                   </span>
+                  <span title="Vérifier l'accessibilité (50+ critères)" className="flex items-center gap-1.5 px-3 py-2 bg-[#1d9283] text-white text-[11px] font-bold rounded-lg shadow-sm transition-all duration-300 hover:-translate-y-1 hover:scale-105 hover:shadow-md cursor-default select-none">
+                    ♿ Accessibilité
+                  </span>
                 </div>
               </div>
             </div>
@@ -152,7 +156,20 @@ export default function AuditEditorialApp() {
                 </ul>
               </AccordionItem>
 
-              {/* Accordéon 3 : Installation */}
+              {/* Accordéon 3 : Accessibilité */}
+              <AccordionItem id="accessibility" title="Audit d'accessibilité" icon={ScanEye}>
+                 <p className="mb-2">Le moteur d'audit d'accessibilité « Axe-core » permet de vérifier si les contenus respectent les critères WCAG.</p>
+                 <ul className="list-disc space-y-2 pl-4 text-slate-500 marker:text-slate-300">
+                  <li><strong>Images :</strong> vérifie l'alternative textuelle des images.</li>
+                  <li><strong>Titres :</strong> repère la hiérarchie des titres rompue.</li>
+                  <li><strong>Tableaux :</strong> repère les tableaux mal structurés et non accessibles.</li>
+                  <li><strong>Contrastes :</strong> vérifie le contraste des couleurs pour les textes et les éléments interactifs.</li>
+                  <li><strong>Attributs :</strong> vérifie la présence et la validité des attributs aria-label et aria-labelledby.</li>
+                </ul>
+                <p className="mt-2">Plus de 50 critères d'accessibilité analysés.</p>
+              </AccordionItem>
+
+              {/* Accordéon 4 : Installation */}
               <AccordionItem id="installation" title="Comment l'installer ?" icon={IconSettings}>
                 <ol className="list-decimal space-y-3 pl-4 marker:text-indigo-600 marker:font-bold">
                   <li>Installez l'extension <strong>Tampermonkey</strong> sur votre navigateur (Chrome, Firefox ou Edge).
