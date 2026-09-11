@@ -850,7 +850,7 @@ export default function MoodleQuizApp() {
                 <div className="p-2 bg-blue-100 rounded-lg"><ListOrdered size={20} className="text-blue-700" /></div>
                 <div>
                   <h3 className="font-black text-slate-800">Classement des questions</h3>
-                  <p className="text-xs font-medium text-slate-500">Glissez-déposez les blocs sous la bonne catégorie.</p>
+                  <p className="text-xs font-medium text-slate-500">Glissez les questions dans leur sous-catégorie. L'ordre des questions n'est pas conservé à l'importation.</p>
                 </div>
               </div>
               
