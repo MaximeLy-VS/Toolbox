@@ -336,10 +336,10 @@ export default function GiottoeditorApp() {
             </button>
 
             <button
-              onClick={() => window.open('#', '_blank')}
+              onClick={() => window.open('https://gist.github.com/MaximeLy-VS/bfac90ca5abeff18541de04ecc6843b8/raw/GiottoeditorApp.user.js', '_blank')}
               className='mt-6 w-full py-3 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-xl transition-all flex items-center justify-center gap-3 text-xs uppercase tracking-widest shrink-0'
             >
-              <IconDownload size={16} /> Installer le script
+            <IconDownload size={16} /> Installer le script
             </button>
           </div>
         </div>

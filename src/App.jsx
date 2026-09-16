@@ -285,7 +285,6 @@ export default function App() {
             <Route path="/tools/AuditScript" element={<ToolWrapper><AuditEditorialApp /></ToolWrapper>} />
             <Route path="/tools/AttoCustomApp" element={<ToolWrapper><AttoCustomApp /></ToolWrapper>} />
             <Route path="/tools/GiottoeditorApp" element={<ToolWrapper><GiottoeditorApp /></ToolWrapper>} />
-            <Route path="/tools/Html_app" element={<ToolWrapper><TextToHtmlApp /></ToolWrapper>} />
           </Routes>
         </main>
       </div>

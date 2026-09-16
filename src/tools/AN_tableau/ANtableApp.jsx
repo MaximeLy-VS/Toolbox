@@ -228,7 +228,7 @@ Génère UNIQUEMENT un objet JSON valide avec cette structure précise :
             )}
           </div>
             <p className="text-slate-300 italic text-xs mt-4 leading-relaxed">
-              L'intelligence artificielle peut faire des erreurs, vérifiez le résultat avant publication.
+              L'intelligence artificielle peut faire des erreurs, vérifiez le résultat avant publication !
             </p>
           {/* Affichage du bouton uniquement si données présentes */}
           {canGenerate && (
