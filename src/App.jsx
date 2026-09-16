@@ -25,6 +25,7 @@ import {
   FileCode2,
   ShieldCheck,
   PenTool as IconPen,
+  ScanText,
 } from 'lucide-react';
 
 /**
@@ -158,6 +159,8 @@ import AnnotationApp from './tools/AN_Annotation/AnnotationApp';
 import MoodleQuizApp from './tools/Quiz_app/QuizApp';
 import AuditEditorialApp from './tools/scripts/AuditScript';
 import AttoCustomApp from './tools/scripts/AttoCustomApp';
+import GiottoeditorApp from './tools/scripts/GiottoeditorApp';
+import TextToHtmlApp from './tools/Html_app/TextToHtmlApp';
 
 /**
  * --- DASHBOARD PRINCIPAL ---
@@ -201,10 +204,10 @@ const Home = () => {
 
     <div className="flex flex-col text-left">
       <h2 className="text-3xl font-bold text-slate-600 my-4 tracking-tight text-left">Outils d'analyse pour l'accessibilité numérique</h2>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 w-full max-w-6xl">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 w-full max-w-7xl">
       {[
         { to: "/tools/AN_Image", title: "Assistant accessibilité des\u00A0images", desc: "Analyse et génération de titre, d'alternative textuelle et\u00A0description\u00A0détaillée.", icon: Brain, color: "bg-blue-600" },
-        { to: "/tools/AN_tableau", title: "Assistant accessibilité des\u00A0tableaux", desc: "Mise en forme accessible des\u00A0tableaux.", icon: TableOK, color: "bg-indigo-600" },
+        { to: "/tools/AN_tableau", title: "Assistant accessibilité des\u00A0tableaux", desc: "Aide à la mise en forme accessible des\u00A0tableaux.", icon: TableOK, color: "bg-indigo-600" },
         { to: "/", title: "À venir", desc: "D'autres outils pour l'accessibilité numérique à déveloper.", icon: IconLoader, color: "bg-cyan-800" },
       ].map((tool, i) => (
         <Link key={i} to={tool.to} className="group bg-white p-6 rounded-[2rem] shadow-xl shadow-indigo-500/5 border border-slate-100 hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 flex flex-col items-start text-left gap-4">
@@ -220,15 +223,17 @@ const Home = () => {
       ))}
         </div>
       
-    <h2 className="text-3xl font-bold text-slate-600 my-4 tracking-tight text-left">Outils de préparation moodle</h2>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 w-full max-w-6xl">
+    <h2 className="text-3xl font-bold text-slate-600 my-4 tracking-tight text-left">Outils de préparation moodle et OA</h2>
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-8 w-full max-w-7xl">
             {[
         { to: "/tools/Quiz_app", title: "Générateur de XML quiz moodle", desc: "Convertisseur de gabarit en .xml à importer sur moodle", icon: FileCode2, color: "bg-pink-600" },
-        { to: "/tools/AuditScript", title: "Outil d'audit moodle", desc: "Panneau d'outils d'audits  pour moodle : audit typographique, vérification des liens, fichiers et SCORM", icon: ShieldCheck, color: "bg-pink-300" },
-        { to: "/tools/AttoCustomApp", title: "Outil d'édition moodle", desc: "Nouveaux outils : nettoyage typographique auto, modèles HTML et redimensionnement de l'éditeur.", icon: IconPen, color: "bg-pink-200" },
+        { to: "/tools/AuditScript", title: "Outil d'audit moodle intégré", desc: "Panneau d'outils d'audits  pour moodle : audit typographique, vérification des liens, fichiers et SCORM", icon: ShieldCheck, color: "bg-pink-300" },
+        { to: "/tools/AttoCustomApp", title: "Éditeur moodle personnalisé (ATTO)", desc: "Nouveaux outils intégrés : nettoyage typographique auto, modèles HTML et redimensionnement de l'éditeur.", icon: IconPen, color: "bg-pink-200" },
+        { to: "/tools/GiottoeditorApp", title: "Éditeur Giotto personnalisé", desc: "Éditeur de texte modal avec nettoyage typographique auto et application de règles typographiques.", icon: ScanText, color: "bg-red-400" },
+
       ].map((tool, i) => (
         <Link key={i} to={tool.to} className="group bg-white  p-6 rounded-[2rem] shadow-xl shadow-indigo-500/5 border border-slate-100 hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 flex flex-col items-start text-left gap-4">
-        <div className="inline-flex gap-3 items-center">
+        <div className="inline-flex justify-content-top gap-3 items-center ">
           <div className={`p-4 inline-block rounded-2xl ${tool.color} text-white shadow-lg`}><tool.icon size={24} /></div>
           <h3 className="text-xl font-bold text-slate-800 mb-1 flex items-center tracking-tighter">
               {tool.title}
@@ -241,7 +246,7 @@ const Home = () => {
     </div>
 
     <h2 className="text-3xl font-bold text-slate-600 my-4 tracking-tight text-left">Outils d'édition d'images</h2>
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-8 w-full max-w-6xl">
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-8 w-full max-w-7xl">
             {[
         { to: "/tools/Mockup_app", title: "Mock-up Studio", desc: "Convertisseur et généateur de\u00A0vignettes et\u00A0bannières.", icon: IconImage, color: "bg-sky-600" },
         /*{ to: "/tools/AN_Annotation", title: "Éditeur de schémas", desc: "Ajoutez facilement des légendes à\u00A0vos\u00A0schémas\u00A0scientifiques ", icon: PenLine, color: "bg-cyan-600" },*/
@@ -279,6 +284,8 @@ export default function App() {
             <Route path="/tools/Quiz_app" element={<ToolWrapper><MoodleQuizApp /></ToolWrapper>} />
             <Route path="/tools/AuditScript" element={<ToolWrapper><AuditEditorialApp /></ToolWrapper>} />
             <Route path="/tools/AttoCustomApp" element={<ToolWrapper><AttoCustomApp /></ToolWrapper>} />
+            <Route path="/tools/GiottoeditorApp" element={<ToolWrapper><GiottoeditorApp /></ToolWrapper>} />
+            <Route path="/tools/Html_app" element={<ToolWrapper><TextToHtmlApp /></ToolWrapper>} />
           </Routes>
         </main>
       </div>

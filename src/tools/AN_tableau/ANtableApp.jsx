@@ -193,7 +193,7 @@ Génère UNIQUEMENT un objet JSON valide avec cette structure précise :
               </div>
             </div>
             <p className="text-slate-500 text-xs mt-4 leading-relaxed">
-              Transforme une image ou un texte brut en tableau HTML conforme aux directives RGAA (scope, cellules vides traitées, etc.)
+              Transforme une image ou un texte brut en tableau HTML conforme aux directives RGAA (scope, cellules vides traitées, etc.). Ajout d'un titre et d'un résumé si nécessaire. Copiez le code HTML pour Word ou InDesign.
             </p>
           </header>
 
@@ -227,7 +227,9 @@ Génère UNIQUEMENT un objet JSON valide avec cette structure précise :
               <textarea value={rawText} onChange={(e) => setRawText(e.target.value)} placeholder="Collez ici les données brutes..." className="flex-1 w-full p-4 border-2 border-slate-200 rounded-2xl bg-slate-50 text-sm font-mono text-slate-700 focus:border-indigo-400 outline-none resize-none" />
             )}
           </div>
-
+            <p className="text-slate-300 italic text-xs mt-4 leading-relaxed">
+              L'intelligence artificielle peut faire des erreurs, vérifiez le résultat avant publication.
+            </p>
           {/* Affichage du bouton uniquement si données présentes */}
           {canGenerate && (
             <button
