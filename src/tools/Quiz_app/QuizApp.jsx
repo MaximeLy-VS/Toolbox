@@ -48,7 +48,6 @@ function SortableItem({ item }) {
   );
 }
 
-
 // Chargement asynchrone de JSZip
 const loadJSZip = async () => {
   if (window.JSZip) return window.JSZip;
@@ -79,7 +78,7 @@ export default function MoodleQuizApp() {
 
   const fileInputRef = useRef(null);
 
-  // Configuration des capteurs pour Dnd-kit (Souris/Tactile et Clavier)
+  // Configuration des capteurs pour Dnd-kit
   const sensors = useSensors(
     useSensor(PointerSensor),
     useSensor(KeyboardSensor, {
@@ -337,10 +336,19 @@ export default function MoodleQuizApp() {
         let inList = false;
 
         const paragraphs = cellNode.getElementsByTagName("w:p");
+        
+        // Compter le nombre de puces pour éviter d'encapsuler un item unique (ex: - 5312)
+        let totalListItems = 0;
+        for (let p = 0; p < paragraphs.length; p++) {
+          if (paragraphs[p].getElementsByTagName("w:numPr").length > 0) totalListItems++;
+        }
+
         for (let p = 0; p < paragraphs.length; p++) {
           const pNode = paragraphs[p];
           const numPr = pNode.getElementsByTagName("w:numPr");
-          const isListItem = numPr.length > 0;
+          // Applique le comportement liste seulement si plus d'un item est présent
+          const isListItem = numPr.length > 0 && totalListItems > 1;
+          
           let pText = "";
           const runs = pNode.getElementsByTagName("w:r");
 
@@ -404,6 +412,14 @@ export default function MoodleQuizApp() {
           }
         }
         if (inList) htmlContent += `</ul>`;
+        
+        //  Retrait du gras si TOUTE la cellule est en gras (hors ponctuation/espaces)
+        let textWithoutBolds = htmlContent.replace(/<b>[\s\S]*?<\/b>/g, "");
+        let remainingChars = textWithoutBolds.replace(/<[^>]+>/g, "").replace(/[^\wÀ-ÿ]/g, ""); 
+        if (remainingChars.length === 0 && htmlContent.includes("<b>")) {
+           htmlContent = htmlContent.replace(/<\/?b>/g, "");
+        }
+
         return htmlContent;
       };
 
@@ -419,7 +435,6 @@ export default function MoodleQuizApp() {
       categories.forEach((category, index) => {
         if(category.trim() === "") return;
         const categoryId = `${quizId}/${quizId}_${category}`;
-        // On rajoute un index à l'id React pour éviter les doublons si l'auteur met 2 fois le même nom de catégorie
         const uniqueId = `cat_${index}_${categoryId}`;
         const xml = `  <question type="category">\n    <category>\n      <text>${escapeXML(categoryId)}</text>\n    </category>\n    <info format="html"><text></text></info>\n    <idnumber></idnumber>\n  </question>\n\n`;
         extractedItems.push({ id: uniqueId, type: 'category', title: `Catégorie : ${category}`, xml });
@@ -587,6 +602,24 @@ export default function MoodleQuizApp() {
               if (lowText === "x" || lowText === "[x]" || rawCellText.includes("☑") || rawCellText.includes("☒")) isChecked = true;
           }
 
+          // Analyse de la pondération (colonne 3) si la case n'est pas cochée
+          if (!isChecked && cells.length >= 3) {
+             const gradeText = getRawCellText(cells[2]).trim().replace(',', '.');
+             const gradeNum = parseFloat(gradeText);
+             if (!isNaN(gradeNum) && gradeNum > 0) {
+                 isChecked = true;
+             }
+          }
+          
+          // Analyse de la couleur verte dans le texte (colonne 2) si la case n'est pas cochée
+          if (!isChecked && cells.length >= 2) {
+             const cell1Xml = new XMLSerializer().serializeToString(cells[1]);
+             // Cherche les codes hexadécimaux de vert fréquemment utilisés dans Word
+             if (cell1Xml.match(/w:color[^>]+w:val="(00B050|008000|92D050|00C000|33CC33|228B22|00FF00)"/i)) {
+                 isChecked = true;
+             }
+          }
+
           if (!answerText && !isChecked) continue;
 
           if (isChecked) nbBonnesReponses++;
@@ -596,7 +629,7 @@ export default function MoodleQuizApp() {
         }
 
         if (nbBonnesReponses === 0) {
-           localAudits.push(`Question ${qName} ignorée (Aucune bonne réponse cochée détectée).`);
+           localAudits.push(`Question ${qName} ignorée (Aucune bonne réponse cochée ou verte détectée).`);
            continue;
         }
 
@@ -701,7 +734,6 @@ export default function MoodleQuizApp() {
   const removeDescription = (index) => setDescriptions(descriptions.filter((_, i) => i !== index));
   const removeCategory = (index) => setCategories(categories.filter((_, i) => i !== index));
 
-  // --- HANDLER DND-KIT ---
   const handleDragEndDndKit = (event) => {
     const { active, over } = event;
     if (over && active.id !== over.id) {
@@ -723,7 +755,6 @@ export default function MoodleQuizApp() {
         .animate-fade-slide-up { animation: fadeSlideUp 0.5s ease-in-out forwards; }
       `}</style>
       
-      {/* MODALE D'ERREUR */}
       {isModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-fade-slide-up">
           <div className="bg-white rounded-[2rem] shadow-2xl max-w-lg w-full overflow-hidden flex flex-col max-h-[85vh]">
@@ -844,7 +875,6 @@ export default function MoodleQuizApp() {
         {/* PARTIE DROITE */}
         <div className="lg:w-[55%] p-8 bg-[#f8fafc] flex flex-col overflow-y-auto max-h-[90vh]">
           {isSorting ? (
-            /* INTERFACE DE RANGEMENT DND-KIT */
             <div className="h-full flex flex-col animate-fade-in">
               <div className="flex items-center gap-3 mb-6">
                 <div className="p-2 bg-blue-100 rounded-lg"><ListOrdered size={20} className="text-blue-700" /></div>
@@ -873,7 +903,6 @@ export default function MoodleQuizApp() {
             </div>
 
           ) : resultXml ? (
-            /* AFFICHAGE XML CLASSIQUE */
             <div className="h-full flex flex-col space-y-4 animate-fade-in">
               <div className="flex justify-between items-center pb-4 border-b border-slate-200 shrink-0">
                 <span className="px-3 py-1 rounded-md text-[10px] font-black tracking-widest uppercase bg-emerald-100 text-emerald-700 border border-emerald-200 flex items-center gap-2"><Check size={14} /> Conversion Réussie</span>
@@ -895,7 +924,6 @@ export default function MoodleQuizApp() {
               </div>
             </div>
           ) : (
-            /* ÉTAT D'ATTENTE */
             <div className="h-full flex flex-col items-center justify-center text-center space-y-4 opacity-40">
               <div className="w-24 h-24 bg-slate-200 rounded-3xl flex items-center justify-center border-4 border-white shadow-inner"><FileText size={48} className="text-slate-500" /></div>
               <p className="text-xs font-black uppercase tracking-[0.2em] text-slate-500 max-w-[250px]">En attente de traitement du gabarit Word</p>
