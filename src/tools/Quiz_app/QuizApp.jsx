@@ -102,7 +102,7 @@ export default function MoodleQuizApp() {
       { find: /\s*\u00A0\s*/g, replace: '\u00A0' },
       { find: /(?<!\u00A0)([^\s\u00A0])\s*([:?!%€»]|(?<!\u00A0);)/g, replace: "$1\u00A0$2" },
       { find: /(«)\s*(?!\u00A0)([^\s\u00A0])/g, replace: "$1\u00A0$2" },
-      { find: /([:?!€»]|(?<!\u00A0);)(?!\u00A0)([^\s\u00A0\.,\)])/g, replace: "$1 $2" },
+      { find: /([:?!€»]|(?<!\u00A0);)(?!\u00A0)([^\s\u00A0\.,\)\/])/g, replace: "$1 $2" },
       { find: /"([^">]+)"/g, replace: "«\u00A0$1\u00A0»" },
       { find: /\.\.\./g, replace: ", etc." },
       { find: /\s+-\s+/g, replace: " – " },
@@ -337,7 +337,7 @@ export default function MoodleQuizApp() {
 
         const paragraphs = cellNode.getElementsByTagName("w:p");
         
-        // Compter le nombre de puces pour éviter d'encapsuler un item unique (ex: - 5312)
+        // FIX : Compter le nombre de puces pour éviter d'encapsuler un item unique (ex: - 5312)
         let totalListItems = 0;
         for (let p = 0; p < paragraphs.length; p++) {
           if (paragraphs[p].getElementsByTagName("w:numPr").length > 0) totalListItems++;
@@ -413,7 +413,7 @@ export default function MoodleQuizApp() {
         }
         if (inList) htmlContent += `</ul>`;
         
-        //  Retrait du gras si TOUTE la cellule est en gras (hors ponctuation/espaces)
+        // FIX : Retrait du gras si TOUTE la cellule est en gras (hors ponctuation/espaces)
         let textWithoutBolds = htmlContent.replace(/<b>[\s\S]*?<\/b>/g, "");
         let remainingChars = textWithoutBolds.replace(/<[^>]+>/g, "").replace(/[^\wÀ-ÿ]/g, ""); 
         if (remainingChars.length === 0 && htmlContent.includes("<b>")) {
@@ -602,7 +602,7 @@ export default function MoodleQuizApp() {
               if (lowText === "x" || lowText === "[x]" || rawCellText.includes("☑") || rawCellText.includes("☒")) isChecked = true;
           }
 
-          // Analyse de la pondération (colonne 3) si la case n'est pas cochée
+          // FIX : Analyse de la pondération (colonne 3) si la case n'est pas cochée
           if (!isChecked && cells.length >= 3) {
              const gradeText = getRawCellText(cells[2]).trim().replace(',', '.');
              const gradeNum = parseFloat(gradeText);
@@ -611,7 +611,7 @@ export default function MoodleQuizApp() {
              }
           }
           
-          // Analyse de la couleur verte dans le texte (colonne 2) si la case n'est pas cochée
+          // FIX : Analyse de la couleur verte dans le texte (colonne 2) si la case n'est pas cochée
           if (!isChecked && cells.length >= 2) {
              const cell1Xml = new XMLSerializer().serializeToString(cells[1]);
              // Cherche les codes hexadécimaux de vert fréquemment utilisés dans Word
