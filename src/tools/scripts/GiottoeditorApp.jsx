@@ -1,6 +1,4 @@
 import React, { useState, useRef, useEffect } from 'react';
-
-
 import {
   Download as IconDownload,
   Settings as IconSettings,
@@ -337,7 +335,7 @@ export default function GiottoeditorApp() {
 
             <button
               onClick={() => window.open('https://gist.github.com/MaximeLy-VS/bfac90ca5abeff18541de04ecc6843b8/raw/GiottoeditorApp.user.js', '_blank')}
-              className='mt-6 w-full py-3 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-xl transition-all flex items-center justify-center gap-3 text-xs uppercase tracking-widest shrink-0'
+            className='mt-6 w-full py-4 bg-indigo-900 hover:bg-indigo-800 text-white font-black rounded-xl shadow-xl transition-all flex items-center justify-center gap-3 text-xs uppercase tracking-widest shrink-0 animate-fade-slide-up'
             >
             <IconDownload size={16} /> Installer le script
             </button>
