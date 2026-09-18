@@ -529,12 +529,29 @@ export default function MoodleQuizApp() {
           let label = "";
           let cellText = "";
           
+          // Fallback ciblé pour les colonnes mal remplies dans les zones de feedback
           if (cells.length >= 3) {
-            label = getRawCellText(cells[1]).toLowerCase(); 
-            cellText = extractAndCleanCell(cells[2]);
-          } else if (cells.length >= 2) {
-            label = getRawCellText(cells[0]).toLowerCase();
-            cellText = extractAndCleanCell(cells[1]);
+            const rawCol2 = getRawCellText(cells[2]).trim();
+            const rawCol1 = getRawCellText(cells[1]).trim();
+            
+            if (rawCol2.length === 0 && rawCol1.length > 40) {
+              label = getRawCellText(cells[0]).toLowerCase();
+              cellText = extractAndCleanCell(cells[1]);
+            } else {
+              label = rawCol1.toLowerCase();
+              cellText = extractAndCleanCell(cells[2]);
+            }
+          } else if (cells.length === 2) {
+            const rawCol1 = getRawCellText(cells[1]).trim();
+            const rawCol0 = getRawCellText(cells[0]).trim();
+            
+            if (rawCol1.length === 0 && rawCol0.length > 40) {
+              label = "";
+              cellText = extractAndCleanCell(cells[0]);
+            } else {
+              label = rawCol0.toLowerCase();
+              cellText = extractAndCleanCell(cells[1]);
+            }
           } else if (cells.length === 1) {
             cellText = extractAndCleanCell(cells[0]);
           }
@@ -602,7 +619,6 @@ export default function MoodleQuizApp() {
               if (lowText === "x" || lowText === "[x]" || rawCellText.includes("☑") || rawCellText.includes("☒")) isChecked = true;
           }
 
-          // FIX : Analyse de la pondération (colonne 3) si la case n'est pas cochée
           if (!isChecked && cells.length >= 3) {
              const gradeText = getRawCellText(cells[2]).trim().replace(',', '.');
              const gradeNum = parseFloat(gradeText);
@@ -611,10 +627,8 @@ export default function MoodleQuizApp() {
              }
           }
           
-          // FIX : Analyse de la couleur verte dans le texte (colonne 2) si la case n'est pas cochée
           if (!isChecked && cells.length >= 2) {
              const cell1Xml = new XMLSerializer().serializeToString(cells[1]);
-             // Cherche les codes hexadécimaux de vert fréquemment utilisés dans Word
              if (cell1Xml.match(/w:color[^>]+w:val="(00B050|008000|92D050|00C000|33CC33|228B22|00FF00)"/i)) {
                  isChecked = true;
              }
