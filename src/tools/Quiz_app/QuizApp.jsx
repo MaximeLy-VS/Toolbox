@@ -6,6 +6,7 @@ import gabaritWord from './DA-WB_Gabarit.docx?url';
 import { DndContext, closestCenter, KeyboardSensor, PointerSensor, useSensor, useSensors } from '@dnd-kit/core';
 import { arrayMove, SortableContext, sortableKeyboardCoordinates, verticalListSortingStrategy, useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
+import { rules } from '../typo-rules.js';
 
 // --- COMPOSANT SOUS-JACENT POUR LE DRAG & DROP ---
 function SortableItem({ item }) {
@@ -99,65 +100,7 @@ export default function MoodleQuizApp() {
   const applyGrepRules = (text) => {
     let str = text;
     str = str.replace(/&nbsp;/g, '\u00A0');
-    const rules = [
-      { find: /\s*\u00A0\s*/g, replace: '\u00A0' },
-      { find: /(?<!\u00A0)([^\s\u00A0])\s*([:?!%€»]|(?<!\u00A0);)/g, replace: "$1\u00A0$2" },
-      { find: /(«)\s*(?!\u00A0)([^\s\u00A0])/g, replace: "$1\u00A0$2" },
-      { find: /(?<!\u00A0)([^\s\u00A0])[ \t]+(»)/g, replace: "$1\u00A0$2" },
-      { find: /"([^">]+)"/g, replace: "«\u00A0$1\u00A0»" },
-      { find: /([:?!€»]|(?<!\u00A0);)(?!\u00A0)([^\s\u00A0\.,\)\/])/g, replace: "$1 $2" },
-      //opérateurs mathématiques
-      { find: /(?<!<[^>]*?)(\d)\s*([*])\s*(\d)(?![^<]*?>)/g, replace: "$1\u00A0×\u00A0$3" }, // 15*15 + 15×15
-      { find: /(?<!<[^>]*?)(\d)\s*([\/])\s*(\d)(?![^<]*?>)/g, replace: "$1\u00A0÷\u00A0$3" }, // 15/15 + 15÷15
-      { find: /(?<!<[^>]*?)(\d)([+–\-\/=×])(\d)(?![^<]*?>)/g, replace: "$1\u00A0$2\u00A0$3" }, //10+10 → 10 + 5
-      { find: /(?<!<[^>]*?)(\d)\s+([+–\-\/=×])\s+(\d)(?![^<]*?>)/g, replace: "$1\u00A0$2\u00A0$3" }, // 10 + 5 → 10 + 5
-      { find: /(?<!<[^>]*?)(\d)\s*([+–\-\/=×])\s*([^\d\s\u00A0])(?![^<]*?>)/g, replace: "$1\u00A0$2\u00A0$3" }, // 10 + centimètres → 10 + centimètres
-      { find: /(?<!<[^>]*?)([^\d\s\u00A0])([+*\/=])([^\d\s\u00A0])(?![^<]*?>)/g, replace: "$1\u00A0$2\u00A0$3" }, // Mot+Mot → Mot + Mot
-      { find: /(?<!<[^>]*?)([^\d\s\u00A0])\s+([+*\/=])\s+([^\d\s\u00A0])(?![^<]*?>)/g, replace: "$1\u00A0$2\u00A0$3" }, // Mot + autre → Mot + autre
-      { find: /(?<!<[^>]*?)([+\/=])\s*([^\d\s\u00A0])(?![^<]*?>)/g, replace: "$1\u00A0$2" },
-
-      { find: /\.\.\./g, replace: ", etc." },
-      { find: /\B(?=(\d{3})+(?!\d))/g, replace: "\u00A0" },
-      { find: /(\d)[ \u00A0]+(\d)/g, replace: "$1\u00A0$2" },
-      { find: /([A-Za-z0-9])([–])([A-Za-z0-9])/g, replace: '$1-$3' },
-      { find: /([^\d])\s+\-\s+([^\d])/g, replace: "$1 – $2" },
-      { find: /([\d])([^\u00A0])\s*([–])\s*([^\u00A0])([\d])/g, replace: "$1\u00A0-\u00A0$5" },
-
-      { find: /(\d)(?:\s|\u00A0)*[hH](?:\s|\u00A0)*(\d)/g, replace: "$1\u00A0h\u00A0$2" },
-      { find: /(\d)(?:\s|\u00A0)*([hH]|[mM]|[mM][iI][nN]|[mM][iI][nN][uU][tT][eE][sS]?|[hH][eE][uU][rR][eE][sS]?)\b/g, replace: "$1\u00A0$2" },
-      { find: /(\d)(?:\s|\u00A0)*(er)\b/g, replace: "$1<sup>er</sup>\u00A0" },
-      { find: /(\d)(?:\s|\u00A0)*(ème|eme|e)\b/g, replace: "$1<sup>e</sup>\u00A0" },
-      { find: /(\d)(?:\s|\u00A0)*(an|ans)\b/g, replace: "$1\u00A0$2" },
-      { find: /(\d)(?:\s|\u00A0)*(%)\b/g, replace: "$1\u00A0%" },
-      { find: /(\d)((?:<\/[a-zA-Z]+>)?)(?:\s|\u00A0)*((?:<[a-zA-Z]+>)?)(?:°|º)(?:\s|\u00A0)*[cC]\b/g, replace: "$1$2\u00A0$3°C" },
-      { find: /(\d)(?:\s|\u00A0)*[jJ]\b/g, replace: "$1\u00A0J" },
-      { find: /(\d)(?:\s|\u00A0)*[kK][jJ]\b/g, replace: "$1\u00A0kJ" },
-      { find: /(\d)(?:\s|\u00A0)*[cC][aA][lL]\b/g, replace: "$1\u00A0cal" },
-      { find: /(\d)(?:\s|\u00A0)*[kK][cC][aA][lL]\b/g, replace: "$1\u00A0kcal" },
-      { find: /(\d)(?:\s|\u00A0)*[wW][hH]\b/g, replace: "$1\u00A0Wh" },
-      { find: /(\d)(?:\s|\u00A0)*([kK][wW][hH]|[kK][wW]-[hH])\b/g, replace: "$1\u00A0kWh" },
-      { find: /(\d)(?:\s|\u00A0)*[kK][oO]\b/g, replace: "$1\u00A0ko" },
-      { find: /(\d)(?:\s|\u00A0)*[mM][oO]\b/g, replace: "$1\u00A0Mo" },
-      { find: /(\d)(?:\s|\u00A0)*[gG][oO]\b/g, replace: "$1\u00A0Go" },
-      { find: /(\d)(?:\s|\u00A0)*[tT][oO]\b/g, replace: "$1\u00A0To" },
-      { find: /(\d)(?:\s|\u00A0)*[hH][zZ]\b/g, replace: "$1\u00A0Hz" },
-      { find: /(\d)(?:\s|\u00A0)*[kK][hH][zZ]\b/g, replace: "$1\u00A0kHz" },
-      { find: /(\d)(?:\s|\u00A0)*[mM][hH][zZ]\b/g, replace: "$1\u00A0MHz" },
-      { find: /(\d)(?:\s|\u00A0)*[gG][hH][zZ]\b/g, replace: "$1\u00A0GHz" },
-      { find: /(\d)(?:\s|\u00A0)*[kK][gG]\b/g, replace: "$1\u00A0kg" },
-      { find: /(\d)(?:\s|\u00A0)*[hH][gG]\b/g, replace: "$1\u00A0hg" },
-      { find: /(\d)(?:\s|\u00A0)*g\b/g, replace: "$1\u00A0g" },
-      { find: /(\d)(?:\s|\u00A0)*[dD][gG]\b/g, replace: "$1\u00A0dg" },
-      { find: /(\d)(?:\s|\u00A0)*[cC][gG]\b/g, replace: "$1\u00A0cg" },
-      { find: /(\d)(?:\s|\u00A0)*[mM][gG]\b/g, replace: "$1\u00A0mg" },
-      { find: /(\d)(?:\s|\u00A0)*[uUµ][gG]\b/g, replace: "$1\u00A0µg" },
-      { find: /(\d)(?:\s|\u00A0)*[kK][mM]\b/g, replace: "$1\u00A0km" },
-      { find: /(\d)(?:\s|\u00A0)*m\b/g, replace: "$1\u00A0m" },
-      { find: /(\d)(?:\s|\u00A0)*[dD][mM]\b/g, replace: "$1\u00A0dm" },
-      { find: /(\d)(?:\s|\u00A0)*[cC][mM]\b/g, replace: "$1\u00A0cm" },
-      { find: /(\d)(?:\s|\u00A0)*[mM][mM]\b/g, replace: "$1\u00A0mm" },
-    ];
-    rules.forEach(rule => { str = str.replace(rule.find, rule.replace); });
+    rules.forEach(rule => { str = str.replace(rule.regex, rule.replace); });
     str = str.replace(/\u00A0/g, '&nbsp;');
     return str;
   };
