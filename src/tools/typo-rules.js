@@ -19,18 +19,19 @@ export const rules = [
         { regex: /(\d)\s*([*])\s*(\d)/g, replace: "$1\u00A0×\u00A0$3" }, // 15*15 + 15×15
         { regex: /(\d)\s*([\/])\s*(\d)/g, replace: "$1\u00A0÷\u00A0$3" }, // 15/15 + 15÷15
         { regex: /(\d)([+–\-\/=×])(\d)/g, replace: "$1\u00A0$2\u00A0$3" }, //10+10 → 10 + 5
-        { regex: /([^\d\s\u00A0])([+\-*\/=])([^\d\s\u00A0])/g, replace: "$1\u00A0$2\u00A0$3" }, // Mot+Mot → Mot + Mot
+        { regex: /([^\d\s\u00A0])([+*÷=])([^\d\s\u00A0])/g, replace: "$1\u00A0$2\u00A0$3" }, // Mot+Mot → Mot + Mot
         { regex: /(\d)\s*([+\-\/=×])\s*(\d)/g, replace: "$1\u00A0$2\u00A0$3" }, // 10 + 5 → 10 + 5
-        { regex: /(\d)\s*([+\-\/=×])\s*([^\d\s\u00A0])/g, replace: "$1\u00A0$2\u00A0$3" }, // 10 + centimètres → 10 + centimètres
-        { regex: /([^\d\s\u00A0])\s*([+\-\/=])\s*([^\d\s\u00A0])/g, replace: "$1\u00A0$2\u00A0$3" }, // Mot + autre → Mot + autre
-        { regex: /([+-\/=])\s*([^\d\s\u00A0])/g, replace: "$1\u00A0$2" },
+        { regex: /(\d)\s*([+\-÷=×])\s*([^\d\s\u00A0])/g, replace: "$1\u00A0$2\u00A0$3" }, // 10 + centimètres → 10 + centimètres
+        { regex: /([^\d\s\u00A0])(\s*)([+÷=])(\s*)([^\d\s\u00A0])/g, replace: "$1\u00A0$3\u00A0$5" }, // Mot + autre → Mot + autre
+        { regex: /([+÷=])\s*([^\d\s\u00A0])/g, replace: "$1\u00A0$2" },
+        { regex: /([^\d\s\u00A0])(\s*)([\/])(\s*)([^\d\s\u00A0])/g, replace: "$1$3$5" },
 
         // 2. Majuscule après ponctuation finale
         { regex: /([\.?!]\s+)([a-z])/g, replace: (match, p1, p2) => p1 + p2.toUpperCase() },
 
-        // 3. Tirets incises et demi-cadrans (conservation des lettres avec les groupes de capture $1 et $2)
-        { regex: /([A-Za-z0-9])([–])([A-Za-z0-9])/g, replace: '$1-$3' },
-        { regex: /([^\d])\s+-\s+([^\d])/g, replace: " – " },
+        // 3. Tirets incises et demi-cadratins
+        { find: /([^\d])\s+(\-)\s+([^\d])/g, replace: "$1 – $3" },
+        { find: /([\d])([^\u00A0])\s*([-])\s*([^\u00A0])([\d])/g, replace: "$1\u00A0-\u00A0$5" },
 
         // 4. Points de suspension et guillemets anglais
         { regex: /\.\.\./g, replace: ", etc." },
