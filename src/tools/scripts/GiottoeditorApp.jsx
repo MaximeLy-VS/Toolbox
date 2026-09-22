@@ -1,6 +1,4 @@
 import React, { useState, useRef, useEffect } from 'react';
-
-
 import {
   Download as IconDownload,
   Settings as IconSettings,

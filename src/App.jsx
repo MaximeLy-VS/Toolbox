@@ -160,7 +160,6 @@ import MoodleQuizApp from './tools/Quiz_app/QuizApp';
 import AuditEditorialApp from './tools/scripts/AuditScript';
 import AttoCustomApp from './tools/scripts/AttoCustomApp';
 import GiottoeditorApp from './tools/scripts/GiottoeditorApp';
-import TextToHtmlApp from './tools/Html_app/TextToHtmlApp';
 
 /**
  * --- DASHBOARD PRINCIPAL ---
