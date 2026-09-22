@@ -74,5 +74,5 @@ export     const rules = [
 
 // Fallback pour Tampermonkey : on attache l'array à l'objet global Window
 if (typeof window !== 'undefined') {
-  window.GlobalTypoRules = Rules;
+  window.GlobalTypoRules = rules;
 }
