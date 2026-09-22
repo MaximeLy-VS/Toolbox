@@ -551,29 +551,7 @@ export default function MoodleQuizApp() {
           let cellText = "";
           
           // Fallback ciblé pour les colonnes mal remplies dans les zones de feedback
-          // Fallback ciblé pour les colonnes mal remplies dans les zones de feedback
           if (cells.length >= 3) {
-            const rawCol2 = getRawCellText(cells[2]).trim();
-            const rawCol1 = getRawCellText(cells[1]).trim();
-            
-            if (rawCol2.length === 0 && rawCol1.length > 40) {
-              label = getRawCellText(cells[0]).toLowerCase();
-              cellText = extractAndCleanCell(cells[1]);
-            } else {
-              label = rawCol1.toLowerCase();
-              cellText = extractAndCleanCell(cells[2]);
-            }
-          } else if (cells.length === 2) {
-            const rawCol1 = getRawCellText(cells[1]).trim();
-            const rawCol0 = getRawCellText(cells[0]).trim();
-            
-            if (rawCol1.length === 0 && rawCol0.length > 40) {
-              label = "";
-              cellText = extractAndCleanCell(cells[0]);
-            } else {
-              label = rawCol0.toLowerCase();
-              cellText = extractAndCleanCell(cells[1]);
-            }
             const rawCol2 = getRawCellText(cells[2]).trim();
             const rawCol1 = getRawCellText(cells[1]).trim();
             
