@@ -30,8 +30,8 @@ export const rules = [
         { regex: /([\.?!]\s+)([a-z])/g, replace: (match, p1, p2) => p1 + p2.toUpperCase() },
 
         // 3. Tirets incises et demi-cadratins
-        { find: /([^\d])\s+(\-)\s+([^\d])/g, replace: "$1 – $3" },
-        { find: /([\d])([^\u00A0])\s*([-])\s*([^\u00A0])([\d])/g, replace: "$1\u00A0-\u00A0$5" },
+        { regex: /([^\d])\s+(\-)\s+([^\d])/g, replace: "$1 – $3" },
+        { regex: /([\d])([^\u00A0])\s*([-])\s*([^\u00A0])([\d])/g, replace: "$1\u00A0-\u00A0$5" },
 
         // 4. Points de suspension et guillemets anglais
         { regex: /\.\.\./g, replace: ", etc." },
