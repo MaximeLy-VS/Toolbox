@@ -1,6 +1,6 @@
 // typo-rules.js
 
-export     const rules = [
+export const rules = [
         // 1. Espaces insécables (ponctuation double, monnaies, symboles)
         { regex: /([^\s\u00A0])([?:!;»€%])/g, replace: "$1\u00A0$2" }, // Ajoute une insécable avant si collé
         { regex: / ([:?!;»€%])/g, replace: "\u00A0$1" }, // Remplace l'espace simple par une insécable
@@ -71,8 +71,3 @@ export     const rules = [
         { regex: /(\d)(?:\s|\u00A0)*cm\b/gi, replace: "$1\u00A0cm" },
         { regex: /(\d)(?:\s|\u00A0)*mm\b/gi, replace: "$1\u00A0mm" }
     ];
-
-// Fallback pour Tampermonkey : on attache l'array à l'objet global Window
-if (typeof window !== 'undefined') {
-  window.GlobalTypoRules = rules;
-}
