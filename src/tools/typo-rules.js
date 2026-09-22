@@ -5,9 +5,9 @@ export const rules = [
         { regex: /([^\s\u00A0])([?:!;»€%])/g, replace: "$1\u00A0$2" }, // Ajoute une insécable avant si collé
         { regex: / ([:?!;»€%])/g, replace: "\u00A0$1" }, // Remplace l'espace simple par une insécable
         { regex: /([«])([^\s\u00A0])/g, replace: "$1\u00A0$2" }, // Espace après guillemet ouvrant
-        { regex: /([«]) /g, replace: "$1\u00A0" },
-        { regex: /([^\s\u00A0])([»])/g, replace: '$1\u00A0$2' },
-        { regex: / ([»])/g, replace: '\u00A0$1' },
+        { regex: /([«]) /g, replace: "$1\u00A0" }, 
+        { regex: /([^\s\u00A0])([»])/g, replace: '$1\u00A0$2' }, //Espace avant guillemet fermant
+        { regex: / ([»])/g, replace: '\u00A0$1' }, //Espace avant guillemet fermant
         { regex: /([:;»])(?=[^\s\u00A0])(?![\.\,\)])/g, replace: "$1 " }, // Ajoute une espace après si collé
         { regex: /(\d)(?:\s|\u00A0)*(an|ans)\b/g, replace: "$1\u00A0$2" },
         { regex: /(\d)(?:\s|\u00A0)*(%)\b/g, replace: "$1\u00A0%" },
@@ -42,6 +42,9 @@ export const rules = [
         { regex: /(\d)\s*(h|m|min|minute|minutes|heure|heures)\b/gi, replace: "$1\u00A0$2" },
         { regex: /(\d)\s*(er)\b/g, replace: "$1<sup>$2</sup>\u00A0" }, // Utilisation de \b (word boundary) au lieu de $
         { regex: /(\d)\s*(ème|eme|e)\b/g, replace: "$1<sup>e</sup>\u00A0" },
+        { regex: /(\d)[ \u00A0]+(\d)/g, replace: "$1\u00A0$2" }, // Remplace les espaces entre chiffres sur la même ligne
+        { regex: /(\d)(?=(\d{3})+(?!\d))/g, replace: "$1\u00A0" }, // Ajoute des espaces insécables tous les 3 chiffres
+  
 
         // 6. Unités de mesure (Harmonisation stricte)
         { regex: /(\d)(?:\s|\u00A0)*j\b/gi, replace: "$1\u00A0J" },
