@@ -33,14 +33,28 @@ export default function GiottoeditorApp() {
     { regex: / ([:?!;»€%])/g, replace: "\u00A0$1" },
     { regex: /([«])([^\s\u00A0])/g, replace: "$1\u00A0$2" },
     { regex: /([«]) /g, replace: "$1\u00A0" },
+    { regex: /([^\s\u00A0])([»])/g, replace: '$1\u00A0$2' },
+    { regex: / ([»])/g, replace: '\u00A0$1' },
+    { regex: /\B(?=(\d{3})+(?!\d))/g, replace: "\u00A0" },
+    { regex: /(\d)[ \u00A0]+(\d)/g, replace: "$1\u00A0$2" },
     { regex: /([:;»])(?=[^\s\u00A0])(?![\.\,\)])/g, replace: "$1 " },
-    { find: /(\d)(?:\s|\u00A0)*(an|ans)\b/g, replace: "$1\u00A0$2" },
-    { find: /(\d)(?:\s|\u00A0)*(%)\b/g, replace: "$1\u00A0%" },
+    //opérateurs mathématiques
+    { regex: /(?<!<[^>]*?)(\d)\s*([*])\s*(\d)(?![^<]*?>)/g, replace: "$1\u00A0×\u00A0$3" }, // 15*15 + 15×15
+    { regex: /(?<!<[^>]*?)(\d)\s*([\/])\s*(\d)(?![^<]*?>)/g, replace: "$1\u00A0÷\u00A0$3" }, // 15/15 + 15÷15
+    { regex: /(?<!<[^>]*?)(\d)([+–\-\/=×])(\d)(?![^<]*?>)/g, replace: "$1\u00A0$2\u00A0$3" }, //10+10 → 10 + 5
+    { regex: /(?<!<[^>]*?)(\d)\s+([+–\-\/=×])\s+(\d)(?![^<]*?>)/g, replace: "$1\u00A0$2\u00A0$3" }, // 10 + 5 → 10 + 5
+    { regex: /(?<!<[^>]*?)(\d)\s*([+–\-\/=×])\s*([^\d\s\u00A0])(?![^<]*?>)/g, replace: "$1\u00A0$2\u00A0$3" }, // 10 + centimètres → 10 + centimètres
+    { regex: /(?<!<[^>]*?)([^\d\s\u00A0])([+*\/=])([^\d\s\u00A0])(?![^<]*?>)/g, replace: "$1\u00A0$2\u00A0$3" }, // Mot+Mot → Mot + Mot
+    { regex: /(?<!<[^>]*?)([^\d\s\u00A0])\s+([+*\/=])\s+([^\d\s\u00A0])(?![^<]*?>)/g, replace: "$1\u00A0$2\u00A0$3" }, // Mot + autre → Mot + autre
+    { regex: /(?<!<[^>]*?)([+\/=])\s*([^\d\s\u00A0])(?![^<]*?>)/g, replace: "$1\u00A0$2" },
+
+
+    { regex: /(\d)(?:\s|\u00A0)*(an|ans)\b/g, replace: "$1\u00A0$2" },
+    { regex: /(\d)(?:\s|\u00A0)*(%)\b/g, replace: "$1\u00A0%" },
     { regex: /(\d)((?:<\/[a-zA-Z]+>)?)(?:\s|\u00A0)*((?:<[a-zA-Z]+>)?)(?:°|º)(?:\s|\u00A0)*[cC]\b/g, replace: "$1$2\u00A0$3°C" },
     { regex: /([\.?!]\s+)([a-z])/g, replace: (match, p1, p2) => p1 + p2.toUpperCase() },
-    { regex: /([A-Za-z0-9])([–])/g, replace: "$1\u00A0$2" },
-    { regex: /([–])([A-Za-z0-9])/g, replace: "$1 $2" },
-    { regex: /\s+-\s+/g, replace: " – " },
+    { regex: /([A-Za-z0-9])([–])([A-Za-z0-9])/g, replace: '$1-$3' },
+    { regex: /([^\d])\s+\-\s+([^\d])/g, replace: "$1 – $2" },
     { regex: /\.\.\./g, replace: ", etc." },
     { regex: /"([^">]+)"/g, replace: "«\u00A0$1\u00A0»" },
     { regex: /(\d)\s*h\s*(\d)/gi, replace: "$1\u00A0h\u00A0$2" },
@@ -64,7 +78,7 @@ export default function GiottoeditorApp() {
     { regex: /(\d)(?:\s|\u00A0)*kg\b/gi, replace: "$1\u00A0kg" },
     { regex: /(\d)(?:\s|\u00A0)*hg\b/gi, replace: "$1\u00A0hg" },
     { regex: /(\d)(?:\s|\u00A0)*g\b/g, replace: "$1\u00A0g" },
-    { find: /(\d)(?:\s|\u00A0)*(grammes|kilogrammes)\b/g, replace: "$1\u00A0$2" },
+    { regex: /(\d)(?:\s|\u00A0)*(grammes|kilogrammes)\b/g, replace: "$1\u00A0$2" },
     { regex: /(\d)(?:\s|\u00A0)*dg\b/gi, replace: "$1\u00A0dg" },
     { regex: /(\d)(?:\s|\u00A0)*cg\b/gi, replace: "$1\u00A0cg" },
     { regex: /(\d)(?:\s|\u00A0)*mg\b/gi, replace: "$1\u00A0mg" },

@@ -63,7 +63,7 @@ const loadJSZip = async () => {
 export default function MoodleQuizApp() {
   const [file, setFile] = useState(null);
   const [quizId, setQuizId] = useState("X–XXX–DA–WB–XX–26");
-  const [descriptions, setDescriptions] = useState(["<div class=\"FondCouleur1 p-3\">\n  <strong>Séance 1&nbsp;– Titre de la séance&nbsp;1</strong>\n</div>"]);
+  const [descriptions, setDescriptions] = useState(["<div class=\"FondCouleur1 p-3\">\n  <strong>Séance&nbsp;1 – Titre de la séance&nbsp;1</strong>\n</div>"]);
   const [categories, setCategories] = useState([""]);
   const [scanStatus, setScanStatus] = useState('idle'); 
   const [scanErrors, setScanErrors] = useState([]);
@@ -72,6 +72,7 @@ export default function MoodleQuizApp() {
   const [resultXml, setResultXml] = useState("");
   const [error, setError] = useState(null);
   const [auditMessages, setAuditMessages] = useState([]);
+  const [malusChoice, setMalusChoice] = useState("-12.5");
   
   const [isSorting, setIsSorting] = useState(false);
   const [parsedItems, setParsedItems] = useState([]);
@@ -102,10 +103,26 @@ export default function MoodleQuizApp() {
       { find: /\s*\u00A0\s*/g, replace: '\u00A0' },
       { find: /(?<!\u00A0)([^\s\u00A0])\s*([:?!%€»]|(?<!\u00A0);)/g, replace: "$1\u00A0$2" },
       { find: /(«)\s*(?!\u00A0)([^\s\u00A0])/g, replace: "$1\u00A0$2" },
-      { find: /([:?!€»]|(?<!\u00A0);)(?!\u00A0)([^\s\u00A0\.,\)])/g, replace: "$1 $2" },
+      { find: /(?<!\u00A0)([^\s\u00A0])[ \t]+(»)/g, replace: "$1\u00A0$2" },
       { find: /"([^">]+)"/g, replace: "«\u00A0$1\u00A0»" },
+      { find: /([:?!€»]|(?<!\u00A0);)(?!\u00A0)([^\s\u00A0\.,\)\/])/g, replace: "$1 $2" },
+      //opérateurs mathématiques
+      { find: /(?<!<[^>]*?)(\d)\s*([*])\s*(\d)(?![^<]*?>)/g, replace: "$1\u00A0×\u00A0$3" }, // 15*15 + 15×15
+      { find: /(?<!<[^>]*?)(\d)\s*([\/])\s*(\d)(?![^<]*?>)/g, replace: "$1\u00A0÷\u00A0$3" }, // 15/15 + 15÷15
+      { find: /(?<!<[^>]*?)(\d)([+–\-\/=×])(\d)(?![^<]*?>)/g, replace: "$1\u00A0$2\u00A0$3" }, //10+10 → 10 + 5
+      { find: /(?<!<[^>]*?)(\d)\s+([+–\-\/=×])\s+(\d)(?![^<]*?>)/g, replace: "$1\u00A0$2\u00A0$3" }, // 10 + 5 → 10 + 5
+      { find: /(?<!<[^>]*?)(\d)\s*([+–\-\/=×])\s*([^\d\s\u00A0])(?![^<]*?>)/g, replace: "$1\u00A0$2\u00A0$3" }, // 10 + centimètres → 10 + centimètres
+      { find: /(?<!<[^>]*?)([^\d\s\u00A0])([+*\/=])([^\d\s\u00A0])(?![^<]*?>)/g, replace: "$1\u00A0$2\u00A0$3" }, // Mot+Mot → Mot + Mot
+      { find: /(?<!<[^>]*?)([^\d\s\u00A0])\s+([+*\/=])\s+([^\d\s\u00A0])(?![^<]*?>)/g, replace: "$1\u00A0$2\u00A0$3" }, // Mot + autre → Mot + autre
+      { find: /(?<!<[^>]*?)([+\/=])\s*([^\d\s\u00A0])(?![^<]*?>)/g, replace: "$1\u00A0$2" },
+
       { find: /\.\.\./g, replace: ", etc." },
-      { find: /\s+-\s+/g, replace: " – " },
+      { find: /\B(?=(\d{3})+(?!\d))/g, replace: "\u00A0" },
+      { find: /(\d)[ \u00A0]+(\d)/g, replace: "$1\u00A0$2" },
+      { find: /([A-Za-z0-9])([–])([A-Za-z0-9])/g, replace: '$1-$3' },
+      { find: /([^\d])\s+\-\s+([^\d])/g, replace: "$1 – $2" },
+      { find: /([\d])([^\u00A0])\s*([–])\s*([^\u00A0])([\d])/g, replace: "$1\u00A0-\u00A0$5" },
+
       { find: /(\d)(?:\s|\u00A0)*[hH](?:\s|\u00A0)*(\d)/g, replace: "$1\u00A0h\u00A0$2" },
       { find: /(\d)(?:\s|\u00A0)*([hH]|[mM]|[mM][iI][nN]|[mM][iI][nN][uU][tT][eE][sS]?|[hH][eE][uU][rR][eE][sS]?)\b/g, replace: "$1\u00A0$2" },
       { find: /(\d)(?:\s|\u00A0)*(er)\b/g, replace: "$1<sup>er</sup>\u00A0" },
@@ -138,7 +155,7 @@ export default function MoodleQuizApp() {
       { find: /(\d)(?:\s|\u00A0)*m\b/g, replace: "$1\u00A0m" },
       { find: /(\d)(?:\s|\u00A0)*[dD][mM]\b/g, replace: "$1\u00A0dm" },
       { find: /(\d)(?:\s|\u00A0)*[cC][mM]\b/g, replace: "$1\u00A0cm" },
-      { find: /(\d)(?:\s|\u00A0)*[mM][mM]\b/g, replace: "$1\u00A0mm" }
+      { find: /(\d)(?:\s|\u00A0)*[mM][mM]\b/g, replace: "$1\u00A0mm" },
     ];
     rules.forEach(rule => { str = str.replace(rule.find, rule.replace); });
     str = str.replace(/\u00A0/g, '&nbsp;');
@@ -292,6 +309,10 @@ export default function MoodleQuizApp() {
     window.URL.revokeObjectURL(url);
   };
 
+  const handleMalusChange = (e) => {
+    setMalusChoice(e.target.value);
+  };
+
   const compileXML = (itemsToCompile) => {
     let finalXml = `<?xml version="1.0" encoding="UTF-8"?>\n<quiz>\n`;
     finalXml += `  <question type="category">\n    <category>\n      <text>${escapeXML(quizId)}</text>\n    </category>\n    <info format="html"><text></text></info>\n    <idnumber></idnumber>\n  </question>\n\n`;
@@ -337,7 +358,7 @@ export default function MoodleQuizApp() {
 
         const paragraphs = cellNode.getElementsByTagName("w:p");
         
-        // FIX : Compter le nombre de puces pour éviter d'encapsuler un item unique (ex: - 5312)
+        // Compter le nombre de puces pour éviter d'encapsuler un item unique (ex: - 5312)
         let totalListItems = 0;
         for (let p = 0; p < paragraphs.length; p++) {
           if (paragraphs[p].getElementsByTagName("w:numPr").length > 0) totalListItems++;
@@ -413,7 +434,7 @@ export default function MoodleQuizApp() {
         }
         if (inList) htmlContent += `</ul>`;
         
-        // FIX : Retrait du gras si TOUTE la cellule est en gras (hors ponctuation/espaces)
+        // Retrait du gras si TOUTE la cellule est en gras (hors ponctuation/espaces)
         let textWithoutBolds = htmlContent.replace(/<b>[\s\S]*?<\/b>/g, "");
         let remainingChars = textWithoutBolds.replace(/<[^>]+>/g, "").replace(/[^\wÀ-ÿ]/g, ""); 
         if (remainingChars.length === 0 && htmlContent.includes("<b>")) {
@@ -529,12 +550,29 @@ export default function MoodleQuizApp() {
           let label = "";
           let cellText = "";
           
+          // Fallback ciblé pour les colonnes mal remplies dans les zones de feedback
           if (cells.length >= 3) {
-            label = getRawCellText(cells[1]).toLowerCase(); 
-            cellText = extractAndCleanCell(cells[2]);
-          } else if (cells.length >= 2) {
-            label = getRawCellText(cells[0]).toLowerCase();
-            cellText = extractAndCleanCell(cells[1]);
+            const rawCol2 = getRawCellText(cells[2]).trim();
+            const rawCol1 = getRawCellText(cells[1]).trim();
+            
+            if (rawCol2.length === 0 && rawCol1.length > 40) {
+              label = getRawCellText(cells[0]).toLowerCase();
+              cellText = extractAndCleanCell(cells[1]);
+            } else {
+              label = rawCol1.toLowerCase();
+              cellText = extractAndCleanCell(cells[2]);
+            }
+          } else if (cells.length === 2) {
+            const rawCol1 = getRawCellText(cells[1]).trim();
+            const rawCol0 = getRawCellText(cells[0]).trim();
+            
+            if (rawCol1.length === 0 && rawCol0.length > 40) {
+              label = "";
+              cellText = extractAndCleanCell(cells[0]);
+            } else {
+              label = rawCol0.toLowerCase();
+              cellText = extractAndCleanCell(cells[1]);
+            }
           } else if (cells.length === 1) {
             cellText = extractAndCleanCell(cells[0]);
           }
@@ -602,7 +640,6 @@ export default function MoodleQuizApp() {
               if (lowText === "x" || lowText === "[x]" || rawCellText.includes("☑") || rawCellText.includes("☒")) isChecked = true;
           }
 
-          // FIX : Analyse de la pondération (colonne 3) si la case n'est pas cochée
           if (!isChecked && cells.length >= 3) {
              const gradeText = getRawCellText(cells[2]).trim().replace(',', '.');
              const gradeNum = parseFloat(gradeText);
@@ -611,10 +648,8 @@ export default function MoodleQuizApp() {
              }
           }
           
-          // FIX : Analyse de la couleur verte dans le texte (colonne 2) si la case n'est pas cochée
           if (!isChecked && cells.length >= 2) {
              const cell1Xml = new XMLSerializer().serializeToString(cells[1]);
-             // Cherche les codes hexadécimaux de vert fréquemment utilisés dans Word
              if (cell1Xml.match(/w:color[^>]+w:val="(00B050|008000|92D050|00C000|33CC33|228B22|00FF00)"/i)) {
                  isChecked = true;
              }
@@ -661,7 +696,7 @@ export default function MoodleQuizApp() {
             let scoreNegatif = "0";
 
             if (qType === "QCM") {
-                scoreNegatif = "-12.5";
+                scoreNegatif = malusChoice;
                 if (nbBonnesReponses === 2) scorePositif = "50";
                 else if (nbBonnesReponses === 3) scorePositif = "33.33333";
                 else if (nbBonnesReponses === 4) scorePositif = "25";
@@ -802,7 +837,7 @@ export default function MoodleQuizApp() {
             </div>
           </header>
 
-          <div className="space-y-6">
+          <div className="space-y-4">
             <div className="space-y-2">
               <label className="text-xs font-black text-slate-500 uppercase tracking-widest">
                 Identifiant du Quiz (Racine) <span className="text-red-500">*</span>
@@ -810,39 +845,87 @@ export default function MoodleQuizApp() {
               <input type="text" value={quizId} onChange={(e) => setQuizId(e.target.value)} className="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl font-bold text-slate-700 focus:outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-100 transition-all" placeholder="Ex: 3-0421-DA-WB-06-26"/>
             </div>
 
+            <div className="flex flex-row items-center gap-4">
+              <label className="text-xs font-black text-slate-500 uppercase tracking-widest">
+                Malus
+              </label>
+                <label className="flex-1 gap-2 space-x-1">
+                  <input
+                    type="radio"
+                    name="malus"
+                    value="-10"
+                    checked={malusChoice === "-10"}
+                    onChange={handleMalusChange}
+                  />
+                  <span>-10&nbsp;%</span>
+                </label>
+                <label className="flex-1 gap-2 space-x-1">
+                  <input
+                    type="radio"
+                    name="malus"
+                    value="-12.5"
+                    checked={malusChoice === "-12.5"}
+                    onChange={handleMalusChange}
+                  />
+                  <span>-12.5&nbsp;%</span>
+                </label>
+                <label className="flex-1 gap-2 space-x-1">
+                  <input
+                    type="radio"
+                    name="malus"
+                    value="-14.2857142857143"
+                    checked={malusChoice === "-14.2857142857143"}
+                    onChange={handleMalusChange}
+                  />
+                  <span>-14.3&nbsp;%</span>
+                </label>
+                <label className="flex-1 gap-2 space-x-1">
+                  <input
+                    type="radio"
+                    name="malus"
+                    value="-16.6666666666667"
+                    checked={malusChoice === "-16.6666666666667"}
+                    onChange={handleMalusChange}
+                  />
+                  <span>-16.66&nbsp;%</span>
+                </label>
+            </div>
+
             <div className="space-y-3">
               <div className="flex justify-between items-center">
                 <label className="text-xs font-black text-slate-500 uppercase tracking-widest">Consignes / Titres</label>
-                <button onClick={addDescription} className="text-xs font-bold text-blue-600 hover:text-blue-800 flex items-center gap-1 bg-blue-50 px-2 py-1 rounded-md transition-colors"><Plus size={14} /> Ajouter</button>
               </div>
               <div className="space-y-3">
                 {descriptions.map((desc, index) => (
                   <div key={index} className="relative group">
                     <div className="absolute -left-2 -top-2 bg-slate-800 text-white text-[10px] font-bold px-2 py-0.5 rounded-md shadow-sm z-10">{quizId}_DES{String(index + 1).padStart(2, '0')}</div>
                     <textarea value={desc} onChange={(e) => updateDescription(index, e.target.value)} rows={3} className="w-full p-4 pt-5 bg-slate-50 border border-slate-200 rounded-xl text-sm font-mono text-slate-600 focus:outline-none focus:border-blue-400 transition-all resize-y" placeholder={`Texte HTML pour la consigne ${index + 1}...`} />
-                    <button onClick={() => removeDescription(index)} className="absolute top-4 right-3 text-slate-300 hover:text-red-500 transition-colors opacity-0 group-hover:opacity-100"><Trash2 size={16} /></button>
+                    <button onClick={() => removeDescription(index)} className="absolute top-4 right-6 text-slate-300 hover:text-red-500 transition-colors opacity-0 group-hover:opacity-100"><Trash2 size={16} /></button>
                   </div>
                 ))}
               </div>
+              <button onClick={addDescription} className="relative bottom-[30px] right-6 float-right text-xs font-bold text-blue-600 hover:text-blue-800 flex items-center gap-1 bg-blue-50 px-2 py-1 rounded-md transition-colors"><Plus size={14} /> Ajouter</button>
+
             </div>
 
             <div className="space-y-3">
               <div className="flex justify-between items-center">
                 <label className="text-xs font-black text-slate-500 uppercase tracking-widest">Sous-catégories</label>
-                <button onClick={addCategory} className="text-xs font-bold text-blue-600 hover:text-blue-800 flex items-center gap-1 bg-blue-50 px-2 py-1 rounded-md transition-colors"><Plus size={14} /> Ajouter</button>
               </div>
               <div className="space-y-3">
                 {categories.map((category, index) => (
                   <div key={index} className="relative group">
                     <div className="absolute -left-2 -top-2 bg-slate-800 text-white text-[10px] font-bold px-2 py-0.5 rounded-md shadow-sm z-10">{quizId}/{quizId}_{category || '...'}</div>
                     <textarea value={category} onChange={(e) => updateCategory(index, e.target.value)} rows={1} className="w-full p-4 pt-5 bg-slate-50 border border-slate-200 rounded-xl text-sm font-mono text-slate-600 focus:outline-none focus:border-blue-400 transition-all resize-y" placeholder={`Nom de la sous-catégorie...`} />
-                    <button onClick={() => removeCategory(index)} className="absolute top-4 right-3 text-slate-300 hover:text-red-500 transition-colors opacity-0 group-hover:opacity-100"><Trash2 size={16} /></button>
+                    <button onClick={() => removeCategory(index)} className="absolute top-4 right-6 text-slate-300 hover:text-red-500 transition-colors opacity-0 group-hover:opacity-100"><Trash2 size={16} /></button>
                   </div>
                 ))}
               </div>
+              <button onClick={addCategory} className="relative bottom-[30px] right-6 float-right text-xs font-bold text-blue-600 hover:text-blue-800 flex items-center gap-1 bg-blue-50 px-2 py-1 rounded-md transition-colors"><Plus size={14} /> Ajouter</button>
+
             </div>
 
-            <div className="space-y-2 pt-2">
+            <div className="space-y-2 pt-5">
               <div className="flex justify-between items-center">
                 <label className="text-xs font-black text-slate-500 uppercase tracking-widest">Gabarit Word Rempli</label>
                 <button className="text-xs font-bold text-blue-600 hover:text-blue-800 flex items-center gap-1 bg-blue-50 px-2 py-1 rounded-md transition-colors"><Download size={14}/><a href={gabaritWord} download="DA-WB_Gabarit.docx">Gabarit vierge</a></button>
