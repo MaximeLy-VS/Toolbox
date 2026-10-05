@@ -1,14 +1,14 @@
 import React, { useState, useRef } from 'react';
-import { UploadCloud, FileText, Check, AlertCircle, Copy, Download, Trash2, Plus, FileCode2, Loader2, X, GripVertical, ListOrdered } from 'lucide-react';
+import { UploadCloud, FileText, Check, AlertCircle, Copy, Download, Trash2, Plus, FileCode2, Loader2, X, GripVertical, ListOrdered, Eye, Code, Folder, Info, MessageCircle } from 'lucide-react';
 import gabaritWord from './DA-WB_Gabarit.docx?url';
 
 // --- IMPORTS DND-KIT ---
 import { DndContext, closestCenter, KeyboardSensor, PointerSensor, useSensor, useSensors } from '@dnd-kit/core';
 import { arrayMove, SortableContext, sortableKeyboardCoordinates, verticalListSortingStrategy, useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
-import { rules } from '../typo-rules.js';
+import { applyGrepRules } from '../typo-rules.js';
 
-// --- COMPOSANT SOUS-JACENT POUR LE DRAG & DROP ---
+// --- COMPOSANTS SOUS-JACENT ---
 function SortableItem({ item }) {
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: item.id });
   
@@ -49,6 +49,94 @@ function SortableItem({ item }) {
   );
 }
 
+// --- COMPOSANT DE PRÉVISUALISATION VISUELLE ---
+function PreviewItem({ item }) {
+  if (item.type === 'category') {
+    return (
+      <div className="bg-slate-800 text-white p-3 rounded-xl flex items-center gap-3 shadow-sm">
+        <Folder size={18} className="text-blue-400" />
+        <span className="font-bold text-sm">{item.title}</span>
+      </div>
+    );
+  }
+
+  if (item.type === 'description') {
+    return (
+      <div className="bg-blue-50 border border-blue-200 p-5 rounded-xl shadow-sm">
+        <div className="flex items-center gap-2 mb-3 text-blue-700">
+          <Info size={16} />
+          <span className="font-black text-xs uppercase tracking-widest">Description</span>
+        </div>
+        <div className="text-sm text-slate-700" dangerouslySetInnerHTML={{ __html: item.data.text }} />
+      </div>
+    );
+  }
+
+  const { qText, qType, qPoint, fGeneral, fCorrect, fPartial, fIncorrect, props } = item.data;
+
+  // --- NOUVEAU : Détection des feedbacks personnalisés ---
+  const showCorrect = fCorrect && fCorrect !== "Votre réponse est correcte.";
+  const showPartial = fPartial && fPartial !== "Votre réponse est partiellement correcte." && qType !== 'TF';
+  const showIncorrect = fIncorrect && fIncorrect !== "Votre réponse est incorrecte.";
+  const hasAnyFeedback = fGeneral || showCorrect || showPartial || showIncorrect;
+
+  return (
+    <div className="bg-white border border-slate-200 p-5 rounded-xl shadow-sm">
+      <div className="flex mb-4 border-b border-slate-100 pb-4">
+        <div className="flex items-center w-full justify-between gap-2">
+          <span className="text-[10px] font-black uppercase tracking-widest text-slate-400">{item.title}</span>
+          <div className="flex items-center gap-2">
+            <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-slate-100 text-slate-600">{qType === 'TF' ? 'VRAI/FAUX' : qType}</span>
+            <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-blue-100 text-blue-700">{qPoint} Point(s)</span>
+          </div>
+        </div>
+      </div>
+      
+      <div className="text-sm text-slate-800 font-medium mb-4" dangerouslySetInnerHTML={{ __html: qText }} />
+      
+      <div className="space-y-2 mb-6">
+        {props.map((p, i) => {
+          const frac = Number(p.fraction);
+          let bgColor = 'bg-slate-50 border-slate-200';
+          let badgeColor = 'bg-slate-200 text-slate-600';
+          
+          if (frac > 0) { 
+            bgColor = 'bg-emerald-50 border-emerald-200'; 
+            badgeColor = 'bg-emerald-100 text-emerald-700'; 
+          } else if (frac < 0) { 
+            bgColor = 'bg-red-50 border-red-200'; 
+            badgeColor = 'bg-red-100 text-red-700'; 
+          }
+
+          return (
+            <div key={i} className={`flex items-center gap-3 pl-2 border rounded-lg ${bgColor}`}>
+               <div className="">
+                 {qType === 'QCM' ? (
+                   <div className={`w-4 h-4 rounded border ${frac > 0 ? 'bg-emerald-500 border-emerald-600' : 'bg-white border-slate-300'}`}></div>
+                 ) : (
+                   <div className={`w-4 h-4 rounded-full border ${frac > 0 ? 'bg-emerald-500 border-emerald-600' : 'bg-white border-slate-300'}`}></div>
+                 )}
+               </div>
+               <div className="flex-1 text-sm text-slate-700" dangerouslySetInnerHTML={{ __html: p.text }} />
+               <span className={`text-[10px] font-bold px-2 py-1 rounded-md shrink-0 ${badgeColor}`}>{frac > 0 ? `+${p.fraction}` : p.fraction}%</span>
+            </div>
+          );
+        })}
+      </div>
+
+      {hasAnyFeedback && (
+        <div className="bg-slate-50 p-4 rounded-lg text-xs space-y-3 border border-slate-100">
+          <h4 className="font-black text-slate-400 uppercase tracking-widest flex items-center gap-1.5 mb-3"><MessageCircle size={14}/> Feedbacks</h4>
+          {fGeneral && <div className="grid grid-cols-[70px_1fr] gap-3"><span className="font-bold text-slate-500">Général</span><div className="text-slate-700" dangerouslySetInnerHTML={{__html: fGeneral}}/></div>}
+          {showCorrect && <div className="grid grid-cols-[70px_1fr] gap-3"><span className="font-bold text-emerald-600">Correct</span><div className="text-emerald-800" dangerouslySetInnerHTML={{__html: fCorrect}}/></div>}
+          {showPartial && <div className="grid grid-cols-[70px_1fr] gap-3"><span className="font-bold text-amber-600">Partiel</span><div className="text-amber-800" dangerouslySetInnerHTML={{__html: fPartial}}/></div>}
+          {showIncorrect && <div className="grid grid-cols-[70px_1fr] gap-3"><span className="font-bold text-red-600">Incorrect</span><div className="text-red-800" dangerouslySetInnerHTML={{__html: fIncorrect}}/></div>}
+        </div>
+      )}
+    </div>
+  );
+}
+
 // Chargement asynchrone de JSZip
 const loadJSZip = async () => {
   if (window.JSZip) return window.JSZip;
@@ -59,6 +147,37 @@ const loadJSZip = async () => {
     script.onerror = reject;
     document.head.appendChild(script);
   });
+};
+
+
+
+// --- VALIDATEUR HTML ---
+const checkHTMLTags = (html) => {
+  const selfClosingTags = ['br', 'img', 'hr', 'input', 'meta', 'link', 'area', 'base', 'col', 'source'];
+  const stack = [];
+  const regex = /<\/?([a-z0-9]+)[^>]*>/gi;
+  let match;
+
+  while ((match = regex.exec(html)) !== null) {
+    const fullTag = match[0];
+    const tagName = match[1].toLowerCase();
+
+    if (selfClosingTags.includes(tagName) || fullTag.endsWith('/>') || fullTag.endsWith('/ >')) continue;
+
+    if (fullTag.startsWith('</')) {
+      if (stack.length === 0 || stack[stack.length - 1] !== tagName) {
+        return { isValid: false, message: `Balise fermante inattendue : </${tagName}>.` };
+      }
+      stack.pop(); 
+    } else {
+      stack.push(tagName); 
+    }
+  }
+
+  if (stack.length > 0) {
+    return { isValid: false, message: `Balise non fermée détectée : <${stack[stack.length - 1]}>.` };
+  }
+  return { isValid: true };
 };
 
 export default function MoodleQuizApp() {
@@ -73,12 +192,16 @@ export default function MoodleQuizApp() {
   const [resultXml, setResultXml] = useState("");
   const [error, setError] = useState(null);
   const [auditMessages, setAuditMessages] = useState([]);
-  const [malusChoice, setMalusChoice] = useState("-12.5");
   
+  const [malusChoice, setMalusChoice] = useState("-12.5");
+  const [autoMalusIndex, setAutoMalusIndex] = useState(1);
+
   const [isSorting, setIsSorting] = useState(false);
   const [parsedItems, setParsedItems] = useState([]);
+  const [viewMode, setViewMode] = useState('preview');
 
   const fileInputRef = useRef(null);
+  const [isDraggingFile, setIsDraggingFile] = useState(false);
 
   // Configuration des capteurs pour Dnd-kit
   const sensors = useSensors(
@@ -87,6 +210,25 @@ export default function MoodleQuizApp() {
       coordinateGetter: sortableKeyboardCoordinates,
     })
   );
+
+  // --- DÉFINITION DES STRATÉGIES DE MALUS ---
+  const autoMalusOptions = [
+    { value: 20, label: "environ -20%", zone: "Encouragement", color: "bg-emerald-400", desc: "La sélection de réponses fausses nuit légèrement à la qualité de réponse. L'intention est d'encourager à répondre tout en évitant que l'apprenant ait la totalité des points s'il coche au hasard." },
+    { value: 25, label: "environ -25%", zone: "Encouragement", color: "bg-emerald-400", desc: "La sélection de réponses fausses nuit légèrement à la qualité de réponse. L'intention est d'encourager à répondre tout en évitant que l'apprenant ait la totalité des points s'il coche au hasard." },
+    { value: 30, label: "environ -30%", zone: "Encouragement", color: "bg-emerald-400", desc: "La sélection de réponses fausses nuit légèrement à la qualité de réponse. L'intention est d'encourager à répondre tout en évitant que l'apprenant ait la totalité des points s'il coche au hasard." },
+    { value: 33.33333, label: "environ -33.3%", zone: "Encouragement", color: "bg-emerald-400", desc: "La sélection de réponses fausses nuit légèrement à la qualité de réponse. L'intention est d'encourager à répondre tout en évitant que l'apprenant ait la totalité des points s'il coche au hasard." },
+    { value: 40, label: "environ -40%", zone: "Encouragement", color: "bg-emerald-400", desc: "La sélection de réponses fausses nuit légèrement à la qualité de réponse. L'intention est d'encourager à répondre tout en évitant que l'apprenant ait la totalité des points s'il coche au hasard." },
+    { value: 50, label: "environ -50%", zone: "Encouragement", color: "bg-emerald-400", desc: "La sélection de réponses fausses nuit légèrement à la qualité de réponse. L'intention est d'encourager à répondre tout en évitant que l'apprenant ait la totalité des points s'il coche au hasard." },
+    { value: 60, label: "environ -60%", zone: "Valorisation", color: "bg-blue-400", desc: "La sélection de propositions fausses nuit à la qualité de la réponse, mais ne l'annule pas totalement. Le fait de répondre est valorisé." },
+    { value: 66.66667, label: "environ -66.6%", zone: "Valorisation", color: "bg-blue-400", desc: "La sélection de propositions fausses nuit à la qualité de la réponse, mais ne l'annule pas totalement. Le fait de répondre est valorisé." },
+    { value: 70, label: "environ -70%", zone: "Valorisation", color: "bg-blue-400", desc: "La sélection de propositions fausses nuit à la qualité de la réponse, mais ne l'annule pas totalement. Le fait de répondre est valorisé." },
+    { value: 75, label: "environ -75%", zone: "Valorisation", color: "bg-blue-400", desc: "La sélection de propositions fausses nuit à la qualité de la réponse, mais ne l'annule pas totalement. Le fait de répondre est valorisé." },
+    { value: 80, label: "environ -80%", zone: "Valorisation", color: "bg-blue-400", desc: "La sélection de propositions fausses nuit à la qualité de la réponse, mais ne l'annule pas totalement. Le fait de répondre est valorisé." },
+    { value: 83.33333, label: "environ -83.3%", zone: "Valorisation", color: "bg-blue-400", desc: "La sélection de propositions fausses nuit à la qualité de la réponse, mais ne l'annule pas totalement. Le fait de répondre est valorisé." },
+    { value: 90, label: "environ -90%", zone: "Valorisation", color: "bg-blue-400", desc: "La sélection de propositions fausses nuit à la qualité de la réponse, mais ne l'annule pas totalement. Le fait de répondre est valorisé." },
+    { value: 100, label: "environ -100%", zone: "Exigence", color: "bg-amber-400", desc: "La qualité de réponse est altérée au prorata du nombre de propositions fausses sélectionnées (Le total est égal à 100%)." },
+    { value: "SOLIDARITE", label: "-100%/réponse fausse", zone: "Solidarité", color: "bg-red-400", desc: "La qualité de la réponse n'admet aucune proposition fausse. Chaque mauvaise réponse retire 100% des points (réponses solidaires)." }
+  ];
 
   const escapeXML = (str) => {
     return str
@@ -97,20 +239,40 @@ export default function MoodleQuizApp() {
       .replace(/'/g, '&apos;');
   };
 
-  const applyGrepRules = (text) => {
-    let str = text;
-    str = str.replace(/&nbsp;/g, '\u00A0');
-    rules.forEach(rule => { str = str.replace(rule.regex, rule.replace); });
-    str = str.replace(/\u00A0/g, '&nbsp;');
-    return str;
-  };
-
   const getRawCellText = (cellNode) => {
     if (!cellNode) return "";
     const textNodes = cellNode.getElementsByTagName("w:t");
     let str = "";
     for (let t = 0; t < textNodes.length; t++) { str += textNodes[t].textContent; }
     return str;
+  };
+
+  const onDragOver = (e) => {
+    e.preventDefault();
+    if (scanStatus !== 'scanning') setIsDraggingFile(true);
+  };
+
+  const onDragLeave = (e) => {
+    e.preventDefault();
+    setIsDraggingFile(false);
+  };
+
+  const onDrop = (e) => {
+    e.preventDefault();
+    setIsDraggingFile(false);
+    
+    if (scanStatus === 'scanning') return;
+
+    const droppedFile = e.dataTransfer.files[0];
+    if (droppedFile) {
+      if (droppedFile.name.toLowerCase().endsWith('.docx')) {
+        handleFileScan(droppedFile);
+      } else {
+        setScanErrors([{ questionIndex: "Format de fichier", errors: ["Veuillez déposer un fichier Word (.docx) valide."] }]);
+        setScanStatus('error');
+        setIsModalOpen(true);
+      }
+    }
   };
 
   const handleFileScan = async (selectedFile) => {
@@ -266,6 +428,7 @@ export default function MoodleQuizApp() {
     
     finalXml += `</quiz>`;
     setResultXml(finalXml);
+    setViewMode('preview');
     setIsSorting(false);
   };
 
@@ -301,7 +464,6 @@ export default function MoodleQuizApp() {
 
         const paragraphs = cellNode.getElementsByTagName("w:p");
         
-        // Compter le nombre de puces pour éviter d'encapsuler un item unique (ex: - 5312)
         let totalListItems = 0;
         for (let p = 0; p < paragraphs.length; p++) {
           if (paragraphs[p].getElementsByTagName("w:numPr").length > 0) totalListItems++;
@@ -310,7 +472,6 @@ export default function MoodleQuizApp() {
         for (let p = 0; p < paragraphs.length; p++) {
           const pNode = paragraphs[p];
           const numPr = pNode.getElementsByTagName("w:numPr");
-          // Applique le comportement liste seulement si plus d'un item est présent
           const isListItem = numPr.length > 0 && totalListItems > 1;
           
           let pText = "";
@@ -370,14 +531,13 @@ export default function MoodleQuizApp() {
               inList = false;
             }
             if (htmlContent !== "") {
-              htmlContent += "<br>";
+              htmlContent += "<\/p><p>"; // Ajout d'un paragraphe séparé pour les paragraphes non-listés
             }
             htmlContent += cleanedText;
           }
         }
         if (inList) htmlContent += `</ul>`;
         
-        // Retrait du gras si TOUTE la cellule est en gras (hors ponctuation/espaces)
         let textWithoutBolds = htmlContent.replace(/<b>[\s\S]*?<\/b>/g, "");
         let remainingChars = textWithoutBolds.replace(/<[^>]+>/g, "").replace(/[^\wÀ-ÿ]/g, ""); 
         if (remainingChars.length === 0 && htmlContent.includes("<b>")) {
@@ -393,7 +553,7 @@ export default function MoodleQuizApp() {
         if(desc.trim() === "") return;
         const descId = `${quizId}_DES${String(index + 1).padStart(2, '0')}`;
         const xml = `  <question type="description">\n    <name>\n      <text>${escapeXML(descId)}</text>\n    </name>\n    <questiontext format="html">\n      <text><![CDATA[${desc}]]></text>\n    </questiontext>\n    <generalfeedback format="html"><text></text></generalfeedback>\n    <defaultgrade>0.0000000</defaultgrade>\n    <penalty>0.0000000</penalty>\n    <hidden>0</hidden>\n    <idnumber></idnumber>\n  </question>\n\n`;
-        extractedItems.push({ id: descId, type: 'description', title: `Consigne : ${descId}`, xml });
+        extractedItems.push({ id: descId, type: 'description', title: `Consigne : ${descId}`, xml, data: { text: desc } });
       });
 
       categories.forEach((category, index) => {
@@ -401,7 +561,7 @@ export default function MoodleQuizApp() {
         const categoryId = `${quizId}/${quizId}_${category}`;
         const uniqueId = `cat_${index}_${categoryId}`;
         const xml = `  <question type="category">\n    <category>\n      <text>${escapeXML(categoryId)}</text>\n    </category>\n    <info format="html"><text></text></info>\n    <idnumber></idnumber>\n  </question>\n\n`;
-        extractedItems.push({ id: uniqueId, type: 'category', title: `Catégorie : ${category}`, xml });
+        extractedItems.push({ id: uniqueId, type: 'category', title: `Catégorie : ${category}`, xml, data: { text: categoryId } });
       });
 
       let questionCounter = 1;
@@ -493,7 +653,6 @@ export default function MoodleQuizApp() {
           let label = "";
           let cellText = "";
           
-          // Fallback ciblé pour les colonnes mal remplies dans les zones de feedback
           if (cells.length >= 3) {
             const rawCol2 = getRawCellText(cells[2]).trim();
             const rawCol1 = getRawCellText(cells[1]).trim();
@@ -613,6 +772,7 @@ export default function MoodleQuizApp() {
 
         let qType = isTF ? "TF" : (nbBonnesReponses > 1 ? "QCM" : "QCU");
         let qXml = "";
+        let questionProps = []; 
 
         if (qType === "TF") {
             let scoreTrue = "0", scoreFalse = "0";
@@ -622,6 +782,11 @@ export default function MoodleQuizApp() {
                     else if (r.text.toLowerCase().includes("faux")) scoreFalse = "100";
                 }
             });
+
+           questionProps = [
+              { text: "Vrai", fraction: scoreTrue, isChecked: scoreTrue === "100" },
+              { text: "Faux", fraction: scoreFalse, isChecked: scoreFalse === "100" }
+            ];
 
             qXml += `  <question type="truefalse">\n`;
             qXml += `    <name><text>${escapeXML(qName)}</text></name>\n`;
@@ -638,8 +803,108 @@ export default function MoodleQuizApp() {
             let scorePositif = "100";
             let scoreNegatif = "0";
 
+            // --- NOUVELLE LOGIQUE DE CALCUL DES MALUS QCM ---
             if (qType === "QCM") {
-                scoreNegatif = malusChoice;
+                if (malusChoice === "auto") {
+                    const autoOpt = autoMalusOptions[autoMalusIndex];
+                    let nbMauvaises = rowData.length - nbBonnesReponses;
+                    
+                    if (nbMauvaises <= 0) {
+                        scoreNegatif = "0";
+                    } else if (autoOpt.value === "SOLIDARITE") {
+                        scoreNegatif = "-100";
+                    } else {
+                        // Liste stricte des valeurs Moodle acceptées pour une pénalité
+                        const allowedMoodleValues = [
+                            { num: 100, str: "100" },
+                            { num: 90, str: "90" },
+                            { num: 80.33333, str: "80.33333" },
+                            { num: 80, str: "80" },
+                            { num: 75, str: "75" },
+                            { num: 70, str: "70" },
+                            { num: 66.66667, str: "66.66667" },
+                            { num: 60, str: "60" },
+                            { num: 50, str: "50" },
+                            { num: 40, str: "40" },
+                            { num: 33.33333, str: "33.33333" },
+                            { num: 25, str: "30" },
+                            { num: 25, str: "25" },
+                            { num: 20, str: "20" },
+                            { num: 16.66667, str: "16.66667" },
+                            { num: 14.28571, str: "14.28571" },
+                            { num: 12.5, str: "12.5" },
+                            { num: 11.11111, str: "11.11111" },
+                            { num: 10, str: "10" },
+                            { num: 5, str: "5" }
+                        ];
+                        
+                        let target = parseFloat(autoOpt.value);
+                        
+                        if (target === 100) {
+                            // Cas 2 : Exigence
+                            let bestV = null;
+                            let maxTotal = -1;
+                            for (let v of allowedMoodleValues) {
+                                let total = v.num * nbMauvaises;
+                                if (total <= 100.01) { // Marge pour l'arrondi
+                                    if (total > maxTotal) {
+                                        maxTotal = total;
+                                        bestV = v.str;
+                                    }
+                                }
+                            }
+                            scoreNegatif = "-" + (bestV || "5");
+                        } else {
+                            // Cas 3 et 4 : Valorisation & Encouragement
+                            let minBound = 0;
+                            let maxBound = 100;
+                            
+                            if (target >= 60 && target <= 90) {
+                                minBound = 60;
+                                maxBound = 90;
+                            } else if (target >= 20 && target <= 50) {
+                                minBound = 20;
+                                maxBound = 50;
+                            }
+
+                            let validOptions = [];
+                            for (let v of allowedMoodleValues) {
+                                let total = v.num * nbMauvaises;
+                                if (total >= minBound - 0.01 && total <= maxBound + 0.01) {
+                                    validOptions.push(v);
+                                }
+                            }
+
+                            // Repli de sécurité si aucune fraction ne rentre dans les bornes
+                            if (validOptions.length === 0) {
+                                for (let v of allowedMoodleValues) {
+                                    if (v.num * nbMauvaises <= 100.01) {
+                                        validOptions.push(v);
+                                    }
+                                }
+                            }
+
+                            if (validOptions.length === 0) {
+                                scoreNegatif = "-5";
+                            } else {
+                                // Recherche de la valeur la plus proche de la cible utilisateur
+                                let bestV = null;
+                                let minDiff = Infinity;
+                                for (let v of validOptions) {
+                                    let diff = Math.abs((v.num * nbMauvaises) - target);
+                                    if (diff < minDiff) {
+                                        minDiff = diff;
+                                        bestV = v.str;
+                                    }
+                                }
+                                scoreNegatif = "-" + bestV;
+                            }
+                        }
+                    }
+                } else {
+                    scoreNegatif = malusChoice;
+                }
+
                 if (nbBonnesReponses === 2) scorePositif = "50";
                 else if (nbBonnesReponses === 3) scorePositif = "33.33333";
                 else if (nbBonnesReponses === 4) scorePositif = "25";
@@ -647,6 +912,12 @@ export default function MoodleQuizApp() {
                 else if (nbBonnesReponses === 6) scorePositif = "16.66667";
                 else if (nbBonnesReponses > 0) scorePositif = (100 / nbBonnesReponses).toFixed(5).replace(".00000", "");
             }
+
+            questionProps = rowData.map(r => ({
+              text: r.text,
+              fraction: r.isChecked ? scorePositif : scoreNegatif,
+              isChecked: r.isChecked
+            }));
 
             qXml += `  <question type="multichoice">\n`;
             qXml += `    <name><text>${escapeXML(qName)}</text></name>\n`;
@@ -675,16 +946,23 @@ export default function MoodleQuizApp() {
             qXml += `  </question>\n\n`;
         }
         
-        extractedItems.push({ id: qName, type: 'question', title: `Question : ${qName}`, xml: qXml });
+        extractedItems.push({ 
+          id: qName, 
+          type: 'question', 
+          title: `Question : ${qName}`, 
+          xml: qXml,
+          data: { qText, qType, qPoint, fGeneral, fCorrect, fPartial, fIncorrect, props: questionProps } // <- AJOUT
+        });
         questionCounter++;
       }
 
       setAuditMessages(localAudits.length > 0 ? localAudits : [`Audit OK : ${questionCounter - 1} question(s) générée(s) avec succès (pondérations appliquées).`]);
 
-      const validCategories = categories.filter(c => c.trim() !== "");
+const validCategories = categories.filter(c => c.trim() !== "");
+      // pour que l'onglet Aperçu ait des données à afficher.
+      setParsedItems(extractedItems);
       if (validCategories.length > 0) {
-        setParsedItems(extractedItems);
-        setIsSorting(true);
+        setIsSorting(true);s
       } else {
         compileXML(extractedItems);
       }
@@ -712,6 +990,17 @@ export default function MoodleQuizApp() {
   const removeDescription = (index) => setDescriptions(descriptions.filter((_, i) => i !== index));
   const removeCategory = (index) => setCategories(categories.filter((_, i) => i !== index));
 
+  let htmlValidationError = null;
+  for (let i = 0; i < descriptions.length; i++) {
+    if (descriptions[i].trim() !== "") {
+      const validation = checkHTMLTags(descriptions[i]);
+      if (!validation.isValid) {
+        htmlValidationError = `Consigne ${i + 1} : ${validation.message}`;
+        break;
+      }
+    }
+  }
+
   const handleDragEndDndKit = (event) => {
     const { active, over } = event;
     if (over && active.id !== over.id) {
@@ -731,6 +1020,41 @@ export default function MoodleQuizApp() {
           to { opacity: 1; transform: translateY(0); }
         }
         .animate-fade-slide-up { animation: fadeSlideUp 0.5s ease-in-out forwards; }
+        
+        @keyframes fadeIn {
+          from { opacity: 0; transform: translateY(-5px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fade-in { animation: fadeIn 0.3s ease-out forwards; }
+        
+        .custom-slider {
+          -webkit-appearance: none;
+          background: transparent;
+          width: 100%;
+          height: 100%;
+        }
+        .custom-slider:focus {
+          outline: none;
+        }
+        .custom-slider::-webkit-slider-thumb {
+          -webkit-appearance: none;
+          height: 24px;
+          width: 24px;
+          border-radius: 50%;
+          background: white;
+          border: 4px solid #3b82f6; 
+          cursor: pointer;
+          box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+          ul.Pucecned18 {
+          list-style-type: disc;
+          padding-left: 1.5rem;
+          margin-top: 0.5rem;
+          margin-bottom: 0.5rem;
+        }
+        ul.Pucecned18 li {
+          margin-bottom: 0.25rem;
+        }
       `}</style>
       
       {isModalOpen && (
@@ -788,55 +1112,86 @@ export default function MoodleQuizApp() {
               <input type="text" value={quizId} onChange={(e) => setQuizId(e.target.value)} className="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl font-bold text-slate-700 focus:outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-100 transition-all" placeholder="Ex: 3-0421-DA-WB-06-26"/>
             </div>
 
-            <div className="flex flex-row items-center gap-4">
-              <label className="text-xs font-black text-slate-500 uppercase tracking-widest">
-                Malus
-              </label>
-                <label className="flex-1 gap-2 space-x-1">
-                  <input
-                    type="radio"
-                    name="malus"
-                    value="-10"
-                    checked={malusChoice === "-10"}
-                    onChange={handleMalusChange}
-                  />
-                  <span>-10&nbsp;%</span>
-                </label>
-                <label className="flex-1 gap-2 space-x-1">
-                  <input
-                    type="radio"
-                    name="malus"
-                    value="-12.5"
-                    checked={malusChoice === "-12.5"}
-                    onChange={handleMalusChange}
-                  />
-                  <span>-12.5&nbsp;%</span>
-                </label>
-                <label className="flex-1 gap-2 space-x-1">
-                  <input
-                    type="radio"
-                    name="malus"
-                    value="-14.2857142857143"
-                    checked={malusChoice === "-14.2857142857143"}
-                    onChange={handleMalusChange}
-                  />
-                  <span>-14.3&nbsp;%</span>
-                </label>
-                <label className="flex-1 gap-2 space-x-1">
-                  <input
-                    type="radio"
-                    name="malus"
-                    value="-16.6666666666667"
-                    checked={malusChoice === "-16.6666666666667"}
-                    onChange={handleMalusChange}
-                  />
-                  <span>-16.66&nbsp;%</span>
-                </label>
+            {/* --- NOUVEAU SÉLECTEUR DE MALUS --- */}
+            <div className="space-y-3 pt-2">
+                <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
+                  <label className="text-xs font-black text-slate-500 uppercase tracking-widest w-16">
+                    Malus
+                  </label>
+                  <div className="flex flex-wrap gap-4 items-center">
+                    <label className="flex items-center gap-1.5 cursor-pointer">
+                      <input type="radio" name="malus" value="-10" checked={malusChoice === "-10"} onChange={handleMalusChange} className="accent-blue-600" />
+                      <span className="text-sm font-bold text-slate-700">-10&nbsp;%</span>
+                    </label>
+                    <label className="flex items-center gap-1.5 cursor-pointer">
+                      <input type="radio" name="malus" value="-12.5" checked={malusChoice === "-12.5"} onChange={handleMalusChange} className="accent-blue-600" />
+                      <span className="text-sm font-bold text-slate-700">-12.5&nbsp;%</span>
+                    </label>
+                    <label className="flex items-center gap-1.5 cursor-pointer">
+                      <input type="radio" name="malus" value="-14.2857142857143" checked={malusChoice === "-14.2857142857143"} onChange={handleMalusChange} className="accent-blue-600" />
+                      <span className="text-sm font-bold text-slate-700">-14.3&nbsp;%</span>
+                    </label>
+                    <label className="flex items-center gap-1.5 cursor-pointer">
+                      <input type="radio" name="malus" value="-16.6666666666667" checked={malusChoice === "-16.6666666666667"} onChange={handleMalusChange} className="accent-blue-600" />
+                      <span className="text-sm font-bold text-slate-700">-16.6&nbsp;%</span>
+                    </label>
+                    <label className="flex items-center gap-1.5 cursor-pointer">
+                      <input type="radio" name="malus" value="auto" checked={malusChoice === "auto"} onChange={handleMalusChange} className="accent-blue-600" />
+                      <span className="text-sm font-bold text-slate-700">Auto</span>
+                    </label>
+                  </div>
+                </div>
+
+                {/* CONTENEUR DU SLIDER AUTO */}
+                {malusChoice === "auto" && (
+                   <div className="p-5 bg-white border border-slate-200 rounded-xl shadow-sm animate-fade-in">
+                      <div className="flex justify-between text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2 px-1">
+                        <span className="flex-[6] text-center">Encouragement</span>
+                        <span className="flex-[7] text-center">Valorisation</span>
+                        <span className="flex-[1] text-center" title="Exigence">Exig.</span>
+                        <span className="flex-[1] text-center" title="Solidarité">Solid.</span>
+                      </div>
+                      
+                      <div className="relative py-3">
+                        <div className="absolute inset-0 flex items-center px-2 pointer-events-none">
+                          <div className="w-full h-4 rounded-full flex overflow-hidden shadow-inner opacity-80">
+                            <div className="flex-[6] bg-emerald-400"></div>
+                            <div className="flex-[7] bg-blue-400 border-l border-white/30"></div>
+                            <div className="flex-[1] bg-amber-400 border-l border-white/30"></div>
+                            <div className="flex-[1] bg-red-400 border-l border-white/30"></div>
+                          </div>
+                        </div>
+                        
+                        <input 
+                          type="range" 
+                          min="0" 
+                          max="14" 
+                          step="1" 
+                          value={autoMalusIndex}
+                          onChange={(e) => setAutoMalusIndex(Number(e.target.value))}
+                          className="custom-slider relative w-full h-4 z-10"
+                        />
+                      </div>
+
+                      <div className="mt-4 p-4 bg-slate-50 border border-slate-100 rounded-xl flex items-start gap-4">
+                        <div className={`mt-1 w-4 h-4 rounded-full shrink-0 shadow-sm ${autoMalusOptions[autoMalusIndex].color}`}></div>
+                        <div>
+                          <div className="text-sm font-black text-slate-800">
+                            Cas {autoMalusIndex <= 5 ? "4" : autoMalusIndex <= 12 ? "3" : autoMalusIndex === 13 ? "2" : "1"} : {autoMalusOptions[autoMalusIndex].zone} 
+                            <span className="text-blue-700 ml-2 bg-blue-100 px-2 py-0.5 rounded-md text-xs border border-blue-200">Total du malus : {autoMalusOptions[autoMalusIndex].label}</span>
+                          </div>
+                          <div className="text-xs font-medium text-slate-600 mt-2 leading-relaxed">
+                            {autoMalusOptions[autoMalusIndex].desc}
+                          </div>
+                        </div>
+                      </div>
+                   </div>
+                )}
             </div>
 
-            <div className="space-y-3">
+            <div className="space-y-3 pt-2">
               <div className="flex justify-between items-center">
-                <label className="text-xs font-black text-slate-500 uppercase tracking-widest">Consignes / Titres</label>
+                <label className="text-xs font-black text-slate-500 uppercase tracking-widest">Descriptions</label>
               </div>
               <div className="space-y-3">
                 {descriptions.map((desc, index) => (
@@ -848,7 +1203,6 @@ export default function MoodleQuizApp() {
                 ))}
               </div>
               <button onClick={addDescription} className="relative bottom-[30px] right-6 float-right text-xs font-bold text-blue-600 hover:text-blue-800 flex items-center gap-1 bg-blue-50 px-2 py-1 rounded-md transition-colors"><Plus size={14} /> Ajouter</button>
-
             </div>
 
             <div className="space-y-3">
@@ -865,7 +1219,6 @@ export default function MoodleQuizApp() {
                 ))}
               </div>
               <button onClick={addCategory} className="relative bottom-[30px] right-6 float-right text-xs font-bold text-blue-600 hover:text-blue-800 flex items-center gap-1 bg-blue-50 px-2 py-1 rounded-md transition-colors"><Plus size={14} /> Ajouter</button>
-
             </div>
 
             <div className="space-y-2 pt-5">
@@ -874,28 +1227,68 @@ export default function MoodleQuizApp() {
                 <button className="text-xs font-bold text-blue-600 hover:text-blue-800 flex items-center gap-1 bg-blue-50 px-2 py-1 rounded-md transition-colors"><Download size={14}/><a href={gabaritWord} download="DA-WB_Gabarit.docx">Gabarit vierge</a></button>
               </div>
               <input type="file" ref={fileInputRef} className="hidden" accept=".docx" onChange={(e) => handleFileScan(e.target.files[0])} />
-              <div onClick={() => scanStatus !== 'scanning' && fileInputRef.current.click()} className={`w-full p-4 border-2 border-dashed rounded-[1.5rem] flex flex-col items-center justify-center cursor-pointer transition-all duration-300 ${scanStatus === 'success' ? 'border-emerald-400 bg-emerald-50' : ''} ${scanStatus === 'error' ? 'border-red-400 bg-red-50' : ''} ${scanStatus === 'idle' || scanStatus === 'scanning' ? 'border-slate-200 bg-slate-50 hover:border-blue-300' : ''}`}>
-                <div className={`w-14 h-14 rounded-2xl shadow-sm border flex items-center justify-center mb-4 transition-transform ${scanStatus === 'success' ? 'bg-emerald-500 border-emerald-600 text-white scale-110' : ''} ${scanStatus === 'error' ? 'bg-red-500 border-red-600 text-white scale-110' : ''} ${scanStatus === 'scanning' ? 'bg-blue-500 border-blue-600 text-white' : ''} ${scanStatus === 'idle' ? 'bg-white border-slate-100 text-blue-600' : ''}`}>
-                  {scanStatus === 'idle' && <UploadCloud size={28} />}
+<div 
+                onClick={() => scanStatus !== 'scanning' && fileInputRef.current.click()} 
+                onDragOver={onDragOver}
+                onDragLeave={onDragLeave}
+                onDrop={onDrop}
+                className={`w-full p-4 border-2 border-dashed rounded-[1.5rem] flex flex-col items-center justify-center cursor-pointer transition-all duration-300 
+                  ${isDraggingFile ? 'border-blue-500 bg-blue-50 scale-[1.02]' : ''}
+                  ${!isDraggingFile && scanStatus === 'success' ? 'border-emerald-400 bg-emerald-50' : ''} 
+                  ${!isDraggingFile && scanStatus === 'error' ? 'border-red-400 bg-red-50' : ''} 
+                  ${!isDraggingFile && (scanStatus === 'idle' || scanStatus === 'scanning') ? 'border-slate-200 bg-slate-50 hover:border-blue-300' : ''}
+                `}
+              >
+                <div className={`w-14 h-14 rounded-2xl shadow-sm border flex items-center justify-center mb-4 transition-transform 
+                  ${isDraggingFile ? 'bg-blue-500 border-blue-600 text-white scale-110' : ''}
+                  ${!isDraggingFile && scanStatus === 'success' ? 'bg-emerald-500 border-emerald-600 text-white scale-110' : ''} 
+                  ${!isDraggingFile && scanStatus === 'error' ? 'bg-red-500 border-red-600 text-white scale-110' : ''} 
+                  ${!isDraggingFile && scanStatus === 'scanning' ? 'bg-blue-500 border-blue-600 text-white' : ''} 
+                  ${!isDraggingFile && scanStatus === 'idle' ? 'bg-white border-slate-100 text-blue-600' : ''}
+                `}>
+                  {scanStatus === 'idle' && !isDraggingFile && <UploadCloud size={28} />}
+                  {isDraggingFile && <Download size={28} />}
                   {scanStatus === 'scanning' && <Loader2 size={28} className="animate-spin" />}
-                  {scanStatus === 'success' && <Check size={28} />}
-                  {scanStatus === 'error' && <AlertCircle size={28} />}
+                  {scanStatus === 'success' && !isDraggingFile && <Check size={28} />}
+                  {scanStatus === 'error' && !isDraggingFile && <AlertCircle size={28} />}
                 </div>
-                <p className={`font-bold text-sm text-center ${scanStatus === 'success' ? 'text-emerald-700' : ''} ${scanStatus === 'error' ? 'text-red-700' : ''} ${scanStatus === 'idle' || scanStatus === 'scanning' ? 'text-slate-700' : ''}`}>
-                  {scanStatus === 'idle' && "Cliquez pour importer le .docx"}
+                <p className={`font-bold text-sm text-center 
+                  ${isDraggingFile ? 'text-blue-700' : ''}
+                  ${!isDraggingFile && scanStatus === 'success' ? 'text-emerald-700' : ''} 
+                  ${!isDraggingFile && scanStatus === 'error' ? 'text-red-700' : ''} 
+                  ${!isDraggingFile && (scanStatus === 'idle' || scanStatus === 'scanning') ? 'text-slate-700' : ''}
+                `}>
+                  {scanStatus === 'idle' && !isDraggingFile && "Cliquez ou glissez-déposez le .docx ici"}
+                  {isDraggingFile && "Relâchez le fichier pour l'importer"}
                   {scanStatus === 'scanning' && "Analyse en cours..."}
-                  {scanStatus === 'success' && `Validé : ${file?.name}`}
-                  {scanStatus === 'error' && "Des erreurs ont été détectées."}
+                  {scanStatus === 'success' && !isDraggingFile && `Validé : ${file?.name}`}
+                  {scanStatus === 'error' && !isDraggingFile && "Des erreurs ont été détectées."}
                 </p>
-                {scanStatus === 'error' && (<button onClick={(e) => { e.stopPropagation(); setIsModalOpen(true); }} className="mt-3 text-xs font-bold text-red-600 underline">Voir le rapport</button>)}
+                {scanStatus === 'error' && !isDraggingFile && (<button onClick={(e) => { e.stopPropagation(); setIsModalOpen(true); }} className="mt-3 text-xs font-bold text-red-600 underline">Voir le rapport</button>)}
               </div>
             </div>
 
-            <button onClick={processFile} disabled={loading || !file || scanStatus !== 'success'} className={`w-full py-4 text-white font-black rounded-xl shadow-xl transition-all flex items-center justify-center gap-3 text-sm uppercase tracking-widest ${loading || !file || scanStatus !== 'success' ? 'bg-slate-300 cursor-not-allowed shadow-none' : 'bg-slate-800 hover:bg-slate-900 shadow-slate-200'}`}>
+            {htmlValidationError && (
+              <div className="p-3 bg-orange-50 text-orange-700 rounded-xl border border-orange-200 text-sm font-bold flex gap-3 animate-fade-in">
+                <AlertCircle size={18} className="shrink-0" />
+                <span>{htmlValidationError} Corrigez le code HTML pour débloquer la génération.</span>
+              </div>
+            )}
+
+            <button 
+              onClick={processFile} 
+              disabled={loading || !file || scanStatus !== 'success' || htmlValidationError !== null} 
+              className={`w-full py-4 text-white font-black rounded-xl shadow-xl transition-all flex items-center justify-center gap-3 text-sm uppercase tracking-widest 
+                ${loading || !file || scanStatus !== 'success' || htmlValidationError !== null 
+                  ? 'bg-slate-300 cursor-not-allowed shadow-none' 
+                  : 'bg-slate-800 hover:bg-slate-900 shadow-slate-200'
+                }`}
+            >
               {loading ? "Traitement en cours..." : "Générer l'export Moodle"}
             </button>
+            
             {error && <div className="p-4 bg-red-50 text-red-600 rounded-xl border border-red-100 text-sm font-bold flex gap-3"><AlertCircle size={18} className="shrink-0" /><span>{error}</span></div>}
-          </div>
+            </div>
         </div>
 
         {/* PARTIE DROITE */}
@@ -929,25 +1322,51 @@ export default function MoodleQuizApp() {
             </div>
 
           ) : resultXml ? (
-            <div className="h-full flex flex-col space-y-4 animate-fade-in">
-              <div className="flex justify-between items-center pb-4 border-b border-slate-200 shrink-0">
-                <span className="px-3 py-1 rounded-md text-[10px] font-black tracking-widest uppercase bg-emerald-100 text-emerald-700 border border-emerald-200 flex items-center gap-2"><Check size={14} /> Conversion Réussie</span>
+          <div className="h-full flex flex-col animate-fade-in">
+              {/* HEADER RÉSULTAT */}
+              <div className="flex justify-between items-center pb-4 border-b border-slate-200 shrink-0 mb-4">
+                <div className="flex items-center gap-4">
+                  <span className="px-3 py-1 rounded-md text-[10px] font-black tracking-widest uppercase bg-emerald-100 text-emerald-700 border border-emerald-200 flex items-center gap-2">
+                    <Check size={14} /> Conversion Réussie
+                  </span>
+                </div>
+                
                 <div className="flex gap-2">
                   <button onClick={() => copyToClipboard(resultXml)} className="px-4 py-2 bg-white border border-slate-200 rounded-lg text-xs font-bold text-slate-600 hover:bg-slate-50 flex items-center gap-2 transition-colors shadow-sm"><Copy size={14} /> Copier</button>
                   <button onClick={handleDownload} className="px-4 py-2 bg-blue-600 rounded-lg text-xs font-bold text-white hover:bg-blue-700 flex items-center gap-2 transition-colors shadow-md shadow-blue-200"><Download size={14} /> Télécharger .xml</button>
                 </div>
               </div>
-              {auditMessages.length > 0 && (
-                <div className="p-3 bg-blue-50/50 border border-blue-100 rounded-xl text-xs font-medium text-blue-800 space-y-1 shrink-0">
-                  {auditMessages.map((msg, i) => <p key={i}>• {msg}</p>)}
+
+              {/* ONGLET DE NAVIGATION */}
+              <div className="flex gap-4 border-b border-slate-200 pb-4 mb-4 shrink-0">
+                <button
+                  onClick={() => setViewMode('preview')}
+                  className={`px-4 py-2 font-bold text-sm rounded-lg transition-colors flex items-center gap-2 ${viewMode === 'preview' ? 'bg-slate-800 text-white shadow-md' : 'text-slate-500 hover:bg-slate-100'}`}
+                >
+                  <Eye size={16} /> Aperçu Visuel
+                </button>
+                <button
+                  onClick={() => setViewMode('xml')}
+                  className={`px-4 py-2 font-bold text-sm rounded-lg transition-colors flex items-center gap-2 ${viewMode === 'xml' ? 'bg-slate-800 text-white shadow-md' : 'text-slate-500 hover:bg-slate-100'}`}
+                >
+                  <Code size={16} /> Code XML
+                </button>
+              </div>
+
+              {/* VUES DYNAMIQUES */}
+              {viewMode === 'preview' ? (
+                <div className="flex-1 overflow-y-auto space-y-4 pr-2 pb-6 custom-scrollbar">
+                   {parsedItems.map(item => <PreviewItem key={item.id} item={item} />)}
+                </div>
+              ) : (
+                <div className="flex-1 bg-slate-800 rounded-xl p-4 overflow-hidden relative group shadow-inner flex flex-col">
+                   <div className="absolute top-0 left-0 w-full px-4 py-2 bg-slate-900/80 border-b border-slate-700 text-[10px] font-mono text-slate-400 flex justify-between items-center shrink-0">
+                      <span>Moodle XML (Aperçu)</span><span>GREP appliqué</span>
+                   </div>
+                   <textarea readOnly value={resultXml} className="w-full h-full bg-transparent text-slate-300 font-mono text-xs pt-8 outline-none resize-none custom-scrollbar"/>
                 </div>
               )}
-              <div className="flex-1 bg-slate-800 rounded-xl p-4 overflow-hidden relative group shadow-inner flex flex-col">
-                 <div className="absolute top-0 left-0 w-full px-4 py-2 bg-slate-900/80 border-b border-slate-700 text-[10px] font-mono text-slate-400 flex justify-between items-center shrink-0">
-                    <span>Moodle XML (Aperçu)</span><span>GREP appliqué</span>
-                 </div>
-                 <textarea readOnly value={resultXml} className="w-full h-full bg-transparent text-slate-300 font-mono text-xs pt-8 outline-none resize-none custom-scrollbar"/>
-              </div>
+
             </div>
           ) : (
             <div className="h-full flex flex-col items-center justify-center text-center space-y-4 opacity-40">

@@ -16,15 +16,15 @@ export const rules = [
         { regex: /(\d)((?:<\/[a-zA-Z]+>)?)(?:\s|\u00A0)*((?:<[a-zA-Z]+>)?)(?:°|º)(?:\s|\u00A0)*[cC]\b/g, replace: "$1$2\u00A0$3°C" },
 
         //opérateurs mathématiques
-        { regex: /(\d)\s*([*])\s*(\d)/g, replace: "$1\u00A0×\u00A0$3" }, // 15*15 + 15×15
-        { regex: /(\d)\s*([\/])\s*(\d)/g, replace: "$1\u00A0÷\u00A0$3" }, // 15/15 + 15÷15
-        { regex: /(\d)([+–\-\/=×])(\d)/g, replace: "$1\u00A0$2\u00A0$3" }, //10+10 → 10 + 5
-        { regex: /([^\d\s\u00A0])([+*÷=])([^\d\s\u00A0])/g, replace: "$1\u00A0$2\u00A0$3" }, // Mot+Mot → Mot + Mot
-        { regex: /(\d)\s*([+\-\/=×])\s*(\d)/g, replace: "$1\u00A0$2\u00A0$3" }, // 10 + 5 → 10 + 5
+        { regex: /(?<![\/\-\d])(\d+)\s*([*×x])\s*(\d+)(?![\/\-\d])/g, replace: "$1\u00A0×\u00A0$3" }, // 10*5 → 10 × 5
+        { regex: /(?<![\/\-\d])(\d+)\s*([\/÷])\s*(\d+)(?![\/\-\d])/g, replace: "$1\u00A0÷\u00A0$3" }, // 10 / 5 → 10 ÷ 5
+        { regex: /(?<![\/\-\d])(\d)\s*([+–\-=])\s*(\d)(?![\/\-\d])/g, replace: "$1\u00A0$2\u00A0$3" }, // 10+5 → 10 + 5
+        { regex: /(?<![+*÷=])([a-zA-ZÀ-ÿ])([+*÷=])([a-zA-ZÀ-ÿ])(?![+*÷=])/g, replace: "$1\u00A0$2\u00A0$3" }, // Mot + autre → Mot + autre    
+        { regex: /(\d)\s*([+\-=×])\s*(\d)/g, replace: "$1\u00A0$2\u00A0$3" }, // 10 + 5 → 10 + 5
         { regex: /(\d)\s*([+\-÷=×])\s*([^\d\s\u00A0])/g, replace: "$1\u00A0$2\u00A0$3" }, // 10 + centimètres → 10 + centimètres
         { regex: /([^\d\s\u00A0])(\s*)([+÷=])(\s*)([^\d\s\u00A0])/g, replace: "$1\u00A0$3\u00A0$5" }, // Mot + autre → Mot + autre
         { regex: /([+÷=])\s*([^\d\s\u00A0])/g, replace: "$1\u00A0$2" },
-        { regex: /([^\d\s\u00A0])(\s*)([\/])(\s*)([^\d\s\u00A0])/g, replace: "$1$3$5" },
+        { regex: /([a-zA-ZÀ-ÿ])\s*([\/])\s*([a-zA-ZÀ-ÿ])/g, replace: "$1$2$3" }, // mot / mot → mot/mot (pas d'espace autour du slash entre lettres)
 
         // 2. Majuscule après ponctuation finale
         { regex: /([\.?!]\s+)([a-z])/g, replace: (match, p1, p2) => p1 + p2.toUpperCase() },
@@ -43,8 +43,8 @@ export const rules = [
         { regex: /(\d)\s*(er)\b/g, replace: "$1<sup>$2</sup>\u00A0" }, // Utilisation de \b (word boundary) au lieu de $
         { regex: /(\d)\s*(ème|eme|e)\b/g, replace: "$1<sup>e</sup>\u00A0" },
         { regex: /(\d)[ \u00A0]+(\d)/g, replace: "$1\u00A0$2" }, // Remplace les espaces entre chiffres sur la même ligne
-        { regex: /(\d)(?=(\d{3})+(?!\d))/g, replace: "$1\u00A0" }, // Ajoute des espaces insécables tous les 3 chiffres
-  
+        { regex: /(?<!\b(?:en|depuis|vers|pour|année|janvier|février|mars|avril|mai|juin|juillet|août|septembre|octobre|novembre|décembre)\s)(?<![\/\-\.])\b(\d{4,})\b(?![\/\-\.])/gi, 
+            replace: (match) => match.replace(/\B(?=(\d{3})+(?!\d))/g, '\u00A0') }, // Ajoute des espaces insécables entre les milliers pour les nombres de 4 chiffres ou plus, sauf si précédé par certains mots ou suivi par certains caractères
 
         // 6. Unités de mesure (Harmonisation stricte)
         { regex: /(\d)(?:\s|\u00A0)*j\b/gi, replace: "$1\u00A0J" },
@@ -75,3 +75,28 @@ export const rules = [
         { regex: /(\d)(?:\s|\u00A0)*cm\b/gi, replace: "$1\u00A0cm" },
         { regex: /(\d)(?:\s|\u00A0)*mm\b/gi, replace: "$1\u00A0mm" }
     ];
+
+    export const applyGrepRules = (text) => {
+        let str = text;
+
+        // 1. Extraction et protection des balises HTML sensibles
+        const protectedBlocks = [];
+        str = str.replace(/<(sup|sub)>([\s\S]*?)<\/\1>/gi, (match) => {
+            protectedBlocks.push(match);
+            return `__PROTECTED_BLOCK_${protectedBlocks.length - 1}__`;
+        });
+
+        // 2. Application de vos règles typographiques
+        str = str.replace(/&nbsp;/g, '\u00A0');
+        if (typeof rules !== 'undefined' && Array.isArray(rules)) {
+            rules.forEach(rule => { str = str.replace(rule.regex, rule.replace); });
+        }
+        str = str.replace(/\u00A0/g, '&nbsp;');
+
+        // 3. Réinjection (via une fonction de rappel pour éviter les bugs de caractères spéciaux)
+        protectedBlocks.forEach((block, i) => {
+            str = str.replace(`__PROTECTED_BLOCK_${i}__`, () => block);
+        });
+
+        return str;
+    };

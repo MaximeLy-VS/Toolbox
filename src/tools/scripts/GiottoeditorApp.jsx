@@ -12,8 +12,6 @@ import {
 } from 'lucide-react';
 import { rules } from '../typo-rules.js';
 
-
-
 export default function GiottoeditorApp() {
   const [activeAccordion, setActiveAccordion] = useState('installation');
   const defaultDemoText = '<p><strong>Bienvenue dans le simulateur !</strong></p><p>Ce texte contient plein d\'erreurs: "guillemets anglais", espaces manquantes avant le point d\'interrogation?</p>    <p>Les unités ne sont pas chartées : le processeur tourne à 50 hz, le fichier pèse 10 ko, et l\'énergie est de 100 kwh.<p><br></p>Classement : Il est arrivé 1er devant le 2ème.</p><p><br></p><p>Vous pouvez maintenant tester le bouton "Nettoyer & Copier" pour voir le résultat.</p>';

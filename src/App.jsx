@@ -202,7 +202,7 @@ const Home = () => {
       </header>
 
     <div className="flex flex-col text-left">
-      <h2 className="text-3xl font-bold text-slate-600 my-4 tracking-tight text-left">Outils d'analyse pour l'accessibilité numérique</h2>
+      {/*<h2 className="text-3xl font-bold text-slate-600 my-4 tracking-tight text-left">Outils d'analyse pour l'accessibilité numérique</h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 w-full max-w-7xl">
       {[
         { to: "/tools/AN_Image", title: "Assistant accessibilité des\u00A0images", desc: "Analyse et génération de titre, d'alternative textuelle et\u00A0description\u00A0détaillée.", icon: Brain, color: "bg-blue-600" },
@@ -221,11 +221,11 @@ const Home = () => {
         </Link>
       ))}
         </div>
-      
+      */}
     <h2 className="text-3xl font-bold text-slate-600 my-4 tracking-tight text-left">Outils de préparation moodle et OA</h2>
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8 w-full max-w-7xl">
             {[
-        { to: "/tools/Quiz_app", title: "Générateur de XML quiz moodle", desc: "Convertisseur de gabarit en .xml à importer sur moodle", icon: FileCode2, color: "bg-pink-600" },
+        { to: "/tools/Quiz_app", title: "Générateur de XML quiz moodle", desc: "Convertisseur de gabarit en .xml à importer sur moodle. Calcul des podérations et malus personnalisable calculé dynamiquement.", icon: FileCode2, color: "bg-pink-600" },
         { to: "/tools/AuditScript", title: "Outil d'audit moodle intégré", desc: "Panneau d'outils d'audits  pour moodle : audit typographique, vérification des liens, fichiers et SCORM", icon: ShieldCheck, color: "bg-pink-300" },
         { to: "/tools/AttoCustomApp", title: "Éditeur moodle personnalisé (ATTO)", desc: "Nouveaux outils intégrés : nettoyage typographique auto, modèles HTML et redimensionnement de l'éditeur.", icon: IconPen, color: "bg-pink-200" },
         { to: "/tools/GiottoeditorApp", title: "Éditeur Giotto personnalisé", desc: "Éditeur de texte modal avec nettoyage typographique auto et application de règles typographiques.", icon: ScanText, color: "bg-red-400" },
