@@ -388,9 +388,8 @@ export default function GiottoeditorApp() {
                     Tampermonkey qui vient de s'ouvrir.
                   </li>
                   <li>
-                    Rendez-vous sur une page d'édition Moodle (Ressource,
-                    Section ou Question) : un nouveau groupe de boutons
-                    apparaîtra dans la barre de l'éditeur.
+                    Rendez-vous sur une page d'édition Giotto : un nouveau bouton
+                    apparaîtra en bas à droite de votre écran Giotto.
                   </li>
                 </ol>
               </AccordionItem>

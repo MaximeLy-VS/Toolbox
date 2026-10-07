@@ -16,6 +16,7 @@ export const rules = [
         { regex: /(\d)((?:<\/[a-zA-Z]+>)?)(?:\s|\u00A0)*((?:<[a-zA-Z]+>)?)(?:°|º)(?:\s|\u00A0)*[cC]\b/g, replace: "$1$2\u00A0$3°C" },
 
         //opérateurs mathématiques
+
         { regex: /(?<![\/\-\d])(\d+)\s*([*×x])\s*(\d+)(?![\/\-\d])/g, replace: "$1\u00A0×\u00A0$3" }, // 10*5 → 10 × 5
         { regex: /(?<![\/\-\d])(\d+)\s*([\/÷])\s*(\d+)(?![\/\-\d])/g, replace: "$1\u00A0÷\u00A0$3" }, // 10 / 5 → 10 ÷ 5
         { regex: /(?<![\/\-\d])(\d)\s*([+–\-=])\s*(\d)(?![\/\-\d])/g, replace: "$1\u00A0$2\u00A0$3" }, // 10+5 → 10 + 5
@@ -31,7 +32,7 @@ export const rules = [
 
         // 3. Tirets incises et demi-cadratins
         { regex: /([^\d])\s+(\-)\s+([^\d])/g, replace: "$1 – $3" },
-        { regex: /([\d])([^\u00A0])\s*([-])\s*([^\u00A0])([\d])/g, replace: "$1\u00A0-\u00A0$5" },
+        { regex: /(\d+)\s*-\s*(\d+)/g, replace: "$1\u00A0-\u00A0$2" },
 
         // 4. Points de suspension et guillemets anglais
         { regex: /\.\.\./g, replace: ", etc." },
@@ -43,7 +44,7 @@ export const rules = [
         { regex: /(\d)\s*(er)\b/g, replace: "$1<sup>$2</sup>\u00A0" }, // Utilisation de \b (word boundary) au lieu de $
         { regex: /(\d)\s*(ème|eme|e)\b/g, replace: "$1<sup>e</sup>\u00A0" },
         { regex: /(\d)[ \u00A0]+(\d)/g, replace: "$1\u00A0$2" }, // Remplace les espaces entre chiffres sur la même ligne
-        { regex: /(?<!\b(?:en|depuis|vers|pour|année|janvier|février|mars|avril|mai|juin|juillet|août|septembre|octobre|novembre|décembre)\s)(?<![\/\-\.])\b(\d{4,})\b(?![\/\-\.])/gi, 
+        { regex: /(?<!\b(?:sur|à|en|depuis|vers|pour|année|janvier|février|mars|avril|mai|juin|juillet|août|septembre|octobre|novembre|décembre)\s)(?<![\/\-\.])\b(\d{4,})\b(?![\/\-\.])/gi, 
             replace: (match) => match.replace(/\B(?=(\d{3})+(?!\d))/g, '\u00A0') }, // Ajoute des espaces insécables entre les milliers pour les nombres de 4 chiffres ou plus, sauf si précédé par certains mots ou suivi par certains caractères
 
         // 6. Unités de mesure (Harmonisation stricte)

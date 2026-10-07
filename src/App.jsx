@@ -227,7 +227,7 @@ const Home = () => {
             {[
         { to: "/tools/Quiz_app", title: "Générateur de XML quiz moodle", desc: "Convertisseur de gabarit en .xml à importer sur moodle. Calcul des podérations et malus personnalisable calculé dynamiquement.", icon: FileCode2, color: "bg-pink-600" },
         { to: "/tools/AuditScript", title: "Outil d'audit moodle intégré", desc: "Panneau d'outils d'audits  pour moodle : audit typographique, vérification des liens, fichiers et SCORM", icon: ShieldCheck, color: "bg-pink-300" },
-        { to: "/tools/AttoCustomApp", title: "Éditeur moodle personnalisé (ATTO)", desc: "Nouveaux outils intégrés : nettoyage typographique auto, modèles HTML et redimensionnement de l'éditeur.", icon: IconPen, color: "bg-pink-200" },
+        { to: "/tools/AttoCustomApp", title: "Éditeurs moodle personnalisés ATTO & TinyMCE", desc: "Intégration d'outils perso : nettoyage typographique auto, modèles HTML et redimensionnement de l'éditeur.", icon: IconPen, color: "bg-pink-200" },
         { to: "/tools/GiottoeditorApp", title: "Éditeur Giotto personnalisé", desc: "Éditeur de texte modal avec nettoyage typographique auto et application de règles typographiques.", icon: ScanText, color: "bg-red-400" },
 
       ].map((tool, i) => (

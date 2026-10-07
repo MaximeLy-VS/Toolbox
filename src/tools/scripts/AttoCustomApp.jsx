@@ -188,7 +188,7 @@ const toggleSource = () => {
               </div>
               <div className='flex flex-col'>
                 <h1 className='text-L font-black tracking-tight text-slate-800'>
-                  Éditeur Moodle Atto+
+                  Éditeurs Moodle Atto ou TinyMCE personnalisés
                 </h1>
                 <p className='text-pink-600 text-[10px] font-bold tracking-[0.2em]'>
                   SCRIPT TAMPERMONKEY
@@ -196,14 +196,14 @@ const toggleSource = () => {
               </div>
             </div>
             <p className='text-slate-500 text-xs mt-4 leading-relaxed'>
-              Boostez l'éditeur HTML natif de Moodle (Atto). Ce script injecte
+              Boostez l'éditeur HTML natif de Moodle (Atto ou TinyMCE). Ce script injecte
               de nouveaux outils dans votre barre d'édition : nettoyage
               typographique, modèles et confort de lecture.
             </p>
           </header>
 
           {/* --- ILLUSTRATION DES FONCTIONNALITÉS (Étiquettes animées) --- */}
-          <div className='flex-1 flex flex-col space-y-4 my-6'>
+          <div className='flex-1 flex flex-col space-y-4 my-1'>
             <div className='p-6 bg-slate-50 border-2 border-dashed border-slate-200 rounded-[2rem] flex flex-col items-center'>
               <p className='text-slate-400 text-[10px] font-black uppercase tracking-[0.15em] mb-4'>
                 Outils injectés dans la barre
@@ -230,8 +230,8 @@ const toggleSource = () => {
           </div>
 
           {/* --- SIMULATEUR INTERACTIF --- */}
-          <div className='flex-1 flex flex-col my-2'>
-            <div className='flex items-center justify-between mb-2 px-1'>
+          <div className='flex-1 flex flex-col my-4'>
+            <div className='flex items-center justify-between mb-3 px-1'>
               <span className='text-slate-400 text-[10px] font-black uppercase tracking-[0.1em]'>
                 Testez les nouveaux outils ajoutés
               </span>
@@ -331,16 +331,26 @@ const toggleSource = () => {
               )}
             </div>
           </div>
-
-          <button
-            onClick={() =>
-              window.open('https://gist.github.com/MaximeLy-VS/8a838be0ca64137e4396664ecb2d511b/raw/ResizeATTO.user.js', '_blank')
-            }
-            className='mt-6 w-full py-4 bg-indigo-900 hover:bg-indigo-800 text-white font-black rounded-xl shadow-xl transition-all flex items-center justify-center gap-3 text-xs uppercase tracking-widest shrink-0 animate-fade-slide-up'
-          >
-            <IconDownload size={18} />
-            Installer le script
-          </button>
+          <div class="flex flex-row width-full justify-center items-center gap-3">
+            <button
+              onClick={() =>
+                window.open('https://gist.github.com/MaximeLy-VS/8a838be0ca64137e4396664ecb2d511b/raw/ResizeATTO.user.js', '_blank')
+              }
+              className='mt-3 p-4 bg-indigo-900 hover:bg-indigo-800 text-white font-black rounded-xl shadow-xl transition-all flex gap-3 text-xs uppercase tracking-widest shrink-0 animate-fade-slide-up'
+            >
+              <IconDownload size={18} />
+              Installer le script <br/> pour ATTO
+            </button>
+            <button
+              onClick={() =>
+                window.open('#', '_blank')
+              }
+              className='mt-2 p-4 bg-indigo-900 hover:bg-indigo-800 text-white font-black rounded-xl shadow-xl transition-all flex gap-3 text-xs uppercase tracking-widest shrink-0 animate-fade-slide-up'
+            >
+              <IconDownload size={18} />
+              Installer le script <br/> pour TinyMCE
+            </button>
+          </div>
         </div>
 
         {/* --- PARTIE DROITE : FONCTIONNEMENT & DETAILS (ACCORDÉONS) --- */}
