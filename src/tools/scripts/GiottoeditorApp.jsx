@@ -39,7 +39,6 @@ export default function GiottoeditorApp() {
             let text = node.nodeValue;
             if (!text.trim() && !text.includes('\u00A0') && !text.includes(' ')) return;
 
-            text = text.replace(/\u00A0/g, ' ');
             rules.forEach(rule => {
             const pattern = rule.regex || rule.find;
             if (pattern) {
