@@ -342,15 +342,25 @@ const toggleSource = () => {
               Installer le script <br/> pour ATTO
             </button>
             <button
-              onClick={() =>
-                window.open('#', '_blank')
-              }
-              className='mt-2 p-4 bg-indigo-900 hover:bg-indigo-800 text-white font-black rounded-xl shadow-xl transition-all flex gap-3 text-xs uppercase tracking-widest shrink-0 animate-fade-slide-up'
+              //onClick={() => window.open('#', '_blank')}
+              //className='mt-2 p-4 bg-indigo-900 hover:bg-indigo-800 text-white font-black rounded-xl shadow-xl transition-all flex flex-col items-center text-xs uppercase tracking-widest shrink-0 animate-fade-slide-up'
+              className='mt-2 p-4 bg-indigo-900 text-white font-black rounded-xl shadow-xl transition-all flex flex-col items-center text-xs uppercase tracking-widest shrink-0 animate-fade-slide-up'
             >
-              <IconDownload size={18} />
-              Installer le script <br/> pour TinyMCE
+              {/* Conteneur horizontal pour l'icône et le texte */}
+              <div className='flex items-center gap-3'>
+                <IconDownload size={18} />
+                <span className='text-left'>
+                  Installer le script <br/> pour TinyMCE
+                </span>
+              </div>
+
+              {/* Le badge "Bientôt disponible" centré en dessous */}
+              <span className='text-slate-400 mt-2 text-[10px] font-black uppercase tracking-[0.1em] text-center'>
+                Bientôt disponible
+              </span>
             </button>
           </div>
+
         </div>
 
         {/* --- PARTIE DROITE : FONCTIONNEMENT & DETAILS (ACCORDÉONS) --- */}
