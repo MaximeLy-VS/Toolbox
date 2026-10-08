@@ -221,23 +221,18 @@ export default function AuditEditorialApp() {
                   </li>
                   <li>Une fois installé l'extension, il faudra accéder à la <strong>page de gestion des extensions</strong> de votre navigateur pour <strong>«&nbsp;Activer les scripts utilisateurs&nbsp;»</strong>&nbsp;:
                     <div className='mt-2 mb-2'>
-                      <div className='flex flex-wrap gap-2'>
+                      <div className='flex flex-wrap gap-2'> 
                         {/* Chrome */}
                         <div className='inline-flex items-center rounded-lg bg-slate-100 border border-transparent hover:border-indigo-100 transition-colors overflow-hidden'>
-                          <a
-                            href='chrome://extensions/'
-                            target='_blank'
-                            rel='noreferrer'
-                            className='px-3 py-1.5 hover:bg-indigo-50 hover:text-indigo-600 text-slate-600 text-xs font-bold'
+                          <button
+                            onClick={() => {
+                              navigator.clipboard.writeText('chrome://extensions/');
+                              alert("Lien Chrome copié ! Ouvrez un nouvel onglet et collez-le dans la barre d'adresse.");
+                            }}
+                            className='flex inline-flex gap-2 px-3 py-1.5 hover:bg-indigo-50 hover:text-indigo-600 text-slate-600 text-xs font-bold cursor-pointer'
                           >
                             Chrome
-                          </a>
-                          <button
-                            onClick={() => navigator.clipboard.writeText('chrome://extensions/')}
-                            title='Copier le lien'
-                            className='px-2 py-1.5 border-l border-slate-200 hover:bg-indigo-50 hover:text-indigo-600 text-slate-600 flex items-center justify-center transition-colors'
-                          >
-                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                               <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
                               <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
                             </svg>
@@ -246,20 +241,15 @@ export default function AuditEditorialApp() {
 
                         {/* Edge */}
                         <div className='inline-flex items-center rounded-lg bg-slate-100 border border-transparent hover:border-indigo-100 transition-colors overflow-hidden'>
-                          <a
-                            href='edge://extensions/'
-                            target='_blank'
-                            rel='noreferrer'
-                            className='px-3 py-1.5 hover:bg-indigo-50 hover:text-indigo-600 text-slate-600 text-xs font-bold'
+                          <button
+                            onClick={() => {
+                              navigator.clipboard.writeText('edge://extensions/');
+                              alert("Lien Edge copié ! Ouvrez un nouvel onglet et collez-le dans la barre d'adresse.");
+                            }}
+                            className='flex inline-flex gap-2 px-3 py-1.5 hover:bg-indigo-50 hover:text-indigo-600 text-slate-600 text-xs font-bold cursor-pointer'
                           >
                             Edge
-                          </a>
-                          <button
-                            onClick={() => navigator.clipboard.writeText('edge://extensions/')}
-                            title='Copier le lien'
-                            className='px-2 py-1.5 border-l border-slate-200 hover:bg-indigo-50 hover:text-indigo-600 text-slate-600 flex items-center justify-center transition-colors'
-                          >
-                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                               <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
                               <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
                             </svg>
@@ -268,20 +258,15 @@ export default function AuditEditorialApp() {
 
                         {/* Firefox */}
                         <div className='inline-flex items-center rounded-lg bg-slate-100 border border-transparent hover:border-indigo-100 transition-colors overflow-hidden'>
-                          <a
-                            href='about:addons'
-                            target='_blank'
-                            rel='noreferrer'
-                            className='px-3 py-1.5 hover:bg-indigo-50 hover:text-indigo-600 text-slate-600 text-xs font-bold'
+                          <button
+                            onClick={() => {
+                              navigator.clipboard.writeText('about:addons');
+                              alert("Lien Firefox copié ! Ouvrez un nouvel onglet et collez-le dans la barre d'adresse.");
+                            }}
+                            className='flex inline-flex gap-2 px-3 py-1.5 hover:bg-indigo-50 hover:text-indigo-600 text-slate-600 text-xs font-bold cursor-pointer'
                           >
                             Firefox
-                          </a>
-                          <button
-                            onClick={() => navigator.clipboard.writeText('about:addons')}
-                            title='Copier le lien'
-                            className='px-2 py-1.5 border-l border-slate-200 hover:bg-indigo-50 hover:text-indigo-600 text-slate-600 flex items-center justify-center transition-colors'
-                          >
-                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                               <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
                               <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
                             </svg>
