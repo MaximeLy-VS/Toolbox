@@ -531,7 +531,7 @@ export default function MoodleQuizApp() {
               inList = false;
             }
             if (htmlContent !== "") {
-              htmlContent += "<\/p><p>"; // Ajout d'un paragraphe séparé pour les paragraphes non-listés
+              htmlContent += "<\/div><div>"; // Ajout d'un paragraphe séparé pour les paragraphes non-listés
             }
             htmlContent += cleanedText;
           }

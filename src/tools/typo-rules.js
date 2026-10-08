@@ -75,7 +75,11 @@ export const rules = [
         { regex: /(\d)(?:\s|\u00A0)*m\b/g, replace: "$1\u00A0m" }, // Sensible à la casse (maintien du /g)
         { regex: /(\d)(?:\s|\u00A0)*dm\b/gi, replace: "$1\u00A0dm" },
         { regex: /(\d)(?:\s|\u00A0)*cm\b/gi, replace: "$1\u00A0cm" },
-        { regex: /(\d)(?:\s|\u00A0)*mm\b/gi, replace: "$1\u00A0mm" }
+        { regex: /(\d)(?:\s|\u00A0)*mm\b/gi, replace: "$1\u00A0mm" },
+        { regex: /(\d)\s*l\b/gi, replace: "$1\u00A0l" }, // /gi ajouté pour capter "5l" et "5L"
+        { regex: /(\d)\s*ml\b/gi, replace: "$1\u00A0ml" },
+        { regex: /(\d)\s*cl\b/gi, replace: "$1\u00A0cl" },
+        { regex: /(\d)\s*dl\b/gi, replace: "$1\u00A0dl" },
     ];
 
     export const applyGrepRules = (text) => {

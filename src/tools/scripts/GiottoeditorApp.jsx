@@ -312,23 +312,25 @@ export default function GiottoeditorApp() {
                 </p>
                 <ul className='list-disc space-y-2 pl-4 text-slate-500 marker:text-slate-300'>
                   <li>
-                    <strong>Espaces insécables :</strong> ajout automatique
+                    <strong>Espaces insécables&nbsp;:</strong> ajout automatique
                     avant les ponctuations doubles (?:!;»€%) et sécurisation des
                     entités existantes.
                   </li>
                   <li>
-                    <strong>Unités de mesure :</strong> harmonisation de la
+                    <strong>Unités de mesure&nbsp;:</strong> harmonisation de la
                     casse (ex: <i>kwh</i> devient <i>kWh</i>, <i>ug</i> devient{' '}
                     <i>µg</i>, <i>hz</i> devient <i>Hz</i>).
                   </li>
                   <li>
-                    <strong>Exposants :</strong> conversion des abréviations
-                    (1er, 2ème) avec l'injection des balises HTML{' '}
-                    <code>&lt;sup&gt;</code>.
+                    <strong>Exposants&nbsp;:</strong> conversion des exposants
+                    (1er, 2ème) avec la conversion en Unicode pour palier à l'incompatibilité des balises html &lt;sup&gt; et &lt;sub&gt; sur giotto .
                   </li>
                   <li>
-                    <strong>Guillemets :</strong> remplace les guillemets
+                    <strong>Guillemets&nbsp;:</strong> remplace les guillemets
                     anglais (" ") par des guillemets français (« »).
+                  </li>
+                  <li>
+                    <strong>Paragraphe vides&nbsp;:</strong> nettoie les paragraphes vides.
                   </li>
                 </ul>
               </AccordionItem>
