@@ -203,7 +203,7 @@ const toggleSource = () => {
           </header>
 
           {/* --- ILLUSTRATION DES FONCTIONNALITÉS (Étiquettes animées) --- */}
-          <div className='flex-1 flex flex-col space-y-4 my-1'>
+          <div className='flex flex-col space-y-4 my-1'>
             <div className='p-6 bg-slate-50 border-2 border-dashed border-slate-200 rounded-[2rem] flex flex-col items-center'>
               <p className='text-slate-400 text-[10px] font-black uppercase tracking-[0.15em] mb-4'>
                 Outils injectés dans la barre
@@ -230,7 +230,7 @@ const toggleSource = () => {
           </div>
 
           {/* --- SIMULATEUR INTERACTIF --- */}
-          <div className='flex-1 flex flex-col my-4'>
+          <div className='flex flex-col mt-4'>
             <div className='flex items-center justify-between mb-3 px-1'>
               <span className='text-slate-400 text-[10px] font-black uppercase tracking-[0.1em]'>
                 Testez les nouveaux outils ajoutés
@@ -331,38 +331,7 @@ const toggleSource = () => {
               )}
             </div>
           </div>
-          <div class="flex flex-row width-full justify-center items-center gap-3">
-            <button
-              onClick={() =>
-                window.open('https://gist.github.com/MaximeLy-VS/8a838be0ca64137e4396664ecb2d511b/raw/ResizeATTO.user.js', '_blank')
-              }
-              className='mt-3 p-4 bg-indigo-900 hover:bg-indigo-800 text-white font-black rounded-xl shadow-xl transition-all flex gap-3 text-xs uppercase tracking-widest shrink-0 animate-fade-slide-up'
-            >
-              <IconDownload size={18} />
-              Installer le script <br/> pour ATTO
-            </button>
-            <button
-              //onClick={() => window.open('#', '_blank')}
-              //className='mt-2 p-4 bg-indigo-900 hover:bg-indigo-800 text-white font-black rounded-xl shadow-xl transition-all flex flex-col items-center text-xs uppercase tracking-widest shrink-0 animate-fade-slide-up'
-              className='mt-2 p-4 bg-indigo-900 text-white font-black rounded-xl shadow-xl transition-all flex flex-col items-center text-xs uppercase tracking-widest shrink-0 animate-fade-slide-up'
-            >
-              {/* Conteneur horizontal pour l'icône et le texte */}
-              <div className='flex items-center gap-3'>
-                <IconDownload size={18} />
-                <span className='text-left'>
-                  Installer le script <br/> pour TinyMCE
-                </span>
-              </div>
-
-              {/* Le badge "Bientôt disponible" centré en dessous */}
-              <span className='text-slate-400 mt-2 text-[10px] font-black uppercase tracking-[0.1em] text-center'>
-                Bientôt disponible
-              </span>
-            </button>
-          </div>
-
         </div>
-
         {/* --- PARTIE DROITE : FONCTIONNEMENT & DETAILS (ACCORDÉONS) --- */}
         <div className='lg:w-[60%] p-8 bg-[#f8fafc] flex flex-col overflow-y-auto'>
           <div className='space-y-6 animate-fade-slide-up h-full pb-10'>
@@ -496,11 +465,102 @@ const toggleSource = () => {
                   </li>
                   <li>
                     Cliquez sur le bouton "Installer le script" ci-contre.
+                    <div class="flex flex-row width-full justify-center items-center gap-3">
+                    <button
+                      onClick={() =>
+                        window.open('https://gist.github.com/MaximeLy-VS/8a838be0ca64137e4396664ecb2d511b/raw/ResizeATTO.user.js', '_blank')
+                      }
+                      className='mt-1 py-2 px-4 items-center bg-indigo-900 hover:bg-indigo-800 text-white  font-black rounded-xl shadow-xl transition-all flex gap-3 text-xs uppercase tracking-widest shrink-0 animate-fade-slide-up'
+                    >
+                      <IconDownload size={18} />
+                      Installer le script <br/> pour ATTO
+                    </button>
+                    <button
+                      //onClick={() => window.open('#', '_blank')}
+                      className='mt-1 py-2 px-4 items-center bg-indigo-900 hover:bg-indigo-800 text-white  font-black rounded-xl shadow-xl transition-all flex gap-3 text-xs uppercase tracking-widest shrink-0 animate-fade-slide-up'
+                    >
+                        <IconDownload size={18} />
+                          Installer le script <br/> pour TinyMCE (Bientôt dispo)
+                    </button>
+                  </div>
                   </li>
                   <li>
                     Cliquez sur <strong>Installer</strong> dans l'onglet
                     Tampermonkey qui vient de s'ouvrir.
                   </li>
+                  <li>Une fois installé l'extension, il faudra accéder à la <strong>page de gestion des extensions</strong> de votre navigateur pour <strong>«&nbsp;Activer les scripts utilisateurs&nbsp;»</strong>&nbsp;:
+                    <div className='mt-2 mb-2'>
+                      <div className='flex flex-wrap gap-2'>
+                        {/* Chrome */}
+                        <div className='inline-flex items-center rounded-lg bg-slate-100 border border-transparent hover:border-indigo-100 transition-colors overflow-hidden'>
+                          <a
+                            href='chrome://extensions/'
+                            target='_blank'
+                            rel='noreferrer'
+                            className='px-3 py-1.5 hover:bg-indigo-50 hover:text-indigo-600 text-slate-600 text-xs font-bold'
+                          >
+                            Chrome
+                          </a>
+                          <button
+                            onClick={() => navigator.clipboard.writeText('chrome://extensions/')}
+                            title='Copier le lien'
+                            className='px-2 py-1.5 border-l border-slate-200 hover:bg-indigo-50 hover:text-indigo-600 text-slate-600 flex items-center justify-center transition-colors'
+                          >
+                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                              <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                              <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                            </svg>
+                          </button>
+                        </div>
+
+                        {/* Edge */}
+                        <div className='inline-flex items-center rounded-lg bg-slate-100 border border-transparent hover:border-indigo-100 transition-colors overflow-hidden'>
+                          <a
+                            href='edge://extensions/'
+                            target='_blank'
+                            rel='noreferrer'
+                            className='px-3 py-1.5 hover:bg-indigo-50 hover:text-indigo-600 text-slate-600 text-xs font-bold'
+                          >
+                            Edge
+                          </a>
+                          <button
+                            onClick={() => navigator.clipboard.writeText('edge://extensions/')}
+                            title='Copier le lien'
+                            className='px-2 py-1.5 border-l border-slate-200 hover:bg-indigo-50 hover:text-indigo-600 text-slate-600 flex items-center justify-center transition-colors'
+                          >
+                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                              <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                              <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                            </svg>
+                          </button>
+                        </div>
+
+                        {/* Firefox */}
+                        <div className='inline-flex items-center rounded-lg bg-slate-100 border border-transparent hover:border-indigo-100 transition-colors overflow-hidden'>
+                          <a
+                            href='about:addons'
+                            target='_blank'
+                            rel='noreferrer'
+                            className='px-3 py-1.5 hover:bg-indigo-50 hover:text-indigo-600 text-slate-600 text-xs font-bold'
+                          >
+                            Firefox
+                          </a>
+                          <button
+                            onClick={() => navigator.clipboard.writeText('about:addons')}
+                            title='Copier le lien'
+                            className='px-2 py-1.5 border-l border-slate-200 hover:bg-indigo-50 hover:text-indigo-600 text-slate-600 flex items-center justify-center transition-colors'
+                          >
+                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                              <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                              <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                            </svg>
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+
+                  </li>
+                  
                   <li>
                     Rendez-vous sur une page d'édition Moodle (Ressource,
                     Section ou Question) : un nouveau groupe de boutons
