@@ -513,28 +513,40 @@ export default function MoodleQuizApp() {
             }
           }
 
-          let trimmedText = pText.trim();
-          if (!trimmedText && !pText.includes("\n")) continue; 
+let trimmedText = pText.trim();
+if (!trimmedText && !pText.includes("\n")) continue; 
 
-          let cleanedText = applyGrepRules(trimmedText).replace(/\n/g, "<br>");
+let cleanedText = applyGrepRules(trimmedText).replace(/\n/g, "<br>");
 
-          if (isListItem) {
-            if (!inList) {
-              if (htmlContent !== "") htmlContent += "<br>"; 
-              htmlContent += `<ul class="Pucecned18">\n`;
-              inList = true;
-            }
-            htmlContent += `  <li>${cleanedText}</li>\n`;
-          } else {
-            if (inList) {
-              htmlContent += `</ul>\n`;
-              inList = false;
-            }
-            if (htmlContent !== "") {
-              htmlContent += "<\/div><div>"; // Ajout d'un paragraphe séparé pour les paragraphes non-listés
-            }
-            htmlContent += cleanedText;
+        if (isListItem) {
+          if (!inList) {
+            // Fermer proprement le paragraphe avant d'ouvrir la liste
+            if (htmlContent !== "") htmlContent += "</p>\n"; 
+            
+            htmlContent += `<ul class="Pucecned18">\n`;
+            inList = true;
           }
+          htmlContent += `  <li>${cleanedText}</li>\n`;
+        } else {
+          let justClosedList = false; // Variable pour tracer la sortie de liste
+
+          if (inList) {
+            htmlContent += `</ul>\n`;
+            inList = false;
+            justClosedList = true; // On mémorise qu'on vient tout juste de fermer une liste
+          }
+          
+          if (htmlContent !== "") {
+            if (justClosedList) {
+              // Après une liste, on se contente d'OUVRIR un nouveau paragraphe
+              htmlContent += "<p>"; 
+            } else {
+              // Comportement normal : on sépare deux paragraphes standards
+              htmlContent += "</p><p>"; 
+            }
+          }
+          htmlContent += cleanedText;
+        }
         }
         if (inList) htmlContent += `</ul>`;
         
