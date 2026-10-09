@@ -11,6 +11,25 @@ import {
 } from 'lucide-react';
 import { rules } from '../typo-rules.js';
 
+// 1. Hook personnalisé pour détecter le navigateur
+const useBrowser = () => {
+  const [browser, setBrowser] = useState('other');
+
+  useEffect(() => {
+    const ua = navigator.userAgent;
+    // L'ordre est important : Edge inclut "Chrome" dans son User-Agent
+    if (ua.includes("Firefox")) {
+      setBrowser("firefox");
+    } else if (ua.includes("Edg")) {
+      setBrowser("edge");
+    } else if (ua.includes("Chrome")) {
+      setBrowser("chrome");
+    }
+  }, []);
+
+  return browser;
+};
+
 // ==========================================
 // REGLES TYPO DU SCRIPT ORIGINAL
 // ==========================================
@@ -41,6 +60,8 @@ function appliquerTypographieSecurisee(html) {
 
 export default function AttoCustomApp() {
   const [activeAccordion, setActiveAccordion] = useState('installation');
+  const currentBrowser = useBrowser();
+
 
   // États de l'éditeur interactif
   const editorRef = useRef(null);
@@ -428,44 +449,40 @@ const toggleSource = () => {
                     votre navigateur (Chrome, Firefox ou Edge).
                     <div className='mt-2 mb-2'>
                       <div className='flex flex-wrap gap-2'>
-                        <a
-                          href='https://www.tampermonkey.net/index.php?browser=chrome'
-                          target='_blank'
-                          rel='noreferrer'
-                          className='px-3 py-1.5 bg-slate-100 hover:bg-indigo-50 hover:text-indigo-600 text-slate-600 text-xs font-bold rounded-lg transition-colors border border-transparent hover:border-indigo-100'
-                        >
-                          Chrome
-                        </a>
-                        <a
-                          href='https://www.tampermonkey.net/index.php?browser=edge'
-                          target='_blank'
-                          rel='noreferrer'
-                          className='px-3 py-1.5 bg-slate-100 hover:bg-indigo-50 hover:text-indigo-600 text-slate-600 text-xs font-bold rounded-lg transition-colors border border-transparent hover:border-indigo-100'
-                        >
-                          Edge
-                        </a>
-                        <a
-                          href='https://www.tampermonkey.net/index.php?browser=firefox'
-                          target='_blank'
-                          rel='noreferrer'
-                          className='px-3 py-1.5 bg-slate-100 hover:bg-indigo-50 hover:text-indigo-600 text-slate-600 text-xs font-bold rounded-lg transition-colors border border-transparent hover:border-indigo-100'
-                        >
-                          Firefox
-                        </a>
-                        <a
-                          href='https://www.tampermonkey.net/index.php?browser=safari'
-                          target='_blank'
-                          rel='noreferrer'
-                          className='px-3 py-1.5 bg-slate-100 hover:bg-indigo-50 hover:text-indigo-600 text-slate-600 text-xs font-bold rounded-lg transition-colors border border-transparent hover:border-indigo-100'
-                        >
-                          Safari
-                        </a>
+                        <div className={`inline-flex items-center rounded-lg border transition-colors overflow-hidden ${currentBrowser === 'chrome' ? 'bg-indigo-100 border-indigo-300' : 'bg-slate-100 border-transparent hover:border-indigo-100'}`}>
+                          <button onClick={() => window.open('https://www.tampermonkey.net/index.php?browser=chrome', '_blank')}
+                            className={`px-3 py-1.5 text-xs font-bold cursor-pointer ${currentBrowser === 'chrome' ? 'text-indigo-700' : 'text-slate-600 hover:text-indigo-600 hover:bg-indigo-50'}`}
+                          >
+                            Chrome {currentBrowser === 'chrome' && '(Détecté)'}
+                          </button>
+                        </div>
+                        <div className={`inline-flex items-center rounded-lg border transition-colors overflow-hidden ${currentBrowser === 'edge' ? 'bg-indigo-100 border-indigo-300' : 'bg-slate-100 border-transparent hover:border-indigo-100'}`}>
+                          <button onClick={() => window.open('https://www.tampermonkey.net/index.php?browser=edge', '_blank')}
+                            className={`px-3 py-1.5 text-xs font-bold cursor-pointer ${currentBrowser === 'edge' ? 'text-indigo-700' : 'text-slate-600 hover:text-indigo-600 hover:bg-indigo-50'}`}
+                          >
+                            Edge {currentBrowser === 'edge' && '(Détecté)'}
+                          </button>
+                        </div>
+                        <div className={`inline-flex items-center rounded-lg border transition-colors overflow-hidden ${currentBrowser === 'firefox' ? 'bg-indigo-100 border-indigo-300' : 'bg-slate-100 border-transparent hover:border-indigo-100'}`}>
+                          <button onClick={() => window.open('https://www.tampermonkey.net/index.php?browser=firefox', '_blank')}
+                            className={`px-3 py-1.5 text-xs font-bold cursor-pointer ${currentBrowser === 'firefox' ? 'text-indigo-700' : 'text-slate-600 hover:text-indigo-600 hover:bg-indigo-50'}`}
+                          >
+                            Firefox {currentBrowser === 'firefox' && '(Détecté)'}
+                          </button>
+                        </div>
+                        <div className={`inline-flex items-center rounded-lg border transition-colors overflow-hidden ${currentBrowser === 'safari' ? 'bg-indigo-100 border-indigo-300' : 'bg-slate-100 border-transparent hover:border-indigo-100'}`}>
+                          <button onClick={() => window.open('https://www.tampermonkey.net/index.php?browser=safari', '_blank')}
+                            className={`px-3 py-1.5 text-xs font-bold cursor-pointer ${currentBrowser === 'safari' ? 'text-indigo-700' : 'text-slate-600 hover:text-indigo-600 hover:bg-indigo-50'}`}
+                          >
+                            Safari {currentBrowser === 'safari' && '(Détecté)'}
+                        </button>
+                        </div>
                       </div>
                     </div>
                   </li>
                   <li>
-                    Cliquez sur le bouton "Installer le script" ci-contre.
-                    <div class="flex flex-row width-full justify-center items-center gap-3">
+                    Cliquez sur le bouton «&nbsp;Installer le script&nbsp;» ci-contre.
+                    <div class="flex flex-row width-full items-center gap-3">
                     <button
                       onClick={() =>
                         window.open('https://gist.github.com/MaximeLy-VS/8a838be0ca64137e4396664ecb2d511b/raw/ResizeATTO.user.js', '_blank')
@@ -488,7 +505,8 @@ const toggleSource = () => {
                     Cliquez sur <strong>Installer</strong> dans l'onglet
                     Tampermonkey qui vient de s'ouvrir.
                   </li>
-                  <li>Une fois installé l'extension, il faudra accéder à la <strong>page de gestion des extensions</strong> de votre navigateur pour <strong>«&nbsp;Activer les scripts utilisateurs&nbsp;»</strong>&nbsp;:
+                  {(currentBrowser === 'chrome' || currentBrowser === 'edge') && (
+                  <li><strong>Pour Chrome et Edge :</strong> une fois installé l'extension, il faudra accéder à la <strong>page de gestion des extensions</strong> de votre navigateur pour <strong>«&nbsp;Activer les scripts utilisateurs&nbsp;»</strong>&nbsp;:
                     <div className='mt-2 mb-2'>
                       <div className='flex flex-wrap gap-2'> 
                         {/* Chrome */}
@@ -524,27 +542,9 @@ const toggleSource = () => {
                             </svg>
                           </button>
                         </div>
-
-                        {/* Firefox */}
-                        <div className='inline-flex items-center rounded-lg bg-slate-100 border border-transparent hover:border-indigo-100 transition-colors overflow-hidden'>
-                          <button
-                            onClick={() => {
-                              navigator.clipboard.writeText('about:addons');
-                              alert("Lien Firefox copié ! Ouvrez un nouvel onglet et collez-le dans la barre d'adresse.");
-                            }}
-                            className='flex inline-flex gap-2 px-3 py-1.5 hover:bg-indigo-50 hover:text-indigo-600 text-slate-600 text-xs font-bold cursor-pointer'
-                          >
-                            Firefox
-                              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                              <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
-                              <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
-                            </svg>
-                          </button>
-                        </div>                       
                       </div>
                     </div>
-                  </li>
-                  
+                  </li>)}          
                   <li>
                     Rendez-vous sur une page d'édition Moodle (Ressource,
                     Section ou Question) : un nouveau groupe de boutons
