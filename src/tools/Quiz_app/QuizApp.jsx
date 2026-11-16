@@ -8,6 +8,82 @@ import { arrayMove, SortableContext, sortableKeyboardCoordinates, verticalListSo
 import { CSS } from '@dnd-kit/utilities';
 import { applyGrepRules } from '../typo-rules.js';
 
+// --- ALGORITHME DE DIFF (Caractère par Caractère) ---
+const computeDiff = (oldStr, newStr) => {
+  if (oldStr === newStr) return newStr;
+  if (!oldStr) return newStr;
+  if (!newStr) return "";
+  
+  // Optimisation : on ignore les préfixes et suffixes identiques pour accélérer le calcul
+  let start = 0;
+  while (start < oldStr.length && start < newStr.length && oldStr[start] === newStr[start]) start++;
+  let endOld = oldStr.length - 1;
+  let endNew = newStr.length - 1;
+  while (endOld >= start && endNew >= start && oldStr[endOld] === newStr[endNew]) {
+      endOld--;
+      endNew--;
+  }
+  
+  const prefix = oldStr.substring(0, start);
+  const suffix = oldStr.substring(endOld + 1);
+  const midOld = oldStr.substring(start, endOld + 1);
+  const midNew = newStr.substring(start, endNew + 1);
+  
+  let midHtml = "";
+  if (midOld.length < 1500 && midNew.length < 1500) {
+      // Matrice LCS (Longest Common Subsequence)
+      const matrix = Array(midOld.length + 1).fill(null).map(() => Array(midNew.length + 1).fill(0));
+      for (let i = 1; i <= midOld.length; i++) {
+          for (let j = 1; j <= midNew.length; j++) {
+              if (midOld[i - 1] === midNew[j - 1]) matrix[i][j] = matrix[i - 1][j - 1] + 1;
+              else matrix[i][j] = Math.max(matrix[i - 1][j], matrix[i][j - 1]);
+          }
+      }
+      
+      let i = midOld.length, j = midNew.length;
+      const diff = [];
+      while (i > 0 || j > 0) {
+          if (i > 0 && j > 0 && midOld[i - 1] === midNew[j - 1]) {
+              diff.push({ type: 'equal', value: midOld[i - 1] });
+              i--; j--;
+          } else if (j > 0 && (i === 0 || matrix[i][j - 1] >= matrix[i - 1][j])) {
+              diff.push({ type: 'insert', value: midNew[j - 1] });
+              j--;
+          } else if (i > 0 && (j === 0 || matrix[i][j - 1] < matrix[i - 1][j])) {
+              i--; // On ignore les suppressions pour ne surligner que le résultat final ajouté
+          }
+      }
+      diff.reverse();
+      
+      let currentType = null;
+      let currentBuffer = "";
+      const flush = () => {
+          if (!currentBuffer) return;
+          if (currentType === 'equal') {
+              midHtml += currentBuffer;
+          } else if (currentType === 'insert') {
+              midHtml += `<span class="typo-highlight" title="Modification GREP automatique">${currentBuffer}</span>`;
+          }
+          currentBuffer = "";
+      };
+      
+      diff.forEach(op => {
+          if (op.type !== currentType) { flush(); currentType = op.type; }
+          currentBuffer += op.value;
+      });
+      flush();
+  } else {
+      // Fallback si le paragraphe est anormalement gigantesque
+      midHtml = `<span class="typo-highlight" title="Modification GREP automatique">${midNew}</span>`;
+  }
+  
+  return prefix + midHtml + suffix;
+};
+
+// --- PURGE DES HIGHLIGHTS POUR L'XML FINAL ---
+const stripTypo = (str) => str ? str.replace(/<span class="typo-highlight"[^>]*>([\s\S]*?)<\/span>/gi, "$1") : "";
+
+
 // --- COMPOSANTS SOUS-JACENT ---
 function SortableItem({ item }) {
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: item.id });
@@ -74,10 +150,9 @@ function PreviewItem({ item }) {
 
   const { qText, qType, qPoint, fGeneral, fCorrect, fPartial, fIncorrect, props } = item.data;
 
-  // --- NOUVEAU : Détection des feedbacks personnalisés ---
-  const showCorrect = fCorrect && fCorrect !== "Votre réponse est correcte.";
-  const showPartial = fPartial && fPartial !== "Votre réponse est partiellement correcte." && qType !== 'TF';
-  const showIncorrect = fIncorrect && fIncorrect !== "Votre réponse est incorrecte.";
+  const showCorrect = fCorrect && stripTypo(fCorrect) !== "Votre réponse est correcte.";
+  const showPartial = fPartial && stripTypo(fPartial) !== "Votre réponse est partiellement correcte." && qType !== 'TF';
+  const showIncorrect = fIncorrect && stripTypo(fIncorrect) !== "Votre réponse est incorrecte.";
   const hasAnyFeedback = fGeneral || showCorrect || showPartial || showIncorrect;
 
   return (
@@ -117,8 +192,8 @@ function PreviewItem({ item }) {
                    <div className={`w-4 h-4 rounded-full border ${frac > 0 ? 'bg-emerald-500 border-emerald-600' : 'bg-white border-slate-300'}`}></div>
                  )}
                </div>
-               <div className="flex-1 text-sm text-slate-700" dangerouslySetInnerHTML={{ __html: p.text }} />
-               <span className={`text-[10px] font-bold px-2 py-1 rounded-md shrink-0 ${badgeColor}`}>{frac > 0 ? `+${p.fraction}` : p.fraction}%</span>
+               <div className="flex-1 text-sm text-slate-700 py-2" dangerouslySetInnerHTML={{ __html: p.text }} />
+               <span className={`text-[10px] font-bold px-2 py-1 mr-2 rounded-md shrink-0 ${badgeColor}`}>{frac > 0 ? `+${p.fraction}` : p.fraction}%</span>
             </div>
           );
         })}
@@ -148,8 +223,6 @@ const loadJSZip = async () => {
     document.head.appendChild(script);
   });
 };
-
-
 
 // --- VALIDATEUR HTML ---
 const checkHTMLTags = (html) => {
@@ -199,6 +272,9 @@ export default function MoodleQuizApp() {
   const [isSorting, setIsSorting] = useState(false);
   const [parsedItems, setParsedItems] = useState([]);
   const [viewMode, setViewMode] = useState('preview');
+  
+  // État pour le bouton de Highlight Typo
+  const [showTypoHighlights, setShowTypoHighlights] = useState(false);
 
   const fileInputRef = useRef(null);
   const [isDraggingFile, setIsDraggingFile] = useState(false);
@@ -447,6 +523,8 @@ export default function MoodleQuizApp() {
     setAuditMessages([]);
     setResultXml("");
 
+    let typoModificationsCount = 0;
+
     try {
       const JSZip = await loadJSZip();
       const zip = new JSZip();
@@ -513,40 +591,36 @@ export default function MoodleQuizApp() {
             }
           }
 
-let trimmedText = pText.trim();
-if (!trimmedText && !pText.includes("\n")) continue; 
+          let trimmedText = pText.trim();
+          if (!trimmedText && !pText.includes("\n")) continue; 
 
-let cleanedText = applyGrepRules(trimmedText).replace(/\n/g, "<br>");
-
-        if (isListItem) {
-          if (!inList) {
-            // Fermer proprement le paragraphe avant d'ouvrir la liste
-            if (htmlContent !== "") htmlContent += "</p>\n"; 
-            
-            htmlContent += `<ul class="Pucecned18">\n`;
-            inList = true;
-          }
-          htmlContent += `  <li>${cleanedText}</li>\n`;
-        } else {
-          let justClosedList = false; // Variable pour tracer la sortie de liste
-
-          if (inList) {
-            htmlContent += `</ul>\n`;
-            inList = false;
-            justClosedList = true; // On mémorise qu'on vient tout juste de fermer une liste
-          }
+          // --- APPLICATION GREP + CALCUL DIFF EXACT ---
+          let rawCleanedText = applyGrepRules(trimmedText);
+          if (rawCleanedText !== trimmedText) typoModificationsCount++;
           
-          if (htmlContent !== "") {
-            if (justClosedList) {
-              // Après une liste, on se contente d'OUVRIR un nouveau paragraphe
-              htmlContent += "<p>"; 
-            } else {
-              // Comportement normal : on sépare deux paragraphes standards
-              htmlContent += "</p><p>"; 
+          let previewText = computeDiff(trimmedText, rawCleanedText);
+          let cleanedText = previewText.replace(/\n/g, "<br>");
+
+          if (isListItem) {
+            if (!inList) {
+              if (htmlContent !== "") htmlContent += "</p>\n"; 
+              htmlContent += `<ul class="Pucecned18">\n`;
+              inList = true;
             }
+            htmlContent += `  <li>${cleanedText}</li>\n`;
+          } else {
+            let justClosedList = false;
+            if (inList) {
+              htmlContent += `</ul>\n`;
+              inList = false;
+              justClosedList = true;
+            }
+            if (htmlContent !== "") {
+              if (justClosedList) htmlContent += "<p>"; 
+              else htmlContent += "</p><p>"; 
+            }
+            htmlContent += cleanedText;
           }
-          htmlContent += cleanedText;
-        }
         }
         if (inList) htmlContent += `</ul>`;
         
@@ -564,7 +638,7 @@ let cleanedText = applyGrepRules(trimmedText).replace(/\n/g, "<br>");
       descriptions.forEach((desc, index) => {
         if(desc.trim() === "") return;
         const descId = `${quizId}_DES${String(index + 1).padStart(2, '0')}`;
-        const xml = `  <question type="description">\n    <name>\n      <text>${escapeXML(descId)}</text>\n    </name>\n    <questiontext format="html">\n      <text><![CDATA[${desc}]]></text>\n    </questiontext>\n    <generalfeedback format="html"><text></text></generalfeedback>\n    <defaultgrade>0.0000000</defaultgrade>\n    <penalty>0.0000000</penalty>\n    <hidden>0</hidden>\n    <idnumber></idnumber>\n  </question>\n\n`;
+        const xml = `  <question type="description">\n    <name>\n      <text>${escapeXML(descId)}</text>\n    </name>\n    <questiontext format="html">\n      <text><![CDATA[${stripTypo(desc)}]]></text>\n    </questiontext>\n    <generalfeedback format="html"><text></text></generalfeedback>\n    <defaultgrade>0.0000000</defaultgrade>\n    <penalty>0.0000000</penalty>\n    <hidden>0</hidden>\n    <idnumber></idnumber>\n  </question>\n\n`;
         extractedItems.push({ id: descId, type: 'description', title: `Consigne : ${descId}`, xml, data: { text: desc } });
       });
 
@@ -617,11 +691,19 @@ let cleanedText = applyGrepRules(trimmedText).replace(/\n/g, "<br>");
                 
                 if (legacyCheckBoxes.length >= 1) {
                     const cbOui = legacyCheckBoxes[0];
-                    const checkedTag = cbOui.getElementsByTagName("w:checked")[0];                    
+                    const checkedTag = cbOui.getElementsByTagName("w:checked")[0];
+                    const defaultTag = cbOui.getElementsByTagName("w:default")[0];
+                    
+                    let isBoxChecked = false;
                     if (checkedTag) {
                         const val = checkedTag.getAttribute("w:val");
-                        if (val === null || val === "1" || val === "true") isOuiChecked = true;
+                        isBoxChecked = (val === null || val === "1" || val === "true");
+                    } else if (defaultTag) {
+                        const val = defaultTag.getAttribute("w:val");
+                        isBoxChecked = (val === null || val === "1" || val === "true");
                     }
+                    if (isBoxChecked) isOuiChecked = true;
+
                 } else if (modernCheckBoxes.length >= 1) {
                     const cbOui = modernCheckBoxes[0];
                     const checkedTag = cbOui.getElementsByTagName("w14:checked")[0];
@@ -737,11 +819,18 @@ let cleanedText = applyGrepRules(trimmedText).replace(/\n/g, "<br>");
           const modernCheckBoxes = cellNode.getElementsByTagName("w14:checked");
           
           if (checkBoxes.length > 0) {
-              const checkedTag = checkBoxes[0].getElementsByTagName("w:checked")[0];            
+              const checkedTag = checkBoxes[0].getElementsByTagName("w:checked")[0];
+              const defaultTag = checkBoxes[0].getElementsByTagName("w:default")[0];
+              
+              let isBoxChecked = false;
               if (checkedTag) {
-              const val = checkedTag.getAttribute("w:val");
-              if (val === null || val === "1" || val === "true") isChecked = true;
-            }
+                  const val = checkedTag.getAttribute("w:val");
+                  isBoxChecked = (val === null || val === "1" || val === "true");
+              } else if (defaultTag) {
+                  const val = defaultTag.getAttribute("w:val");
+                  isBoxChecked = (val === null || val === "1" || val === "true");
+              }
+              if (isBoxChecked) isChecked = true;
           }
           
           if (modernCheckBoxes.length > 0) {
@@ -754,53 +843,33 @@ let cleanedText = applyGrepRules(trimmedText).replace(/\n/g, "<br>");
               if (lowText === "x" || lowText === "[x]" || rawCellText.includes("☑") || rawCellText.includes("☒")) isChecked = true;
           }
 
-          if (!isChecked && cells.length >= 3) {
-             const gradeText = getRawCellText(cells[2]).trim().replace(',', '.');
-             const gradeNum = parseFloat(gradeText);
-             if (!isNaN(gradeNum) && gradeNum > 0) {
-                 isChecked = true;
-             }
-          }
-          
-          // --- SÉCURITÉ AMÉLIORÉE : Détection de la couleur verte MAJORITAIRE ---
           if (!isChecked && cells.length >= 2) {
              let greenCharCount = 0;
              let totalCharCount = 0;
-             
-             // On récupère tous les fragments de texte (runs) de la cellule de réponse
              const runs = cells[1].getElementsByTagName("w:r");
              
              for (let i = 0; i < runs.length; i++) {
                  const run = runs[i];
-                 
-                 // Extraction du texte brut de ce fragment
                  const textNodes = run.getElementsByTagName("w:t");
                  let runText = "";
                  for (let t = 0; t < textNodes.length; t++) {
                      runText += textNodes[t].textContent;
                  }
-                 
-                 // On supprime tous les espaces/sauts de ligne pour ne compter que les vrais caractères
                  const cleanTextLength = runText.replace(/\s+/g, "").length;
-                 if (cleanTextLength === 0) continue; // On ignore les fragments vides ou composés de purs espaces
-                 
+                 if (cleanTextLength === 0) continue; 
                  totalCharCount += cleanTextLength;
                  
-                 // Vérification de la propriété de couleur (w:color)
                  const rPr = run.getElementsByTagName("w:rPr")[0];
                  if (rPr) {
                      const colorTag = rPr.getElementsByTagName("w:color")[0];
                      if (colorTag) {
                          const val = colorTag.getAttribute("w:val");
-                         // Si la couleur correspond à l'un des verts standards de Word
                          if (val && /^(00B050|008000|92D050|00C000|33CC33|228B22|00FF00)$/i.test(val)) {
                              greenCharCount += cleanTextLength;
                          }
                      }
                  }
              }
-             
-             // Si plus de 50% des caractères visibles sont verts, la proposition est validée
              if (totalCharCount > 0 && (greenCharCount / totalCharCount) > 0.5) {
                  isChecked = true;
              }
@@ -815,7 +884,7 @@ let cleanedText = applyGrepRules(trimmedText).replace(/\n/g, "<br>");
         }
 
         if (nbBonnesReponses === 0) {
-           localAudits.push(`Question ${qName} ignorée (Aucune bonne réponse cochée ou verte détectée).`);
+           localAudits.push(`Question ${qName} ignorée (Aucune bonne réponse validée par croix ou couleur verte).`);
            continue;
         }
 
@@ -839,20 +908,19 @@ let cleanedText = applyGrepRules(trimmedText).replace(/\n/g, "<br>");
 
             qXml += `  <question type="truefalse">\n`;
             qXml += `    <name><text>${escapeXML(qName)}</text></name>\n`;
-            qXml += `    <questiontext format="html"><text><![CDATA[<p>${qText}</p>]]></text></questiontext>\n`;
-            qXml += `    <generalfeedback format="html"><text><![CDATA[<p>${fGeneral}</p>]]></text></generalfeedback>\n`;
+            qXml += `    <questiontext format="html"><text><![CDATA[${stripTypo(qText)}]]></text></questiontext>\n`;
+            qXml += `    <generalfeedback format="html"><text><![CDATA[${stripTypo(fGeneral)}]]></text></generalfeedback>\n`;
             qXml += `    <defaultgrade>${qPoint}</defaultgrade>\n`;
             qXml += `    <penalty>1.0000000</penalty>\n`;
             qXml += `    <hidden>0</hidden>\n`;
-            qXml += `    <answer fraction="${scoreTrue}" format="moodle_auto_format">\n      <text>true</text>\n      <feedback format="html"><text><![CDATA[<p>${scoreTrue === "100" ? fCorrect : fIncorrect}</p>]]></text></feedback>\n    </answer>\n`;
-            qXml += `    <answer fraction="${scoreFalse}" format="moodle_auto_format">\n      <text>false</text>\n      <feedback format="html"><text><![CDATA[<p>${scoreFalse === "100" ? fCorrect : fIncorrect}</p>]]></text></feedback>\n    </answer>\n`;
+            qXml += `    <answer fraction="${scoreTrue}" format="moodle_auto_format">\n      <text>true</text>\n      <feedback format="html"><text><![CDATA[${stripTypo(scoreTrue === "100" ? fCorrect : fIncorrect)}]]></text></feedback>\n    </answer>\n`;
+            qXml += `    <answer fraction="${scoreFalse}" format="moodle_auto_format">\n      <text>false</text>\n      <feedback format="html"><text><![CDATA[${stripTypo(scoreFalse === "100" ? fCorrect : fIncorrect)}]]></text></feedback>\n    </answer>\n`;
             qXml += `  </question>\n\n`;
 
         } else {
             let scorePositif = "100";
             let scoreNegatif = "0";
 
-            // --- NOUVELLE LOGIQUE DE CALCUL DES MALUS QCM ---
             if (qType === "QCM") {
                 if (malusChoice === "auto") {
                     const autoOpt = autoMalusOptions[autoMalusIndex];
@@ -863,7 +931,6 @@ let cleanedText = applyGrepRules(trimmedText).replace(/\n/g, "<br>");
                     } else if (autoOpt.value === "SOLIDARITE") {
                         scoreNegatif = "-100";
                     } else {
-                        // Liste stricte des valeurs Moodle acceptées pour une pénalité
                         const allowedMoodleValues = [
                             { num: 100, str: "100" },
                             { num: 90, str: "90" },
@@ -890,12 +957,11 @@ let cleanedText = applyGrepRules(trimmedText).replace(/\n/g, "<br>");
                         let target = parseFloat(autoOpt.value);
                         
                         if (target === 100) {
-                            // Cas 2 : Exigence
                             let bestV = null;
                             let maxTotal = -1;
                             for (let v of allowedMoodleValues) {
                                 let total = v.num * nbMauvaises;
-                                if (total <= 100.01) { // Marge pour l'arrondi
+                                if (total <= 100.01) {
                                     if (total > maxTotal) {
                                         maxTotal = total;
                                         bestV = v.str;
@@ -904,7 +970,6 @@ let cleanedText = applyGrepRules(trimmedText).replace(/\n/g, "<br>");
                             }
                             scoreNegatif = "-" + (bestV || "5");
                         } else {
-                            // Cas 3 et 4 : Valorisation & Encouragement
                             let minBound = 0;
                             let maxBound = 100;
                             
@@ -924,7 +989,6 @@ let cleanedText = applyGrepRules(trimmedText).replace(/\n/g, "<br>");
                                 }
                             }
 
-                            // Repli de sécurité si aucune fraction ne rentre dans les bornes
                             if (validOptions.length === 0) {
                                 for (let v of allowedMoodleValues) {
                                     if (v.num * nbMauvaises <= 100.01) {
@@ -936,7 +1000,6 @@ let cleanedText = applyGrepRules(trimmedText).replace(/\n/g, "<br>");
                             if (validOptions.length === 0) {
                                 scoreNegatif = "-5";
                             } else {
-                                // Recherche de la valeur la plus proche de la cible utilisateur
                                 let bestV = null;
                                 let minDiff = Infinity;
                                 for (let v of validOptions) {
@@ -970,24 +1033,24 @@ let cleanedText = applyGrepRules(trimmedText).replace(/\n/g, "<br>");
 
             qXml += `  <question type="multichoice">\n`;
             qXml += `    <name><text>${escapeXML(qName)}</text></name>\n`;
-            qXml += `    <questiontext format="html"><text><![CDATA[<p>${qText}</p>]]></text></questiontext>\n`;
-            qXml += `    <generalfeedback format="html"><text><![CDATA[<p>${fGeneral}</p>]]></text></generalfeedback>\n`;
+            qXml += `    <questiontext format="html"><text><![CDATA[${stripTypo(qText)}]]></text></questiontext>\n`;
+            qXml += `    <generalfeedback format="html"><text><![CDATA[${stripTypo(fGeneral)}]]></text></generalfeedback>\n`;
             qXml += `    <defaultgrade>${qPoint}</defaultgrade>\n`;
             qXml += `    <penalty>0.3333333</penalty>\n`;
             qXml += `    <hidden>0</hidden>\n`;
             qXml += `    <single>${qType === "QCU" ? "true" : "false"}</single>\n`;
             qXml += `    <shuffleanswers>${shuffleAnswers ? "true" : "false"}</shuffleanswers>\n`;
             qXml += `    <answernumbering>none</answernumbering>\n`;
-            qXml += `    <correctfeedback format="html"><text><![CDATA[<p>${fCorrect}</p>]]></text></correctfeedback>\n`;
-            qXml += `    <partiallycorrectfeedback format="html"><text><![CDATA[<p>${fPartial}</p>]]></text></partiallycorrectfeedback>\n`;
-            qXml += `    <incorrectfeedback format="html"><text><![CDATA[<p>${fIncorrect}</p>]]></text></incorrectfeedback>\n`;
+            qXml += `    <correctfeedback format="html"><text><![CDATA[${stripTypo(fCorrect)}]]></text></correctfeedback>\n`;
+            qXml += `    <partiallycorrectfeedback format="html"><text><![CDATA[${stripTypo(fPartial)}]]></text></partiallycorrectfeedback>\n`;
+            qXml += `    <incorrectfeedback format="html"><text><![CDATA[${stripTypo(fIncorrect)}]]></text></incorrectfeedback>\n`;
             qXml += `    <shownumcorrect/>\n`;
 
             rowData.forEach(r => {
                 if (r.text.length > 0) {
                     const fraction = r.isChecked ? scorePositif : scoreNegatif;
                     qXml += `    <answer fraction="${fraction}" format="html">\n`;
-                    qXml += `      <text><![CDATA[<p>${r.text}</p>]]></text>\n`;
+                    qXml += `      <text><![CDATA[${stripTypo(r.text)}]]></text>\n`;
                     qXml += `      <feedback format="html"><text></text></feedback>\n`;
                     qXml += `    </answer>\n`;
                 }
@@ -1000,18 +1063,23 @@ let cleanedText = applyGrepRules(trimmedText).replace(/\n/g, "<br>");
           type: 'question', 
           title: `Question : ${qName}`, 
           xml: qXml,
-          data: { qText, qType, qPoint, fGeneral, fCorrect, fPartial, fIncorrect, props: questionProps } // <- AJOUT
+          data: { qText, qType, qPoint, fGeneral, fCorrect, fPartial, fIncorrect, props: questionProps }
         });
         questionCounter++;
       }
 
-      setAuditMessages(localAudits.length > 0 ? localAudits : [`Audit OK : ${questionCounter - 1} question(s) générée(s) avec succès (pondérations appliquées).`]);
+      if (typoModificationsCount > 0) {
+          localAudits.push(`Registre Typo : ${typoModificationsCount} blocs de texte ont été corrigés automatiquement (Espaces insécables, signes mathématiques...).`);
+      }
 
-const validCategories = categories.filter(c => c.trim() !== "");
-      // pour que l'onglet Aperçu ait des données à afficher.
+      let finalAudits = [`Audit : ${questionCounter - 1} question(s) analysée(s) et générée(s) avec succès.`];
+      if (localAudits.length > 0) finalAudits = finalAudits.concat(localAudits);
+      setAuditMessages(finalAudits);
+
+      const validCategories = categories.filter(c => c.trim() !== "");
       setParsedItems(extractedItems);
       if (validCategories.length > 0) {
-        setIsSorting(true);s
+        setIsSorting(true);
       } else {
         compileXML(extractedItems);
       }
@@ -1095,7 +1163,7 @@ const validCategories = categories.filter(c => c.trim() !== "");
           cursor: pointer;
           box-shadow: 0 2px 5px rgba(0,0,0,0.2);
         }
-          ul.Pucecned18 {
+        ul.Pucecned18 {
           list-style-type: disc;
           padding-left: 1.5rem;
           margin-top: 0.5rem;
@@ -1103,6 +1171,12 @@ const validCategories = categories.filter(c => c.trim() !== "");
         }
         ul.Pucecned18 li {
           margin-bottom: 0.25rem;
+        }
+        /* --- CSS DU HIGHLIGHT TYPO --- */
+        .show-typo .typo-highlight {
+          background-color: #fef08a;
+          color: #854d0e;
+          border-radius: 2px;
         }
       `}</style>
       
@@ -1161,7 +1235,6 @@ const validCategories = categories.filter(c => c.trim() !== "");
               <input type="text" value={quizId} onChange={(e) => setQuizId(e.target.value)} className="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl font-bold text-slate-700 focus:outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-100 transition-all" placeholder="Ex: 3-0421-DA-WB-06-26"/>
             </div>
 
-            {/* --- NOUVEAU SÉLECTEUR DE MALUS --- */}
             <div className="space-y-3 pt-2">
                 <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
                   <label className="text-xs font-black text-slate-500 uppercase tracking-widest w-16">
@@ -1191,7 +1264,6 @@ const validCategories = categories.filter(c => c.trim() !== "");
                   </div>
                 </div>
 
-                {/* CONTENEUR DU SLIDER AUTO */}
                 {malusChoice === "auto" && (
                    <div className="p-5 bg-white border border-slate-200 rounded-xl shadow-sm animate-fade-in">
                       <div className="flex justify-between text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2 px-1">
@@ -1275,8 +1347,8 @@ const validCategories = categories.filter(c => c.trim() !== "");
                 <label className="text-xs font-black text-slate-500 uppercase tracking-widest">Gabarit Word Rempli</label>
                 <button className="text-xs font-bold text-blue-600 hover:text-blue-800 flex items-center gap-1 bg-blue-50 px-2 py-1 rounded-md transition-colors"><Download size={14}/><a href={gabaritWord} download="DA-WB_Gabarit.docx">Gabarit vierge</a></button>
               </div>
-              <input type="file" ref={fileInputRef} className="hidden" accept=".docx" onChange={(e) => handleFileScan(e.target.files[0])} />
-<div 
+              <input type="file" ref={fileInputRef} className="hidden" accept=".docx" onClick={(e) => { e.target.value = null; }} onChange={(e) => handleFileScan(e.target.files[0])} />
+              <div 
                 onClick={() => scanStatus !== 'scanning' && fileInputRef.current.click()} 
                 onDragOver={onDragOver}
                 onDragLeave={onDragLeave}
@@ -1386,25 +1458,42 @@ const validCategories = categories.filter(c => c.trim() !== "");
                 </div>
               </div>
 
+              {/* ALERTE AUDIT */}
+              {auditMessages.length > 0 && (
+                <div className="mb-4 p-3 bg-blue-50 border border-blue-100 rounded-xl text-xs font-medium text-blue-800 space-y-1 shrink-0">
+                  {auditMessages.map((msg, i) => <p key={i} className="flex gap-2"><span className="mt-0.5">•</span> <span>{msg}</span></p>)}
+                </div>
+              )}
+
               {/* ONGLET DE NAVIGATION */}
-              <div className="flex gap-4 border-b border-slate-200 pb-4 mb-4 shrink-0">
-                <button
-                  onClick={() => setViewMode('preview')}
-                  className={`px-4 py-2 font-bold text-sm rounded-lg transition-colors flex items-center gap-2 ${viewMode === 'preview' ? 'bg-slate-800 text-white shadow-md' : 'text-slate-500 hover:bg-slate-100'}`}
-                >
-                  <Eye size={16} /> Aperçu Visuel
-                </button>
-                <button
-                  onClick={() => setViewMode('xml')}
-                  className={`px-4 py-2 font-bold text-sm rounded-lg transition-colors flex items-center gap-2 ${viewMode === 'xml' ? 'bg-slate-800 text-white shadow-md' : 'text-slate-500 hover:bg-slate-100'}`}
-                >
-                  <Code size={16} /> Code XML
-                </button>
+              <div className="flex justify-between items-center border-b border-slate-200 pb-4 mb-4 shrink-0">
+                <div className="flex gap-4">
+                  <button
+                    onClick={() => setViewMode('preview')}
+                    className={`px-4 py-2 font-bold text-sm rounded-lg transition-colors flex items-center gap-2 ${viewMode === 'preview' ? 'bg-slate-800 text-white shadow-md' : 'text-slate-500 hover:bg-slate-100'}`}
+                  >
+                    <Eye size={16} /> Aperçu Visuel
+                  </button>
+                  <button
+                    onClick={() => setViewMode('xml')}
+                    className={`px-4 py-2 font-bold text-sm rounded-lg transition-colors flex items-center gap-2 ${viewMode === 'xml' ? 'bg-slate-800 text-white shadow-md' : 'text-slate-500 hover:bg-slate-100'}`}
+                  >
+                    <Code size={16} /> Code XML
+                  </button>
+                </div>
+                
+                {/* TOGGLE HIGHLIGHT TYPO */}
+                {viewMode === 'preview' && (
+                  <label className="flex items-center gap-2 cursor-pointer bg-amber-50 px-3 py-1.5 rounded-lg border border-amber-200 hover:bg-amber-100 transition-colors shadow-sm">
+                    <input type="checkbox" checked={showTypoHighlights} onChange={e => setShowTypoHighlights(e.target.checked)} className="accent-amber-600 w-4 h-4" />
+                    <span className="text-xs font-black text-amber-900 uppercase tracking-widest">Contrôle Typo</span>
+                  </label>
+                )}
               </div>
 
               {/* VUES DYNAMIQUES */}
               {viewMode === 'preview' ? (
-                <div className="flex-1 overflow-y-auto space-y-4 pr-2 pb-6 custom-scrollbar">
+                <div className={`flex-1 overflow-y-auto space-y-4 pr-2 pb-6 custom-scrollbar ${showTypoHighlights ? 'show-typo' : ''}`}>
                    {parsedItems.map(item => <PreviewItem key={item.id} item={item} />)}
                 </div>
               ) : (
