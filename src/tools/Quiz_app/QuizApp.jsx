@@ -617,7 +617,7 @@ let cleanedText = applyGrepRules(trimmedText).replace(/\n/g, "<br>");
                 
                 if (legacyCheckBoxes.length >= 1) {
                     const cbOui = legacyCheckBoxes[0];
-                    const checkedTag = cbOui.getElementsByTagName("w:checked")[0] || cbOui.getElementsByTagName("w:default")[0];
+                    const checkedTag = cbOui.getElementsByTagName("w:checked")[0];                    
                     if (checkedTag) {
                         const val = checkedTag.getAttribute("w:val");
                         if (val === null || val === "1" || val === "true") isOuiChecked = true;
@@ -737,8 +737,8 @@ let cleanedText = applyGrepRules(trimmedText).replace(/\n/g, "<br>");
           const modernCheckBoxes = cellNode.getElementsByTagName("w14:checked");
           
           if (checkBoxes.length > 0) {
-            const checkedTag = checkBoxes[0].getElementsByTagName("w:checked")[0] || checkBoxes[0].getElementsByTagName("w:default")[0];
-            if (checkedTag) {
+              const checkedTag = checkBoxes[0].getElementsByTagName("w:checked")[0];            
+              if (checkedTag) {
               const val = checkedTag.getAttribute("w:val");
               if (val === null || val === "1" || val === "true") isChecked = true;
             }
@@ -762,9 +762,46 @@ let cleanedText = applyGrepRules(trimmedText).replace(/\n/g, "<br>");
              }
           }
           
+          // --- SÉCURITÉ AMÉLIORÉE : Détection de la couleur verte MAJORITAIRE ---
           if (!isChecked && cells.length >= 2) {
-             const cell1Xml = new XMLSerializer().serializeToString(cells[1]);
-             if (cell1Xml.match(/w:color[^>]+w:val="(00B050|008000|92D050|00C000|33CC33|228B22|00FF00)"/i)) {
+             let greenCharCount = 0;
+             let totalCharCount = 0;
+             
+             // On récupère tous les fragments de texte (runs) de la cellule de réponse
+             const runs = cells[1].getElementsByTagName("w:r");
+             
+             for (let i = 0; i < runs.length; i++) {
+                 const run = runs[i];
+                 
+                 // Extraction du texte brut de ce fragment
+                 const textNodes = run.getElementsByTagName("w:t");
+                 let runText = "";
+                 for (let t = 0; t < textNodes.length; t++) {
+                     runText += textNodes[t].textContent;
+                 }
+                 
+                 // On supprime tous les espaces/sauts de ligne pour ne compter que les vrais caractères
+                 const cleanTextLength = runText.replace(/\s+/g, "").length;
+                 if (cleanTextLength === 0) continue; // On ignore les fragments vides ou composés de purs espaces
+                 
+                 totalCharCount += cleanTextLength;
+                 
+                 // Vérification de la propriété de couleur (w:color)
+                 const rPr = run.getElementsByTagName("w:rPr")[0];
+                 if (rPr) {
+                     const colorTag = rPr.getElementsByTagName("w:color")[0];
+                     if (colorTag) {
+                         const val = colorTag.getAttribute("w:val");
+                         // Si la couleur correspond à l'un des verts standards de Word
+                         if (val && /^(00B050|008000|92D050|00C000|33CC33|228B22|00FF00)$/i.test(val)) {
+                             greenCharCount += cleanTextLength;
+                         }
+                     }
+                 }
+             }
+             
+             // Si plus de 50% des caractères visibles sont verts, la proposition est validée
+             if (totalCharCount > 0 && (greenCharCount / totalCharCount) > 0.5) {
                  isChecked = true;
              }
           }
